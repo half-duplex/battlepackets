@@ -8,12 +8,12 @@
 
     This file is part of Battlepackets.
 
-    EpicDoorLock is free software: you can redistribute it and/or modify
+    Battlepackets is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    EpicDoorLock is distributed in the hope that it will be useful,
+    Battlepackets is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -45,6 +45,10 @@ int main(int argc, char** argv) {
         cout << argv[i] << endl;
     }
 #endif
-    cout << "stub: server/main\n";
+    // Set up shared stuff
+
+    // Launch first net listener
+
+    // Do something so that it doesn't quit until the last thread is gone
     return 0;
 }
