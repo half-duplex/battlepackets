@@ -25,6 +25,11 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
-
+/* nethandler
+ * called by net/netrecv when it gets data
+ * arguments:   char * data[] - the data to send
+ *              int datalen - the length of the data
+ */
+void nethandler(char * data[], int datalen);
 
 #endif	/* SERVER_H */

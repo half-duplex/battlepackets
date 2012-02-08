@@ -22,4 +22,34 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mutex>
+// EXAMPLE OF HOW TO DECIDE IF IT'S WINDOWS OR NOT:
+// DO NOT EDIT stuff that is not your OS, because you won't be able to test it!
+#if defined(__WIN32__) || defined(_WIN32)
+// windows stuff TODO
+#else
+// linux and mac stuff
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#endif
+// common stuff
+// iostream is not allowed. no cout or cin here.
+
+
+
+
+bool netconnect(char * addr[], int addrlen, int port) {
+    ;
+}
+
+bool netlisten(int port) {
+    ;
+}
+
+bool netsend(char * data[], int datalen) {
+    ;
+}
+
+void netrecv(void (*handler)(char * data[], int datalen)) {
+    ;
+}

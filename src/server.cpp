@@ -23,6 +23,7 @@
  */
 
 #include <iostream>
+#include <boost/thread.hpp>
 #include "server.h"
 #include "net/net.h"
 #define DEBUG
@@ -41,14 +42,17 @@ using namespace std;
 int main(int argc, char** argv) {
 #ifdef DEBUG
     cout << "Arguments:\n";
-    for(int i=0;i<argc;i++){
+    for (int i = 0; i < argc; i++) {
         cout << argv[i] << endl;
     }
 #endif
     // Set up shared stuff
 
     // Launch first net listener
+    //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
 
-    // Do something so that it doesn't quit until the last thread is gone
+    // Do something so that it doesn't quit until the last thread is gone?
+    // semaphore, maybe?
+
     return 0;
 }

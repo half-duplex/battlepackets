@@ -22,9 +22,10 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include "client.h"
 #include "net/net.h"
+#include <iostream>
+#include <boost/thread.hpp>
 
 using namespace std;
 
@@ -38,6 +39,20 @@ using namespace std;
 
  */
 int main(int argc, char** argv) {
-    cout << "stub: client/main\n";
+    // Create structures
+
+    // Create GTK gui
+
+    // spawn net listener. join it, for now?
+    boost::thread netin(netrecv, nethandler);
+
+
+    netin.interrupt();
     return 0;
+}
+
+void nethandler(char * data[], int datalen) {
+    // grab first char (packet id)
+    // switch(packetID){etc}
+    // do stuff like update the gui
 }
