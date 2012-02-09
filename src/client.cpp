@@ -24,6 +24,7 @@
 
 #include "client.h"
 #include "net/net.h"
+#include <gtkmm.h>
 #include <iostream>
 #include <boost/thread.hpp>
 
