@@ -41,13 +41,20 @@ using namespace std;
  */
 int main(int argc, char** argv) {
     // Create structures
+    Gtk::Main kit(argc, argv);
+    // ...
 
     // Create GTK gui
+    Gtk::Window window;
+    // ...
 
-    // spawn net listener. join it, for now?
+    // spawn net listener
     boost::thread netin(netrecv, nethandler);
 
+    // gtkmm main loop
+    Gtk::Main::run(window);
 
+    // die
     netin.interrupt();
     return 0;
 }
