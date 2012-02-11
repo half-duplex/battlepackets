@@ -27,9 +27,10 @@
 
 /* nethandler
  * called by net/netrecv when it gets data
- * arguments:   char * data[] - the data to send
+ * arguments:   int sockfd - the socket data was recieved on
+ *              char * data[] - the data to send
  *              int datalen - the length of the data
  */
-void nethandler(char * data[], int datalen);
+void nethandler(int sockfd, char * data[], int datalen);
 
 #endif	/* SERVER_H */

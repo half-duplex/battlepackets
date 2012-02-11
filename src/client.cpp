@@ -46,6 +46,9 @@ int main(int argc, char** argv) {
 
     // Create GTK gui
     Gtk::Window window;
+    window.resize(400,400);
+    window.set_title("Battlepackets!");
+
     // ...
 
     // spawn net listener
@@ -59,7 +62,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-void nethandler(char * data[], int datalen) {
+void nethandler(int sockfd, char * data[], int datalen) {
     // grab first char (packet id)
     // switch(packetID){etc}
     // do stuff like update the gui

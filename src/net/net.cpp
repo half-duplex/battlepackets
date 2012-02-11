@@ -38,18 +38,18 @@
 
 
 
-bool netconnect(char * addr[], int addrlen, int port) {
+int netconnect(char * addr[], int addrlen, int port) {
     ;
 }
 
-bool netlisten(int port) {
+int netlisten(int port) {
     ;
 }
 
-bool netsend(char * data[], int datalen) {
+bool netsend(int sockfd, char * data[], int datalen) {
     ;
 }
 
-void netrecv(void (*handler)(char * data[], int datalen)) {
+void netrecv(void (*handler)(int sockfd, char * data[], int datalen)) {
     ;
 }

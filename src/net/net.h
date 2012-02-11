@@ -30,14 +30,14 @@
  * arguments:   char * addr[] - the address to connect out to
  *              int addrlen - the length of the address array
  *              int port - the target port
- * returns:     bool - success true/false
+ * returns:     int - the socket created
  */
-bool netconnect(char * addr[], int addrlen, int port);
+int netconnect(char * addr[], int addrlen, int port);
 
 /* netlisten
  * Creates a socket for incoming connections
  * arguments:   int port - the target port
- * returns:     int - the file descriptor of the socket, OR -1 if failure
+ * returns:     int - the socket created, OR -1 if failure
  */
 int netlisten(int port);
 
@@ -52,10 +52,10 @@ bool netsend(int sockfd, char * data[], int datalen);
 
 /* netrecv
  * A function that waits for incoming data and uses the callback to pass it on
- * arguments:   void (*handler)(char * data[], int datalen)
+ * arguments:   void (*handler)(int sockfd, char * data[], int datalen)
  *                      This argument is a function that will be called with
  *                      any data recieved.
  */
-void netrecv(void (*handler)(char * data[], int datalen));
+void netrecv(void (*handler)(int sockfd, char * data[], int datalen));
 
 #endif	/* NET_H */
