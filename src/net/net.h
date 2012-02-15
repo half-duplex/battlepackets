@@ -54,7 +54,7 @@ bool netsend(int sockfd, char * data[], int datalen);
  * A function that waits for incoming data and uses the callback to pass it on
  * arguments:   void (*handler)(int sockfd, char * data[], int datalen)
  *                      This argument is a function that will be called with
- *                      any data recieved.
+ *                      any data received.
  */
 void netrecv(void (*handler)(int sockfd, char * data[], int datalen));
 

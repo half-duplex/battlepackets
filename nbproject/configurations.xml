@@ -77,10 +77,6 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="net/net.cpp" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="net/net.h" ex="true" tool="3" flavor="0">
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>
