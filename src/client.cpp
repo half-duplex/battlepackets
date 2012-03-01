@@ -2,7 +2,7 @@
  * client.cpp
  * Battlepackets
  * Norwich University IS460 Spring 2012
- * Battlepackets Group - battlepackets@groups.google.com
+ * Battlepackets Group - battlepackets@googlegroups.com
 
     Copyright 2012 Battlepackets Group
 
@@ -37,7 +37,6 @@ using namespace std;
  *              the number of arguments on the command line
  *      int argv
  *              the text of the arguments
-
  */
 int main(int argc, char** argv) {
     // Create structures

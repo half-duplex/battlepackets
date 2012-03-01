@@ -2,7 +2,7 @@
  * client.h
  * Battlepackets
  * Norwich University IS460 Spring 2012
- * Battlepackets Group - battlepackets@groups.google.com
+ * Battlepackets Group - battlepackets@googlegroups.com
 
     Copyright 2012 Battlepackets Group
 
