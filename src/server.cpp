@@ -46,7 +46,11 @@ int main(int argc, char** argv) {
         cout << argv[i] << endl;
     }
 #endif
-    // Set up shared stuff
+    
+    
+    
+    
+   // Set up shared stuff
 
     // Launch first net listener
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);

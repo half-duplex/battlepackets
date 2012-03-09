@@ -58,8 +58,9 @@ int main(int argc, char** argv) {
 
     // die
     netin.interrupt();
-    return 0;
-}
+    return 0; 
+    }
+
 
 void nethandler(int sockfd, char * data[], int datalen) {
     // grab first char (packet id)
