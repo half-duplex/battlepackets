@@ -36,73 +36,45 @@
 #include <string.h> //for memset
 #include <cstdlib> //for exit 
 #endif
+
+#define DEBUG
+#ifdef DEBUG
+#include <iostream>
+using namespace std;
+#endif
+
+
 // common stuff
 // iostream is not allowed. no cout or cin here.
-#define MAXCONNECTIONS 10
 
-    int socket; //The socket (file descriptor)
-    int createsocket; //The socket to be created when there's a new connection 
-    socklen_t sinsize;
-    int getaddrinfo(const char *node, //The IP of the server
-        const char *service, //The port to run on
-        const struct addrinfo *server, //Instance to contain server's information
-            struct addrinfo **res); //What is returned
+int netconnect(char * addr[], int addrlen, int port){ //create a socket for the client to talk to the server 
     
-    int status;
+    int clientsocket;
+    struct sockaddr_in server; //will contain information about the server the client will connect to
     
-    struct addrinfo server;
-    struct addrinfo *serverinfo; //Pointer to server's information
-    struct addrinfo *p; //Port
-    struct sockaddr_storage clientinfo; //The client's information 
+    clientsocket = socket(AF_INET, SOCK_STREAM, 0); //creates a socket for the client 
+    
+    memset(&server, 0, sizeof(server)); //to ensure theres no garbage data in the struct
+    server.sin_family = AF_INET; 
+    server.sin_addr.s_addr = inet_addr("127.0.0.1"); //Local loopback for now, will need to be set to 
+                                                     //server's address using the agrs in the function 
+    server.sin_port = htons(port); 
+    
+    connect(clientsocket, (struct sockaddr *)&server, sizeof(struct sockaddr));
+    
+    
 
-int netconnect(char * addr[], int addrlen, int port) {
-    
-    
-    
-    memset(&server, 0, sizeof server); //To clear the memory of server
-    server.ai_family = AF_INET; //AF_UNSPEC if we want to try for IPv4/6
-    server.ai_socktype = SOCK_STREAM; //TCP
-    server.ai_flags = AI_PASSIVE; // fills the IP automatically
-    
-    if ((status = getaddrinfo(NULL, "7777", &server, &serverinfo)) != 0) { //Gets the server's address information
-        //printf("There was an error setting up the server");
-        exit(-1);
-    }
-    
-    for (p = serverinfo; p != NULL; p->ai_next) { //Keep going until it's able to bind to a port
-        if ((socket = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) != 0) { //Creates a socket
-            //printf("Socket creation error");
-            continue; //Because if we exit, what's the point of the for loop?
-        }
-        
-        if (bind(socket, p->ai_addr, p->ai_addrlen) != 0) {
-            //printf("Bind error");
-            close(socket); //So that we can try again 
-            continue; //Ditto
-        }
-        
-        break; //If we are successful 
-            
-    }
-    
-    freeaddrinfo(serverinfo); //Free the information about the server, because we already have our connection
+    return clientsocket;
     
 }
 
 int netlisten(int port) {
-    if (listen(socket, MAXCONNECTIONS) != 0) {
-        //printf("Listen error");
-        exit(-1);
-    }
     
-    while(1) {
-        sinsize = sizeof clientinfo;
-        
-        
-        
-    }
+    int serversocket; // socket to be used to wait for connections from the client
+    struct sockaddr_in server;
+    
+    
 }
-
 bool netsend(int sockfd, char * data[], int datalen) {
     ;
 }

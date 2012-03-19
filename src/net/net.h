@@ -25,7 +25,7 @@
 #ifndef NET_H
 #define	NET_H
 
-/* netconnect
+/* netconnect (for client)
  * Creates a connection out to a server
  * arguments:   char * addr[] - the address to connect out to
  *              int addrlen - the length of the address array
@@ -34,14 +34,14 @@
  */
 int netconnect(char * addr[], int addrlen, int port);
 
-/* netlisten
+/* netlisten (for server)
  * Creates a socket for incoming connections
  * arguments:   int port - the target port
  * returns:     int - the socket created, OR -1 if failure
  */
 int netlisten(int port);
 
-/* netsend
+/* netsend (for client and server)
  * Sends RAW/PREFORMATTED data over an existing connection
  * arguments:   int sockfd - the socket file descriptor to send on
  *              char * data[] - the data to send
@@ -50,7 +50,7 @@ int netlisten(int port);
  */
 bool netsend(int sockfd, char * data[], int datalen);
 
-/* netrecv
+/* netrecv (for client and server)
  * A function that waits for incoming data and uses the callback to pass it on
  * arguments:   void (*handler)(int sockfd, char * data[], int datalen)
  *                      This argument is a function that will be called with
