@@ -56,21 +56,46 @@ enum pktType {
 struct pktHeader {
     short type;
     unsigned long clientID;
-    unsigned long headLength;
+    unsigned long gameID;
+    unsigned long headLength; //why 100?
 };
 
 struct packet {
-    pktHeader header; //10 bytes
+    pktHeader header; //14 bytes
     char data[100]; //100 bytes
 };
 
 union datapacket {
     packet pkt;
-    char pktArr[110];
+    char pktArr[114];
 };
 
+ 
+  
 // iostream is not allowed. no cout or cin here.
 
+bool netsend(int sockfd, char * data[], int datalen) {
+     datapacket dpkt;
+     dpkt.pkt.header.headLength = 100;
+  
+    send(sockfd, data, sizeof(pktHeader) + dpkt.pkt.header.headLength, 0);
+}
+
+
+
+void netrecv(int sockfd, char * data[], int datalen) {
+  
+     datapacket dpkt;
+   
+  
+    recv(sockfd, data, datalen, 0); //this 0 may have to change 
+    
+    if (dpkt.pkt.header.type == AUTH) { //pull out UID, GID and see if they match up
+        
+        
+    }
+
+}
 int netconnect(char * addr[], int addrlen, int port){ //create a socket for the client to talk to the server 
     
     int clientsocket;
@@ -94,6 +119,8 @@ int netconnect(char * addr[], int addrlen, int port){ //create a socket for the 
 
 int netlisten(int port) {
     
+     datapacket dpkt;
+     dpkt.pkt.header.headLength = 100;
    
     int serversocket; // socket to be used to wait for connections from the client
     struct sockaddr_in server; //for server info
@@ -119,29 +146,22 @@ int netlisten(int port) {
     while(1) { //wait for auth info to be sent from the client
         
         int authSocket = accept(serversocket, (struct sockaddr *)&client, &socksize); //blocked until data is sent
-        
-        
-    }
+        if ((child = fork()) == 0) {
+            close(serversocket);
+            //handle the connection (authSocket) with 
+            netrecv(authSocket, dpkt.pkt.data, dpkt.pkt.header.headLength);
+            close(authSocket);
+            exit(0);
+        }
+        close(serversocket);
+         
+   }
     
     
     
     
     
 }
-bool netsend(int sockfd, char * data[], int datalen) {
-    ;
-}
 
-
-
-void netrecv(int sockfd, char * data[], int datalen) {
-    
-    datapacket pkt;
-    
-    recv(sockfd, data, datalen, 0); //this 0 may have to change 
-    
-    if (pkt.pkt.header.type == AUTH) 
-
-}
 
 
