@@ -25,6 +25,8 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
+#include <gtkmm.h>
+
 /* nethandler
  * called by net/netrecv when it gets data
  * arguments:   int sockfd - the socket data was recieved on
@@ -32,5 +34,18 @@
  *              int datalen - the length of the data
  */
 void nethandler(int sockfd, char * data[], int datalen);
+
+class BPwin : public Gtk::Window {
+public:
+    BPwin();
+    virtual ~BPwin();
+
+protected:
+    // Signal handlers
+    void tile_clicked();
+
+    // Child widgets
+    Gtk::Button m_button;
+};
 
 #endif	/* SERVER_H */

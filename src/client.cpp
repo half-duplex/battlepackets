@@ -24,7 +24,6 @@
 
 #include "client.h"
 #include "net/net.h"
-#include <gtkmm.h>
 #include <iostream>
 #include <boost/thread.hpp>
 
@@ -41,12 +40,11 @@ using namespace std;
 int main(int argc, char** argv) {
     // Create structures
     Gtk::Main kit(argc, argv);
-    // ...
+    BPwin bpwin;
 
-    // Create GTK gui
-    Gtk::Window window;
-    window.resize(400,400);
-    window.set_title("Battlepackets!");
+    // /usr/share/icons/gnome/32x32/actions/add.png
+
+    Gtk::Button* m_Button = new Gtk::Button("_Something", true);
 
     // ...
 
@@ -54,11 +52,36 @@ int main(int argc, char** argv) {
     boost::thread netin(netrecv, nethandler);
 
     // gtkmm main loop
-    Gtk::Main::run(window);
+    Gtk::Main::run(bpwin);
 
     // die
     netin.interrupt();
     return 0;
+}
+
+BPwin::BPwin() {
+    //m_button.add_pixlabel("/usr/share/icons/gnome/32x32/actions/add.png", "");
+
+    set_title("Battlepackets!");
+    set_border_width(10);
+    resize(500, 500);
+
+    Gtk::Image *m_image = new Gtk::Image("gtk-paste.png");
+    m_button->set_image_position(Gtk::POS_LEFT);
+    m_button->set_image(*m_image);
+    m_image->show();
+    m_button.signal_clicked().connect(sigc::mem_fun(*this, &BPwin::tile_clicked)); // attach event to button
+
+    add(m_button);
+
+    show_all_children();
+}
+
+BPwin::~BPwin() {
+}
+
+void BPwin::tile_clicked() {
+    std::cout << "Clicked!\n";
 }
 
 void nethandler(int sockfd, char * data[], int datalen) {
