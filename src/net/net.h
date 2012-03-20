@@ -56,6 +56,6 @@ bool netsend(int sockfd, char * data[], int datalen);
  *                      This argument is a function that will be called with
  *                      any data received.
  */
-void netrecv(void (*handler)(int sockfd, char * data[], int datalen));
+void netrecv(int sockfd, char * data[], int datalen);
 
 #endif	/* NET_H */

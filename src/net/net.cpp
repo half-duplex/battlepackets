@@ -35,6 +35,7 @@
 #include <sys/socket.h>
 #include <string.h> //for memset
 #include <cstdlib> //for exit 
+#include <unistd.h> // for fork
 #endif
 
 #define DEBUG
@@ -45,6 +46,29 @@ using namespace std;
 
 
 // common stuff
+enum pktType {
+    AUTH,
+    MOVE,
+    UPDATE1,
+    UPDATE2
+};
+
+struct pktHeader {
+    short type;
+    unsigned long clientID;
+    unsigned long headLength;
+};
+
+struct packet {
+    pktHeader header; //10 bytes
+    char data[100]; //100 bytes
+};
+
+union datapacket {
+    packet pkt;
+    char pktArr[110];
+};
+
 // iostream is not allowed. no cout or cin here.
 
 int netconnect(char * addr[], int addrlen, int port){ //create a socket for the client to talk to the server 
@@ -70,8 +94,37 @@ int netconnect(char * addr[], int addrlen, int port){ //create a socket for the 
 
 int netlisten(int port) {
     
+   
     int serversocket; // socket to be used to wait for connections from the client
-    struct sockaddr_in server;
+    struct sockaddr_in server; //for server info
+    struct sockaddr_in client; //for client info
+    socklen_t socksize = sizeof(struct sockaddr_in); //to be used in function call later
+    pid_t child;
+    
+    /*set the server info*/
+    memset(&server, 0, sizeof(server));
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons(port); 
+    
+    /*have to add error checking for the functions below*/
+    serversocket = socket(AF_INET, SOCK_STREAM, 0); //create a TCP socket on the server
+    
+    bind(serversocket, (struct sockaddr *)& server, sizeof(struct sockaddr)); //bind a socket to the 
+    
+    listen(serversocket, 50); //50 = number of allowed connections 
+    
+    
+    
+    while(1) { //wait for auth info to be sent from the client
+        
+        int authSocket = accept(serversocket, (struct sockaddr *)&client, &socksize); //blocked until data is sent
+        
+        
+    }
+    
+    
+    
     
     
 }
@@ -79,6 +132,16 @@ bool netsend(int sockfd, char * data[], int datalen) {
     ;
 }
 
-void netrecv(void (*handler)(int sockfd, char * data[], int datalen)) {
-    ;
+
+
+void netrecv(int sockfd, char * data[], int datalen) {
+    
+    datapacket pkt;
+    
+    recv(sockfd, data, datalen, 0); //this 0 may have to change 
+    
+    if (pkt.pkt.header.type == AUTH) 
+
 }
+
+

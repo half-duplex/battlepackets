@@ -53,13 +53,14 @@ int main(int argc, char** argv) {
     // ...
 
     // spawn net listener
-    boost::thread netin(netrecv, nethandler);
+    //boost::thread netin(netrecv, nethandler);
+  
 
     // gtkmm main loop
     Gtk::Main::run(window);
 
     // die
-    netin.interrupt();
+    //netin.interrupt();
     return 0;
 }
 
