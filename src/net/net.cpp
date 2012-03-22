@@ -2,7 +2,7 @@
  * net.cpp
  * Battlepackets
  * Norwich University IS460 Spring 2012
- * Battlepackets Group - battlepackets@groups.google.com
+ * Battlepackets Group - battlepackets@googlegroups.com
 
     Copyright 2012 Battlepackets Group
 
@@ -31,21 +31,21 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <string.h> //for memset
+#include <cstdlib> //for exit 
 #endif
 // common stuff
 // iostream is not allowed. no cout or cin here.
-
-
-
 
 int netconnect(char * addr[], int addrlen, int port) {
     ;
 }
 
 int netlisten(int port) {
-    ;
+   ;
 }
-
 bool netsend(int sockfd, char * data[], int datalen) {
     ;
 }

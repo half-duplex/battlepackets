@@ -2,7 +2,7 @@
  * server.cpp
  * Battlepackets
  * Norwich University IS460 Spring 2012
- * Battlepackets Group - battlepackets@groups.google.com
+ * Battlepackets Group - battlepackets@googlegroups.com
 
     Copyright 2012 Battlepackets Group
 
@@ -46,7 +46,11 @@ int main(int argc, char** argv) {
         cout << argv[i] << endl;
     }
 #endif
-    // Set up shared stuff
+    
+    
+    
+    
+   // Set up shared stuff
 
     // Launch first net listener
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
