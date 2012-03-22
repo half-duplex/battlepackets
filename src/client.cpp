@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
     // Create structures
     Gtk::Main kit(argc, argv);
     // ...
-
+    
     // Create GTK gui
     Gtk::Window window;
     window.resize(400,400);
