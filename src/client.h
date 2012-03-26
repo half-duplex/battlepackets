@@ -45,7 +45,7 @@ protected:
     void tile_clicked();
 
     // Child widgets
-    Gtk::Button m_button;
+    Gtk::Button m_button[BOARDSIZE][BOARDSIZE];
 };
 
 #endif	/* SERVER_H */

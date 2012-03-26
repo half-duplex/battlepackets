@@ -22,6 +22,7 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "common.h"
 #include "client.h"
 #include "net/net.h"
 #include <iostream>
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
 
     // /usr/share/icons/gnome/32x32/actions/add.png
 
-    Gtk::Button* m_Button = new Gtk::Button("_Something", true);
+    //Gtk::Button* m_Button = new Gtk::Button("_Something", true);
 
     // ...
 
@@ -66,13 +67,18 @@ BPwin::BPwin() {
     set_border_width(10);
     resize(500, 500);
 
-    Gtk::Image *m_image = new Gtk::Image("gtk-paste.png");
-    m_button->set_image_position(Gtk::POS_LEFT);
-    m_button->set_image(*m_image);
-    m_image->show();
-    m_button.signal_clicked().connect(sigc::mem_fun(*this, &BPwin::tile_clicked)); // attach event to button
+    Gtk::Image * m_image[BOARDSIZE][BOARDSIZE];
+    for (int i = 0; i < BOARDSIZE; i++) {
+        for (int j = 0; j < BOARDSIZE; j++) {
+            m_image[i][j] = new Gtk::Image("/usr/share/icons/gnome/32x32/gtk-paste.png");
+            m_button[i][j].set_image_position(Gtk::POS_LEFT);
+            m_button[i][j].set_image(*m_image[i][j]);
+            m_image[i][j]->show();
+            m_button[i][j].signal_clicked().connect(sigc::mem_fun(*this, &BPwin::tile_clicked)); // attach event to button
 
-    add(m_button);
+            add(m_button[i][j]);
+        }
+    }
 
     show_all_children();
 }
