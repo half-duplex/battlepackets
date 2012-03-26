@@ -52,6 +52,7 @@
               <pElem>/usr/include/pangomm-1.4</pElem>
               <pElem>/usr/include/gtk-unix-print-2.0</pElem>
               <pElem>/usr/include/atkmm-1.6</pElem>
+              <pElem>/usr/include/gio-unix-2.0/</pElem>
               <pElem>/usr/include/cairo</pElem>
               <pElem>/usr/lib/gtk-2.0/include</pElem>
               <pElem>/usr/include/pixman-1</pElem>
