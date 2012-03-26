@@ -46,39 +46,42 @@ using namespace std;
 
 
 // common stuff
-enum pktType {
+enum pktType { //set = to blah int 
     AUTH,
     MOVE,
     UPDATE1,
     UPDATE2
 };
 
-struct pktHeader {
+/*struct pktHeader {
     short type;
-    unsigned long clientID;
-    unsigned long gameID;
+    unsigned long clientID; //hs
+    unsigned long gameID; //hs
     unsigned long headLength; //why 100?
-};
+};*/
 
-struct packet {
-    pktHeader header; //14 bytes
+
+union joinpacket {
+    struct packet {
+    char pktType; //1 bytes
+    int gameID;
     char data[100]; //100 bytes
-};
-
-union datapacket {
-    packet pkt;
+} pkt;
     char pktArr[114];
 };
+
+//chat
+
+//move 
 
  
   
 // iostream is not allowed. no cout or cin here.
 
 bool netsend(int sockfd, char * data[], int datalen) {
-     datapacket dpkt;
-     dpkt.pkt.header.headLength = 100;
+ 
   
-    send(sockfd, data, sizeof(pktHeader) + dpkt.pkt.header.headLength, 0);
+    send(sockfd, data, sizeof(pktHeader) + datalen, 0);
 }
 
 
@@ -91,6 +94,10 @@ void netrecv(int sockfd, char * data[], int datalen) {
     recv(sockfd, data, datalen, 0); //this 0 may have to change 
     
     if (dpkt.pkt.header.type == AUTH) { //pull out UID, GID and see if they match up
+        //this should call a function to lookup the user and the game 
+        if (dpkt.pkt.header.clientID == 77 && dpkt.pkt.header.gameID == 33) {
+           
+        }
         
         
     }
