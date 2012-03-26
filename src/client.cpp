@@ -57,8 +57,9 @@ int main(int argc, char** argv) {
 
     // die
     netin.interrupt();
-    return 0;
-}
+    return 0; 
+    }
+
 
 BPwin::BPwin() {
     //m_button.add_pixlabel("/usr/share/icons/gnome/32x32/actions/add.png", "");
