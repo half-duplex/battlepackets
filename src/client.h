@@ -25,7 +25,16 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
-#include <gtkmm.h>
+#include <gtkmm/box.h>
+#include <gtkmm/main.h>
+#include <gtkmm/image.h>
+#include <gtkmm/button.h>
+#include <gtkmm/window.h>
+
+#define M_IMG_EMPTY "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_EMPTY "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_EMPTY "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_EMPTY "/usr/share/icons/gnome/32x32/actions/add.png"
 
 /* nethandler
  * called by net/netrecv when it gets data
@@ -44,7 +53,19 @@ protected:
     // Signal handlers
     void tile_clicked();
 
-    // Child widgets
+    // frames
+    Gtk::VBox m_box_everything;
+    Gtk::HBox m_box_board;
+    Gtk::VBox m_box_tile_column[BOARDSIZE];
+    Gtk::VBox m_box_chat;
+
+    // tile types
+    Gtk::Image *m_img_hit;
+    Gtk::Image *m_img_empty;
+    Gtk::Image *m_img_ship;
+    Gtk::Image *m_img_miss;
+
+    // buttons
     Gtk::Button m_button[BOARDSIZE][BOARDSIZE];
 };
 

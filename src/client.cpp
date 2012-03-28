@@ -43,10 +43,6 @@ int main(int argc, char** argv) {
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
 
-    // /usr/share/icons/gnome/32x32/actions/add.png
-
-    //Gtk::Button* m_Button = new Gtk::Button("_Something", true);
-
     // ...
 
     // spawn net listener
@@ -57,27 +53,31 @@ int main(int argc, char** argv) {
 
     // die
     netin.interrupt();
-    return 0; 
-    }
-
+    return 0;
+}
 
 BPwin::BPwin() {
-    //m_button.add_pixlabel("/usr/share/icons/gnome/32x32/actions/add.png", "");
-
     set_title("Battlepackets!");
     set_border_width(10);
     resize(500, 500);
+    add(m_box_everything);
+    m_box_everything.pack_start(m_box_board);
+    m_box_everything.pack_start(m_box_chat);
 
     Gtk::Image * m_image[BOARDSIZE][BOARDSIZE];
-    for (int i = 0; i < BOARDSIZE; i++) {
-        for (int j = 0; j < BOARDSIZE; j++) {
-            m_image[i][j] = new Gtk::Image("/usr/share/icons/gnome/32x32/gtk-paste.png");
+    for (int j = 0; j < BOARDSIZE; j++) { // for each column
+        m_box_board.pack_start(m_box_tile_column[j]);
+        for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
+            // Set up the tile
+            m_image[i][j] = new Gtk::Image(M_IMG_EMPTY);
+            m_image[i][j]->set_padding(0,0); // doesn't appear to do anything -.-
             m_button[i][j].set_image_position(Gtk::POS_LEFT);
             m_button[i][j].set_image(*m_image[i][j]);
-            m_image[i][j]->show();
+            m_button[i][j].set_border_width(0);
+            //m_image[i][j]->show();
             m_button[i][j].signal_clicked().connect(sigc::mem_fun(*this, &BPwin::tile_clicked)); // attach event to button
 
-            add(m_button[i][j]);
+            m_box_tile_column[j].pack_start(m_button[i][j]);
         }
     }
 
@@ -88,7 +88,7 @@ BPwin::~BPwin() {
 }
 
 void BPwin::tile_clicked() {
-    std::cout << "Clicked!\n";
+    std::cout << "Clicked: " << "\n";
 }
 
 void nethandler(int sockfd, char * data[], int datalen) {
