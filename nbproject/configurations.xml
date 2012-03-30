@@ -6,6 +6,7 @@
         <df name="net">
           <in>net.cpp</in>
           <in>net.h</in>
+          <in>packets.pb.h</in>
         </df>
         <in>client.cpp</in>
         <in>client.h</in>

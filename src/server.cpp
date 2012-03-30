@@ -49,6 +49,9 @@ int main(int argc, char** argv) {
     // Set up shared stuff
 
     // Launch first net listener
+    network n;
+    
+    n.netlisten(777);
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
 
     // Do something so that it doesn't quit until the last thread is gone?

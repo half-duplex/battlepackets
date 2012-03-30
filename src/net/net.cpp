@@ -46,62 +46,25 @@ using namespace std;
 
 
 // common stuff
-enum pktType { //set = to blah int 
-    AUTH,
-    MOVE,
-    UPDATE1,
-    UPDATE2
-};
 
-/*struct pktHeader {
-    short type;
-    unsigned long clientID; //hs
-    unsigned long gameID; //hs
-    unsigned long headLength; //why 100?
-};*/
-
-
-union joinpacket {
-    struct packet {
-    char pktType; //1 bytes
-    int gameID;
-    char data[100]; //100 bytes
-} pkt;
-    char pktArr[114];
-};
-
-//chat
-
-//move 
-
- 
   
 // iostream is not allowed. no cout or cin here.
 
 bool netsend(int sockfd, char * data[], int datalen) {
  
   
-    send(sockfd, data, sizeof(pktHeader) + datalen, 0);
+    send(sockfd, data, datalen, 0);
 }
 
 
 
 void netrecv(int sockfd, char * data[], int datalen) {
-  
-     datapacket dpkt;
+ 
    
   
     recv(sockfd, data, datalen, 0); //this 0 may have to change 
     
-    if (dpkt.pkt.header.type == AUTH) { //pull out UID, GID and see if they match up
-        //this should call a function to lookup the user and the game 
-        if (dpkt.pkt.header.clientID == 77 && dpkt.pkt.header.gameID == 33) {
-           
-        }
-        
-        
-    }
-
+  
 }
 int netconnect(char * addr[], int addrlen, int port){ //create a socket for the client to talk to the server 
     
@@ -125,9 +88,7 @@ int netconnect(char * addr[], int addrlen, int port){ //create a socket for the 
 }
 
 int netlisten(int port) {
-    
-     datapacket dpkt;
-     dpkt.pkt.header.headLength = 100;
+  
    
     int serversocket; // socket to be used to wait for connections from the client
     struct sockaddr_in server; //for server info
@@ -156,7 +117,8 @@ int netlisten(int port) {
         if ((child = fork()) == 0) {
             close(serversocket);
             //handle the connection (authSocket) with 
-            netrecv(authSocket, dpkt.pkt.data, dpkt.pkt.header.headLength);
+            char *buf[20];
+            netrecv(authSocket, buf, sizeof(buf));
             close(authSocket);
             exit(0);
         }
