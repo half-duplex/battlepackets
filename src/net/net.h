@@ -29,36 +29,19 @@ class network {
     
 public:    
     
-    
-    
-enum pktType { //set = to blah int 
-    AUTH,
-    MOVE,
-    UPDATE1,
-    UPDATE2
-};
-
-/*struct pktHeader {
-    short type;
-    unsigned long clientID; //hs
-    unsigned long gameID; //hs
-    unsigned long headLength; //why 100?
-};*/
-
-
-union joinpacket {
-    struct packet {
-    char pktType; //1 bytes
-    int gameID;
-    char data[10]; //100 bytes
-} pkt;
-    char pktArr[14];
-};
-
-//chat
+//handshake 
+    struct handshake {
+        char pktID;
+        char protocolVersion;
+        char boardsize;
+        
+    };
 
 //move 
 
+//board refresh     
+    
+//chat
  
 /* netconnect (for client)
  * Creates a connection out to a server

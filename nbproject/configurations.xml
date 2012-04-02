@@ -60,8 +60,8 @@
               <pElem>/usr/include/gdkmm-2.4</pElem>
               <pElem>/usr/include/glib-2.0</pElem>
               <pElem>.</pElem>
-              <pElem>/usr/lib/pangomm-1.4/include</pElem>
               <pElem>/usr/lib/glibmm-2.4/include</pElem>
+              <pElem>/usr/lib/pangomm-1.4/include</pElem>
               <pElem>/usr/include/glibmm-2.4</pElem>
               <pElem>/usr/lib/gdkmm-2.4/include</pElem>
               <pElem>/usr/include/pango-1.0</pElem>
@@ -74,21 +74,21 @@
       <folder path="battlepackets/src/net">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </folder>
       <item path="src/client.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0</pElem>
+            <pElem>/usr/include/gio-unix-2.0/</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>

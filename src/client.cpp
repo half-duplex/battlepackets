@@ -38,10 +38,17 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
+
+void nethandler(int sockfd, char * data[], int datalen) {
+    // grab first char (packet id)
+    // switch(packetID){etc}
+    // do stuff like update the gui
+}
+
 int main(int argc, char** argv) {
     // Create structures
     
-  
+    network n;
     Gtk::Main kit(argc, argv);
     // ...
 
@@ -53,19 +60,14 @@ int main(int argc, char** argv) {
     // ...
 
     // spawn net listener
-    //boost::thread netin(netrecv, nethandler);
+    boost::thread netin(n.netrecv, nethandler);
   
 
     // gtkmm main loop
     Gtk::Main::run(window);
 
     // die
-    //netin.interrupt();
+    netin.interrupt();
     return 0;
 }
 
-void nethandler(int sockfd, char * data[], int datalen) {
-    // grab first char (packet id)
-    // switch(packetID){etc}
-    // do stuff like update the gui
-}

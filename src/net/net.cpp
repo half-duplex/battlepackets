@@ -90,7 +90,7 @@ int netconnect(char * addr[], int addrlen, int port){ //create a socket for the 
 int netlisten(int port) {
   
    
-    int serversocket; // socket to be used to wait for connections from the client
+    int serversocket, listensocket; // socket to be used to wait for connections from the client
     struct sockaddr_in server; //for server info
     struct sockaddr_in client; //for client info
     socklen_t socksize = sizeof(struct sockaddr_in); //to be used in function call later
@@ -107,24 +107,13 @@ int netlisten(int port) {
     
     bind(serversocket, (struct sockaddr *)& server, sizeof(struct sockaddr)); //bind a socket to the 
     
-    listen(serversocket, 50); //50 = number of allowed connections 
+    listensocket = listen(serversocket, 50); //50 = number of allowed connections 
+    
+    
+    return listensocket;
     
     
     
-    while(1) { //wait for auth info to be sent from the client
-        
-        int authSocket = accept(serversocket, (struct sockaddr *)&client, &socksize); //blocked until data is sent
-        if ((child = fork()) == 0) {
-            close(serversocket);
-            //handle the connection (authSocket) with 
-            char *buf[20];
-            netrecv(authSocket, buf, sizeof(buf));
-            close(authSocket);
-            exit(0);
-        }
-        close(serversocket);
-         
-   }
     
     
     
