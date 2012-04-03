@@ -1,5 +1,5 @@
 /**
- * server.cpp
+ * common.h
  * Battlepackets
  * Norwich University IS460 Spring 2012
  * Battlepackets Group - battlepackets@googlegroups.com
@@ -22,45 +22,10 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include <boost/thread.hpp>
-#include "server.h"
-#include "net/net.h"
-#define DEBUG
+#ifndef COMMON_H
+#define	COMMON_H
 
-using namespace std;
+#define BOARDSIZE 16
 
-/*
- * Main server function
- * Arguments:
- *      int argc
- *              the number of arguments on the command line
- *      int argv
- *              the text of the arguments
+#endif	/* COMMON_H */
 
- */
-int main(int argc, char** argv) {
-#ifdef DEBUG
-    cout << "Arguments:\n";
-    for (int i = 0; i < argc; i++) {
-        cout << argv[i] << endl;
-    }
-#endif
-    
-    
-    
-    
-   // Set up shared stuff
-
-    // Launch first net listener
-
-
-    //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
-    
-
-
-    // Do something so that it doesn't quit until the last thread is gone?
-    // semaphore, maybe?
-
-    return 0;
-}

@@ -25,6 +25,20 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
+#include <gtkmm/box.h>
+#include <gtkmm/main.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/image.h>
+#include <gtkmm/button.h>
+#include <gtkmm/window.h>
+#include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
+
+#define M_IMG_EMPTY "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_SHIP "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_HIT "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_MISS "/usr/share/icons/gnome/32x32/actions/add.png"
+
 /* nethandler
  * called by net/netrecv when it gets data
  * arguments:   int sockfd - the socket data was recieved on
@@ -33,5 +47,37 @@
  */
 //void nethandler(int sockfd, char * data[], int datalen); 
 //not going to need this because the netrecv will handle the data and call the appropraite function
+
+class BPwin : public Gtk::Window {
+public:
+    BPwin();
+    virtual ~BPwin();
+
+protected:
+    // Signal handlers
+    void tile_clicked(int btn_num);
+    bool chat_key_press(GdkEventKey* k);
+
+    // frames
+    Gtk::VBox m_box_everything;
+    Gtk::HBox m_box_board;
+    Gtk::VBox m_box_tile_column[BOARDSIZE];
+    Gtk::VBox m_box_chat;
+
+    // tile types
+    Gtk::Image *m_img_hit;
+    Gtk::Image *m_img_empty;
+    Gtk::Image *m_img_ship;
+    Gtk::Image *m_img_miss;
+
+    Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
+    Gtk::Entry m_entry;
+    Gtk::ScrolledWindow m_log_scroll;
+
+    // helpful for buffers and textview:
+    // http://inti.sourceforge.net/tutorial/libinti/textwidget.html
+    Gtk::TextView m_log;
+    Glib::RefPtr<Gtk::TextBuffer> log;
+};
 
 #endif	/* SERVER_H */
