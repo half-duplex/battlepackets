@@ -1,5 +1,5 @@
 /**
- * common.h
+ * common.cpp
  * Battlepackets
  * Norwich University IS460 Spring 2012
  * Battlepackets Group - battlepackets@googlegroups.com
@@ -22,17 +22,13 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMON_H
-#define	COMMON_H
+#include "common.h"
 
-#define BOARDSIZE 10
+location::location() {
 
-struct location {
-    char x;
-    char y;
-    location();
-    location(char x, char y);
-};
+}
 
-#endif	/* COMMON_H */
-
+location::location(char ix, char iy) {
+    x = ix;
+    y = iy;
+}

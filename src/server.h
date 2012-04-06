@@ -25,6 +25,20 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
+struct t_player{
+public:
+    t_player();
+    ~t_player();
+};
 
+struct t_game{
+public:
+    t_game();
+    ~t_game();
+    char addplayer(t_player player); // returns
+private:
+    t_player players[2];
+
+};
 
 #endif	/* SERVER_H */

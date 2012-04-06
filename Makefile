@@ -8,15 +8,15 @@ test: all
 	server 12345 &
 	client localhost 12345
 
-server: src/server.o src/net/net.o Makefile
-	${CC} ${CCFLAGS} -o server src/server.o src/net/net.o
+server: src/server.o src/net/net.o src/common.o Makefile
+	${CC} ${CCFLAGS} -o server src/server.o src/net/net.o src/common.o
 src/server.o: Makefile
 	${CC} ${CCFLAGS} -o src/server.o -c src/server.cpp
 cleanserver:
 	rm -f server src/server.o
 
-client: src/client.o src/net/net.o Makefile
-	${CC} ${CCFLAGS} -o client src/client.o src/net/net.o
+client: src/client.o src/net/net.o src/common.o Makefile
+	${CC} ${CCFLAGS} -o client src/client.o src/net/net.o src/common.o
 src/client.o: Makefile
 	${CC} ${CCFLAGS} -o src/client.o -c src/client.cpp
 cleanclient:
@@ -24,6 +24,8 @@ cleanclient:
 
 
 cleanlibs:
-	rm -f src/*/*.o
+	rm -f src/*/*.o src/common.o
 src/net/net.o: src/net/net.cpp Makefile
 	${CC} ${CCFLAGS} -o src/net/net.o -c src/net/net.cpp
+src/common.o: src/net/net.cpp Makefile
+	${CC} ${CCFLAGS} -o src/common.o -c src/common.cpp

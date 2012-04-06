@@ -25,6 +25,7 @@
 #include <iostream>
 #include <boost/thread.hpp>
 #include "server.h"
+#include "common.h"
 #include "net/net.h"
 #define DEBUG
 
@@ -37,7 +38,6 @@ using namespace std;
  *              the number of arguments on the command line
  *      int argv
  *              the text of the arguments
-
  */
 int main(int argc, char** argv) {
 #ifdef DEBUG
@@ -46,10 +46,7 @@ int main(int argc, char** argv) {
         cout << argv[i] << endl;
     }
 #endif
-    
-    
-    
-    
+
    // Set up shared stuff
 
     // Launch first net listener

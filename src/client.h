@@ -32,9 +32,10 @@
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/menubar.h>
 #include <gtkmm/scrolledwindow.h>
 
-#define M_IMG_EMPTY "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_EMPTY "/usr/share/icons/gnome/16x16/actions/add.png"
 #define M_IMG_SHIP "/usr/share/icons/gnome/32x32/actions/add.png"
 #define M_IMG_HIT "/usr/share/icons/gnome/32x32/actions/add.png"
 #define M_IMG_MISS "/usr/share/icons/gnome/32x32/actions/add.png"
@@ -53,14 +54,33 @@ public:
     virtual ~BPwin();
 
 protected:
+    // Variables
+
+    typedef enum {
+        GM_START = 0, // just started the program
+        GM_CONNECT = 1, // connected, waiting for initial board
+        GM_SHIP1 = 10, // placing ship 1: submarine: 1 piece
+        GM_SHIP2 = 11, // placing ship 2: submarine: 1 piece
+        GM_SHIP3 = 12, // placing ship 3: destroyer: 2 pieces
+        GM_SHIP4 = 13, // placing ship 4: destroyer: 2 pieces
+        GM_SHIP5 = 14, // placing ship 5: cruiser: 3 pieces
+        GM_SHIP6 = 15, // placing ship 6: battleship: 4 pieces
+        GM_SHIP7 = 16, // placing ship 7: carrier: 5 pieces
+        GM_PLAYTIME = 255
+    } t_gamemode;
+    t_gamemode gamemode;
+    location placing; // for the first click for placing ships
+
     // Signal handlers
     void tile_clicked(int btn_num);
     bool chat_key_press(GdkEventKey* k);
 
     // frames
     Gtk::VBox m_box_everything;
-    Gtk::HBox m_box_board;
-    Gtk::VBox m_box_tile_column[BOARDSIZE];
+    Gtk::HBox m_box_boards;
+    Gtk::HBox m_box_board_me;
+    Gtk::HBox m_box_board_enemy;
+    Gtk::VBox m_box_tile_column[2][BOARDSIZE];
     Gtk::VBox m_box_chat;
 
     // tile types
@@ -69,14 +89,23 @@ protected:
     Gtk::Image *m_img_ship;
     Gtk::Image *m_img_miss;
 
-    Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
+    Gtk::Button m_button[2][BOARDSIZE][BOARDSIZE]; // buttons
     Gtk::Entry m_entry;
     Gtk::ScrolledWindow m_log_scroll;
+
+    // Menus
+    Gtk::MenuBar m_menu_bar;
+    Gtk::Menu m_menu_game;
+    Gtk::MenuItem m_menu_game_connect;
+    Gtk::MenuItem m_menu_game_refresh;
+    Gtk::Menu m_menu_help;
+    Gtk::MenuItem m_menu_help_manual;
+    Gtk::MenuItem m_menu_help_about;
 
     // helpful for buffers and textview:
     // http://inti.sourceforge.net/tutorial/libinti/textwidget.html
     Gtk::TextView m_log;
-    Glib::RefPtr<Gtk::TextBuffer> log;
+    Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 };
 
 #endif	/* SERVER_H */

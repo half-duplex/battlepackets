@@ -28,6 +28,8 @@
 #include <iostream>
 #include <boost/thread.hpp>
 
+#define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
+
 using namespace std;
 
 /*
@@ -43,8 +45,6 @@ int main(int argc, char** argv) {
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
 
-    // ...
-
     // spawn net listener
     boost::thread netin(netrecv, nethandler);
 
@@ -57,11 +57,17 @@ int main(int argc, char** argv) {
 }
 
 BPwin::BPwin() {
+    gamemode = GM_START;
+    placing.x = 255;
+
     set_title("Battlepackets!");
     set_border_width(10);
-    resize(500, 500);
+    resize(1, 1);
     add(m_box_everything);
-    m_box_everything.pack_start(m_box_board);
+    m_box_everything.pack_start(m_menu_bar);
+    m_box_everything.pack_start(m_box_boards);
+    m_box_boards.pack_start(m_box_board_me);
+    m_box_boards.pack_start(m_box_board_enemy);
     m_box_everything.pack_start(m_box_chat);
     m_box_chat.pack_start(m_entry);
     m_box_chat.pack_start(m_log_scroll);
@@ -69,27 +75,30 @@ BPwin::BPwin() {
     m_log.set_size_request(-1, 100);
     m_log.set_editable(false);
     m_log.set_cursor_visible(false);
-    log = m_log.get_buffer();
+    m_log_buf = m_log.get_buffer();
 
-    Gtk::Image * m_image[BOARDSIZE][BOARDSIZE];
+    // Menus
+    m_menu_bar.add(m_menu_game);
+
+    Gtk::Image * m_image[2][BOARDSIZE][BOARDSIZE];
     for (int j = 0; j < BOARDSIZE; j++) { // for each column
-        m_box_board.pack_start(m_box_tile_column[j]);
+        m_box_board_me.pack_start(m_box_tile_column[0][j]);
+        m_box_board_enemy.pack_start(m_box_tile_column[1][j]);
         for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
             // Set up the tile
-            m_image[i][j] = new Gtk::Image(M_IMG_EMPTY);
-            m_image[i][j]->set_padding(0, 0); // doesn't appear to do anything
-            m_button[i][j].set_image_position(Gtk::POS_LEFT);
-            m_button[i][j].set_image(*m_image[i][j]);
-            m_button[i][j].set_border_width(0);
-            //m_image[i][j]->show();
-            m_button[i][j].signal_clicked().connect(
+            m_image[0][i][j] = new Gtk::Image(M_IMG_EMPTY);
+            m_image[0][i][j]->set_padding(0, 0);
+            m_button[0][i][j].set_image_position(Gtk::POS_LEFT);
+            m_button[0][i][j].set_image(*m_image[0][i][j]);
+            m_button[0][i][j].set_border_width(0);
+            m_button[0][i][j].signal_clicked().connect(
                     sigc::bind<int>(
                     sigc::mem_fun(*this, &BPwin::tile_clicked)
                     , i * BOARDSIZE + j));
             m_entry.signal_key_press_event().connect(
                     sigc::mem_fun(*this, &BPwin::chat_key_press)
                     , false);
-            m_box_tile_column[j].pack_start(m_button[i][j]);
+            m_box_tile_column[0][j].pack_start(m_button[0][i][j]);
         }
     }
 
@@ -101,9 +110,56 @@ BPwin::~BPwin() {
 }
 
 void BPwin::tile_clicked(int btn_num) {
-    std::cout << "Clicked: " << (btn_num / BOARDSIZE) << "," << (btn_num % BOARDSIZE) << "\n";
+    location loc((btn_num / BOARDSIZE), (btn_num % BOARDSIZE));
+    std::cout << "Clicked: " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
+    switch (gamemode) {
+        case GM_START: // not connected, in a game, etc.: just started the app
+            log("You need to connect to a server first!\n");
+            break;
+        case GM_CONNECT: // connected, no initial board received
+            log("Server has not sent game info!\n");
+            break;
+        case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
+            log("You placed a submarine!\n");
+#warning Change tile
+#warning Send to server
+            gamemode = GM_SHIP2;
+            break;
+        case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
+            log("You placed a submarine!\n");
+#warning Do stuff
+            break;
+        case GM_SHIP3: // placing ship: see client.h typedef enum t_gamemode
+
+            log("You placed a destroyer!\n");
+#warning Do stuff
+            break;
+        case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
+            log("Server has not sent game info!\n");
+#warning Do stuff
+            break;
+        case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
+            log("Server has not sent game info!\n");
+#warning Do stuff
+            break;
+        case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
+            log("Server has not sent game info!\n");
+#warning Do stuff
+            break;
+        case GM_SHIP7: // placing ship: see client.h typedef enum t_gamemode
+            log("Server has not sent game info!\n");
+#warning Do stuff
+            break;
+        case GM_PLAYTIME: // ingame
+            log("Server has not sent game info!\n");
+#warning Do stuff
 #warning TODO: Change board based on clicked tile
 #warning TODO: Send change, if valid, to server
+            break;
+        default: // should never get here
+            log("What just happened?!\n");
+            break;
+    }
 }
 
 /* Called when a key is pressed in the chat input box
@@ -113,11 +169,13 @@ void BPwin::tile_clicked(int btn_num) {
 bool BPwin::chat_key_press(GdkEventKey* k) {
     //std::cout << "chat box key press: " << k->keyval << "=" << (char)k->keyval << "\n";
     if (k->keyval == 65293) { // return
-        if(m_entry.get_text_length()<1){return true;}
+        if (m_entry.get_text_length() < 1) {
+            return true;
+        }
         //log
-        log->insert(log->get_iter_at_offset(0), "\n");
-        log->insert(log->get_iter_at_offset(0), m_entry.get_text());
-        log->insert(log->get_iter_at_offset(0), "Me: ");
+        log("\n");
+        log(m_entry.get_text());
+        log("Me: ");
         //send
 #warning TODO: Send chat to server
         std::cout << "Send chat: " << m_entry.get_text() << std::endl;
