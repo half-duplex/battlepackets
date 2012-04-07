@@ -66,8 +66,10 @@ BPwin::BPwin() {
     add(m_box_everything);
     m_box_everything.pack_start(m_menu_bar);
     m_box_everything.pack_start(m_box_boards);
-    m_box_boards.pack_start(m_box_board_me);
-    m_box_boards.pack_start(m_box_board_enemy);
+    boards[0].init(*this, 0);
+    boards[1].init(*this, 1);
+    m_box_boards.pack_start(boards[0].m_box_board);
+    m_box_boards.pack_start(boards[1].m_box_board);
     m_box_everything.pack_start(m_box_chat);
     m_box_chat.pack_start(m_entry);
     m_box_chat.pack_start(m_log_scroll);
@@ -76,34 +78,64 @@ BPwin::BPwin() {
     m_log.set_editable(false);
     m_log.set_cursor_visible(false);
     m_log_buf = m_log.get_buffer();
-
+    m_entry.signal_key_press_event().connect(
+            sigc::mem_fun(*this, &BPwin::chat_key_press)
+            , false);
     // Menus
     m_menu_bar.add(m_menu_game);
 
-    Gtk::Image * m_image[2][BOARDSIZE][BOARDSIZE];
-    for (int j = 0; j < BOARDSIZE; j++) { // for each column
-        m_box_board_me.pack_start(m_box_tile_column[0][j]);
-        m_box_board_enemy.pack_start(m_box_tile_column[1][j]);
-        for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
-            // Set up the tile
-            m_image[0][i][j] = new Gtk::Image(M_IMG_EMPTY);
-            m_image[0][i][j]->set_padding(0, 0);
-            m_button[0][i][j].set_image_position(Gtk::POS_LEFT);
-            m_button[0][i][j].set_image(*m_image[0][i][j]);
-            m_button[0][i][j].set_border_width(0);
-            m_button[0][i][j].signal_clicked().connect(
-                    sigc::bind<int>(
-                    sigc::mem_fun(*this, &BPwin::tile_clicked)
-                    , i * BOARDSIZE + j));
-            m_entry.signal_key_press_event().connect(
-                    sigc::mem_fun(*this, &BPwin::chat_key_press)
-                    , false);
-            m_box_tile_column[0][j].pack_start(m_button[0][i][j]);
-        }
-    }
 
 
     show_all_children();
+}
+
+BPwin::board::board() {
+    for (int j = 0; j < BOARDSIZE; j++) { // for each column
+        m_box_board.pack_start(m_box_tile_column[j]);
+        for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
+            // Set up the tile
+            m_button[i][j].set_image_position(Gtk::POS_LEFT);
+            m_button[i][j].set_border_width(0);
+        }
+    }
+}
+
+void BPwin::board::init(BPwin & that, char which) { // which: 0=mine,1=enemy
+    if (which > 1) {
+        cout << "What did you break -.-\n";
+        return;
+    }
+
+    int i, j;
+    for (j = 0; j < BOARDSIZE; j++) { // for each column
+        m_box_board.pack_start(m_box_tile_column[j]); // FIXME
+        for (i = 0; i < BOARDSIZE; i++) { // for each in a column
+            // create images
+            m_img_set[0][i][j].set(M_IMG_EMPTY);
+            m_img_set[0][i][j].set_padding(0, 0);
+            m_img_set[1][i][j].set(M_IMG_HIT);
+            m_img_set[1][i][j].set_padding(0, 0);
+            if (!which) {
+                m_img_set[2][i][j].set(M_IMG_SHIP);
+                m_img_set[2][i][j].set_padding(0, 0);
+            } else {
+                m_img_set[2][i][j].set(M_IMG_MISS);
+                m_img_set[2][i][j].set_padding(0, 0);
+            }
+
+            // assign image
+            m_button[i][j].set_image_position(Gtk::POS_LEFT);
+            m_button[i][j].set_image(m_img_set[0][i][j]);
+            m_button[i][j].set_border_width(0);
+            m_box_tile_column[j].pack_start(m_button[i][j]);
+            if (which == 0) { // only my board needs signals
+                m_button[i][j].signal_clicked().connect(
+                        sigc::bind<int>(
+                        sigc::mem_fun(that, &BPwin::tile_clicked)
+                        , i * BOARDSIZE + j));
+            }
+        }
+    }
 }
 
 BPwin::~BPwin() {
