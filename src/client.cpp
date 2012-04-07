@@ -82,7 +82,7 @@ BPwin::BPwin() {
             sigc::mem_fun(*this, &BPwin::chat_key_press)
             , false);
     // Menus
-    m_menu_bar.add(m_menu_game);
+//    m_menu_bar.add(m_menu_game); // broken atm
 
 
 
@@ -108,7 +108,6 @@ void BPwin::board::init(BPwin & that, char which) { // which: 0=mine,1=enemy
 
     int i, j;
     for (j = 0; j < BOARDSIZE; j++) { // for each column
-        m_box_board.pack_start(m_box_tile_column[j]); // FIXME
         for (i = 0; i < BOARDSIZE; i++) { // for each in a column
             // create images
             m_img_set[0][i][j].set(M_IMG_EMPTY);
