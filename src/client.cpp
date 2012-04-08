@@ -29,6 +29,8 @@
 #include <boost/thread.hpp>
 
 #define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
+int mj[BOARDSIZE][BOARDSIZE];
+
 
 using namespace std;
 
@@ -59,6 +61,10 @@ int main(int argc, char** argv) {
 BPwin::BPwin() {
     gamemode = GM_START;
     placing.x = 255;
+    
+
+
+    
 
     set_title("Battlepackets!");
     set_border_width(10);
@@ -86,6 +92,7 @@ BPwin::BPwin() {
         m_box_board_enemy.pack_start(m_box_tile_column[1][j]);
         for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
             // Set up the tile
+            mj[i][j]=0;
             m_image[0][i][j] = new Gtk::Image(M_IMG_EMPTY);
             m_image[0][i][j]->set_padding(0, 0);
             m_button[0][i][j].set_image_position(Gtk::POS_LEFT);
@@ -121,33 +128,242 @@ void BPwin::tile_clicked(int btn_num) {
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
+            mj[loc.x][loc.y]=1;
 #warning Change tile
 #warning Send to server
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
-#warning Do stuff
+            if (mj[(int)loc.x][(int)loc.y]==1)
+            {
+                log("Dude. There's already a ship there. Try again.");
+                break;
+            }
+            else
+            mj[(int)loc.x][(int)loc.y]=1;
+           
+            gamemode = GM_SHIP3;
+
             break;
         case GM_SHIP3: // placing ship: see client.h typedef enum t_gamemode
-
+              if (mj[(int)loc.x][(int)loc.y]==1)
+            {
+                log("Dude. There's already a ship there. Try again.");
+                break;
+            }
+            if (placing.x==255)
+            {
             log("You placed a destroyer!\n");
-#warning Do stuff
+            mj[(int)loc.x][(int)loc.y]=1;
+            prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+            
+            placing.x--;
             break;
+            
+            }
+            else if (placing.x == 244)
+            {
+                loc.x = (int)loc.x;
+                loc.y = (int)loc.y;
+                
+                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                {
+                    log("You placed a destroyer!!!\n");
+                    mj[(int)loc.x][(int)loc.y]=1;
+                    placing.x=255;
+                    gamemode = GM_SHIP4;
+                    
+            break;
+                }
+                else
+                {
+                    log("You can't split up your ship!!!\n");
+                    break;
+                }
+                
+           }
+            
+           
+            
         case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+              if (mj[(int)loc.x][(int)loc.y]==1)
+            {
+                log("Dude. There's already a ship there. Try again.");
+                break;
+            }
+            if (placing.x==255)
+            {
+            log("You placed a destroyer!\n");
+            mj[(int)loc.x][(int)loc.y]=1;
+            prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+            
+            placing.x--;
+            break;
+            
+            }
+            else if (placing.x == 244)
+            {
+                loc.x = (int)loc.x;
+                loc.y = (int)loc.y;
+                
+                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                {
+                    log("You placed a destroyer!!!\n");
+                    mj[(int)loc.x][(int)loc.y]=1;
+                    placing.x=255;
+                    gamemode = GM_SHIP5;
+                    
+            break;
+                }
+                else
+                {
+                    log("You can't split up your ship!!!\n");
+                    break;
+                }
+            }
+                
+            
+
             break;
         case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+               if (mj[(int)loc.x][(int)loc.y]==1)
+            {
+                log("Dude. There's already a ship there. Try again.");
+                break;
+            }
+            if (placing.x==255)
+            {
+            log("You placed a cruiser!\n");
+            mj[(int)loc.x][(int)loc.y]=1;
+            prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+            
+            placing.x--;
             break;
+            
+            }
+            else if (placing.x == 244||placing.x == 243)
+            {
+                loc.x = (int)loc.x;
+                loc.y = (int)loc.y;
+                
+                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                {
+                    log("You placed a cruiser!!!\n");
+                    mj[(int)loc.x][(int)loc.y]=1;
+                    prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+                    if(placing.x==243)
+                    {
+                    placing.x=255;
+                    gamemode = GM_SHIP6;
+                    break;
+                    }
+            placing.x--;
+                    
+            break;
+                }
+                else
+                {
+                    log("You can't split up your ship!!!\n");
+                    break;
+                }
+            }
+            
+
+            
         case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+              if (mj[(int)loc.x][(int)loc.y]==1)
+            {
+                log("Dude. There's already a ship there. Try again.");
+                break;
+            }
+            if (placing.x==255)
+            {
+            log("You placed a battleship!\n");
+            mj[(int)loc.x][(int)loc.y]=1;
+            prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+            
+            placing.x--;
             break;
+            
+            }
+            else if (placing.x == 244||placing.x == 243||placing.x==242)
+            {
+                loc.x = (int)loc.x;
+                loc.y = (int)loc.y;
+                
+                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                {
+                    log("You placed a battleship!!\n");
+                    mj[(int)loc.x][(int)loc.y]=1;
+                    prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+                    if(placing.x==242)
+                    {
+                    placing.x=255;
+                    gamemode = GM_SHIP7;
+                    break;
+                    }
+            placing.x--;
+                    
+            break;
+                }
+                else
+                {
+                    log("You can't split up your ship!!!\n");
+                    break;
+                }
+            }
+
         case GM_SHIP7: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
+           if (mj[(int)loc.x][(int)loc.y]==1)
+            {
+                log("Dude. There's already a ship there. Try again.");
+                break;
+            }
+            if (placing.x==255)
+            {
+            log("You placed a carrier!\n");
+            mj[(int)loc.x][(int)loc.y]=1;
+            prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+            
+            placing.x--;
+            break;
+            
+            }
+            else if (placing.x == 244||placing.x == 243||placing.x==242||placing.x==241)
+            {
+                loc.x = (int)loc.x;
+                loc.y = (int)loc.y;
+                
+                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                {
+                    log("You placed a carrier!!\n");
+                    mj[(int)loc.x][(int)loc.y]=1;
+                    prev.x=(int)loc.x;
+            prev.y=(int)loc.y;
+                    if(placing.x==241)
+                    {
+                    placing.x=255;
+                    gamemode = GM_PLAYTIME;
+                    break;
+                    }
+            placing.x--;
+                    
+            break;
+                }
+                else
+                {
+                    log("You can't split up your ship!!!\n");
+                    break;
+                }
+            }
 #warning Do stuff
             break;
         case GM_PLAYTIME: // ingame
