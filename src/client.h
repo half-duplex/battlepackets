@@ -36,9 +36,9 @@
 #include <gtkmm/scrolledwindow.h>
 
 #define M_IMG_EMPTY "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_SHIP "/usr/share/icons/gnome/32x32/actions/add.png"
-#define M_IMG_HIT "/usr/share/icons/gnome/32x32/actions/add.png"
-#define M_IMG_MISS "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/add.png"
+#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/add.png"
+#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/add.png"
 
 /* nethandler
  * called by net/netrecv when it gets data

@@ -1,5 +1,5 @@
 /**
- * net.cpp
+ * tests.cpp
  * Battlepackets
  * Norwich University IS460 Spring 2012
  * Battlepackets Group - battlepackets@googlegroups.com
@@ -22,34 +22,13 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// EXAMPLE OF HOW TO DECIDE IF IT'S WINDOWS OR NOT:
-// DO NOT EDIT stuff that is not your OS, because you won't be able to test it!
-#if defined(__WIN32__) || defined(_WIN32)
-// windows stuff TODO
-#else
-// linux and mac stuff
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <string.h> //for memset
-#include <cstdlib> //for exit
-#endif
-// common stuff
-// iostream is not allowed. no cout or cin here.
+#include "common.h"
+#include "client.h"
+#include "server.h"
+#include "net/net.h"
+#include <iostream>
+#include <boost/thread.hpp>
 
-int netconnect(char * addr[], int addrlen, int port) {
-    return -1; // for clean compile
-}
-
-int netlisten(int port) {
-    return -1; // for clean compile
-}
-bool netsend(int sockfd, char * data[], int datalen) {
-    return false; // for clean compile
-}
-
-void netrecv(void (*handler)(int sockfd, char * data[], int datalen)) {
-    ;
+int main(int argc, char** argv) {
+    // TODO: do stuff
 }

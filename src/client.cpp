@@ -82,7 +82,7 @@ BPwin::BPwin() {
             sigc::mem_fun(*this, &BPwin::chat_key_press)
             , false);
     // Menus
-//    m_menu_bar.add(m_menu_game); // broken atm
+    add(m_menu_game); // broken atm
 
 
 
@@ -151,41 +151,40 @@ void BPwin::tile_clicked(int btn_num) {
             log("Server has not sent game info!\n");
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
-            log("You placed a submarine!\n");
-#warning Change tile
-#warning Send to server
+            log("You placed a submarine! Next is another submarine.\n");
+            // TODO: Change tile
+            // TODO: Send to server
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
-            log("You placed a submarine!\n");
-#warning Do stuff
+            log("You placed a submarine! Next is a 2-piece destroyer.\n");
+            // TODO: Do stuff
             break;
         case GM_SHIP3: // placing ship: see client.h typedef enum t_gamemode
-
-            log("You placed a destroyer!\n");
-#warning Do stuff
+            log("You placed a destroyer! Next is a 3-piece xyz.\n");
+            // TODO: Do stuff
             break;
         case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+            log("x\n");
+            // TODO: Do stuff
             break;
         case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+            log("x\n");
+            // TODO: Do stuff
             break;
         case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+            log("x\n");
+            // TODO: Do stuff
             break;
         case GM_SHIP7: // placing ship: see client.h typedef enum t_gamemode
-            log("Server has not sent game info!\n");
-#warning Do stuff
+            log("You placed your carrier! Time to play!\n");
+            // TODO: Do stuff
             break;
         case GM_PLAYTIME: // ingame
             log("Server has not sent game info!\n");
-#warning Do stuff
-#warning TODO: Change board based on clicked tile
-#warning TODO: Send change, if valid, to server
+            // TODO: Do stuff
+            // TODO: TODO: Change board based on clicked tile
+            // TODO: TODO: Send change, if valid, to server
             break;
         default: // should never get here
             log("What just happened?!\n");
@@ -208,7 +207,7 @@ bool BPwin::chat_key_press(GdkEventKey* k) {
         log(m_entry.get_text());
         log("Me: ");
         //send
-#warning TODO: Send chat to server
+        // TODO: TODO: Send chat to server
         std::cout << "Send chat: " << m_entry.get_text() << std::endl;
         m_entry.set_text("");
         return true;
