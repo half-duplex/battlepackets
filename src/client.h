@@ -55,6 +55,7 @@ public:
 
 protected:
     // Variables
+    
 
     typedef enum {
         GM_START = 0, // just started the program
@@ -70,6 +71,7 @@ protected:
     } t_gamemode;
     t_gamemode gamemode;
     location placing; // for the first click for placing ships
+    location prev;
 
     // Signal handlers
     void tile_clicked(int btn_num);
