@@ -2,11 +2,8 @@ CC = g++
 CCFLAGS = -Wall -g -std=c++0x -lboost_thread `pkg-config gtkmm-2.4 --cflags --libs`
 
 all: server client
-clean: cleanserver cleanclient cleanlibs
+clean: cleanserver cleanclient cleancheck cleanlibs
 	rm -f *.core
-test: all
-	server 12345 &
-	client localhost 12345
 
 server: src/server.o src/net/net.o src/common.o Makefile
 	${CC} ${CCFLAGS} -o server src/server.o src/net/net.o src/common.o
@@ -21,6 +18,14 @@ src/client.o: Makefile
 	${CC} ${CCFLAGS} -o src/client.o -c src/client.cpp
 cleanclient:
 	rm -f client src/client.o
+
+check: src/check.o src/client.o src/server.o src/net/net.o src/common.o Makefile
+	${CC} ${CCFLAGS} -o check src/check.o src/client.o src/server.o src/net/net.o src/common.o
+	./check
+src/check.o: Makefile
+	${CC} ${CCFLAGS} -o src/check.o -c src/check.cpp
+cleancheck:
+	rm -f check src/check.o
 
 
 cleanlibs:

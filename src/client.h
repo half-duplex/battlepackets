@@ -36,9 +36,9 @@
 #include <gtkmm/scrolledwindow.h>
 
 #define M_IMG_EMPTY "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_SHIP "/usr/share/icons/gnome/32x32/actions/add.png"
-#define M_IMG_HIT "/usr/share/icons/gnome/32x32/actions/add.png"
-#define M_IMG_MISS "/usr/share/icons/gnome/32x32/actions/add.png"
+#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/add.png"
+#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/add.png"
+#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/add.png"
 
 /* nethandler
  * called by net/netrecv when it gets data
@@ -74,26 +74,37 @@ protected:
     location prev;
 
     // Signal handlers
-    void tile_clicked(int btn_num);
+    void tile_clicked(int btn_num); // ONLY FOR MY BOARD, not needed for enemy
     bool chat_key_press(GdkEventKey* k);
 
-    // frames
+    // Big frames
     Gtk::VBox m_box_everything;
     Gtk::HBox m_box_boards;
-    Gtk::HBox m_box_board_me;
-    Gtk::HBox m_box_board_enemy;
-    Gtk::VBox m_box_tile_column[2][BOARDSIZE];
+
+    struct board {
+        Gtk::HBox m_box_board;
+
+        // images: must all exist, else memory leak...?
+        Gtk::Image m_img_set[3][BOARDSIZE][BOARDSIZE];
+        // the 3: 0=ocean/empty,1=hit,2=(my_board?ship:miss)
+
+        // columns/buttons: see google doc
+        Gtk::VBox m_box_tile_column[BOARDSIZE]; // columns
+        Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
+
+        board();
+        void init(BPwin & that, char which); // which: 0=my,1=enemy
+    };
+    board boards[2]; // 0 is me, 1 is enemy
+
+    // Chat
     Gtk::VBox m_box_chat;
-
-    // tile types
-    Gtk::Image *m_img_hit;
-    Gtk::Image *m_img_empty;
-    Gtk::Image *m_img_ship;
-    Gtk::Image *m_img_miss;
-
-    Gtk::Button m_button[2][BOARDSIZE][BOARDSIZE]; // buttons
-    Gtk::Entry m_entry;
     Gtk::ScrolledWindow m_log_scroll;
+    Gtk::Entry m_entry;
+    // helpful for buffers and textview:
+    // http://inti.sourceforge.net/tutorial/libinti/textwidget.html
+    Gtk::TextView m_log;
+    Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 
     // Menus
     Gtk::MenuBar m_menu_bar;
@@ -103,11 +114,6 @@ protected:
     Gtk::Menu m_menu_help;
     Gtk::MenuItem m_menu_help_manual;
     Gtk::MenuItem m_menu_help_about;
-
-    // helpful for buffers and textview:
-    // http://inti.sourceforge.net/tutorial/libinti/textwidget.html
-    Gtk::TextView m_log;
-    Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 };
 
 #endif	/* SERVER_H */
