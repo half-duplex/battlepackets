@@ -1,5 +1,5 @@
 /**
- * server.h
+ * client_wrap.cpp
  * Battlepackets
  * Norwich University IS460 Spring 2012
  * Battlepackets Group - battlepackets@googlegroups.com
@@ -22,25 +22,8 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVER_H
-#define	SERVER_H
+#include "client.h"
 
-int main_server(int argc, char** argv);
-
-struct t_player{
-public:
-    t_player();
-    ~t_player();
-};
-
-struct t_game{
-public:
-    t_game();
-    ~t_game();
-    char addplayer(t_player player); // returns
-private:
-    t_player players[2];
-
-};
-
-#endif	/* SERVER_H */
+int main(int argc, char** argv) {
+    main_client(argc, argv);
+}

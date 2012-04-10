@@ -39,7 +39,7 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
-int main(int argc, char** argv) {
+int main_server(int argc, char** argv) {
 #ifdef DEBUG
     cout << "Arguments:\n";
     for (int i = 0; i < argc; i++) {
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     }
 #endif
 
-   // Set up shared stuff
+    // Set up shared stuff
 
     // Launch first net listener
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);

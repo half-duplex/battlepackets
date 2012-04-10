@@ -22,7 +22,6 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
 #include "client.h"
 #include "net/net.h"
 #include <iostream>
@@ -42,7 +41,7 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
-int main(int argc, char** argv) {
+int main_client(int argc, char** argv) {
     // Create structures
     Gtk::Main kit(argc, argv);
     BPwin bpwin;

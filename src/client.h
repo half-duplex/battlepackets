@@ -25,6 +25,7 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
+#include "common.h"
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/entry.h>
@@ -39,6 +40,8 @@
 #define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/add.png"
 #define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/add.png"
 #define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/add.png"
+
+int main_client(int argc, char** argv);
 
 /* nethandler
  * called by net/netrecv when it gets data
@@ -55,7 +58,7 @@ public:
 
 protected:
     // Variables
-    
+
 
     typedef enum {
         GM_START = 0, // just started the program
