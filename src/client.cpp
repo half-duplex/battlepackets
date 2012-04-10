@@ -43,17 +43,18 @@ using namespace std;
  */
 int main_client(int argc, char** argv) {
     // Create structures
+    
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
 
     // spawn net listener
-    boost::thread netin(netrecv, nethandler);
+    //boost::thread netin(netrecv, nethandler);
 
     // gtkmm main loop
     Gtk::Main::run(bpwin);
 
     // die
-    netin.interrupt();
+    //netin.interrupt();
     return 0;
 }
 
