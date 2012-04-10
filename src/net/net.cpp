@@ -94,7 +94,7 @@ int netlisten(int port) {
     struct addrinfo host, *server; 
 //   socklen_t socksize = sizeof(struct sockaddr_in); //to be used in function call later
 //    pid_t child;
-    
+    int *clientsocket;
     
    
     
@@ -126,7 +126,8 @@ int netlisten(int port) {
     if (listensocket < 0) {
         cout << "error listening" << endl;
     }
-   }
+    if  
+  }
     
     return listensocket;
     

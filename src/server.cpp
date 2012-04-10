@@ -54,7 +54,6 @@ int main(int argc, char** argv) {
     // Launch first net listener
     
     boost::thread listen(netlisten, 7777);
-
     listen.join();
     
     
