@@ -26,39 +26,43 @@
 #define	NET_H
 
 
-    
+
 //handshake 
-    struct handshake {
-        char pktID;
-        char protocolVersion;
-        char boardsize;
-        char username[8];
-        int gameID[8];
-    };
+
+struct handshake {
+    char pktID;
+    char protocolVersion;
+    char boardsize;
+    char username[8];
+    int gameID[8];
+};
 
 //move 
-    struct move {
-        char ID; // = 1
-        char x;
-        char y;
-        char action; //each action will have a value of 0-7 (see protocol)
-    };
+
+struct move {
+    char ID; // = 1
+    char x;
+    char y;
+    char action; //each action will have a value of 0-7 (see protocol)
+};
 
 //board refresh     
-    struct refresh {
-        char ID; // = 2
-        char board[15][15]; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
-    };
-    
+
+struct refresh {
+    char ID; // = 2
+    char board[15][15]; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
+};
+
 //chat
-    struct chat {
-        char ID; // = 3
-        char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent 
-        short size;
-        char msg[100];
-    };
-    
- 
+
+struct chat {
+    char ID; // = 3
+    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent 
+    short size;
+    char msg[100];
+};
+
+
 /* netconnect (for client)
  * Creates a connection out to a server
  * arguments:   char * addr[] - the address to connect out to
