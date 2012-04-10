@@ -105,7 +105,10 @@ int netlisten(int port) {
     host.ai_flags = AI_PASSIVE; //get the IP of the host
 
     
-    getaddrinfo(NULL, "7777", &host, &server); //the 7777 needs to use "port" instead
+    int status = getaddrinfo(NULL, "7777", &host, &server); //the 7777 needs to use "port" instead
+    if (status < 0) {
+        cout << "error getting info" << endl;
+    }
      
     
     serversocket = socket(server->ai_family, server->ai_socktype, server->ai_protocol); //create a TCP socket on the server
@@ -118,12 +121,12 @@ int netlisten(int port) {
         cout << "error binding" << endl;
     }
    
-    
+   while (1) { 
     listensocket = listen(serversocket, 50); //50 = number of allowed connections 
     if (listensocket < 0) {
         cout << "error listening" << endl;
     }
- 
+   }
     
     return listensocket;
     

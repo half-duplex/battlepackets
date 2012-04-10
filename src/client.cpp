@@ -44,7 +44,6 @@ using namespace std;
 int main(int argc, char** argv) {
     // Create structures
     
-    
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
 
