@@ -88,27 +88,42 @@ int netconnect(char * addr[], int addrlen, int port){ //create a socket for the 
 }
 
 int netlisten(int port) {
-  
+    
    
     int serversocket, listensocket; // socket to be used to wait for connections from the client
-    struct sockaddr_in server; //for server info
-    struct sockaddr_in client; //for client info
-    socklen_t socksize = sizeof(struct sockaddr_in); //to be used in function call later
-    pid_t child;
+    struct addrinfo host, *server; 
+//   socklen_t socksize = sizeof(struct sockaddr_in); //to be used in function call later
+//    pid_t child;
+    
+    
+   
     
     /*set the server info*/
-    memset(&server, 0, sizeof(server));
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(port); 
+    memset(&host, 0, sizeof(host));
+    host.ai_family = AF_INET;
+    host.ai_socktype = SOCK_STREAM;
+    host.ai_flags = AI_PASSIVE; //get the IP of the host
+
     
-    /*have to add error checking for the functions below*/
-    serversocket = socket(AF_INET, SOCK_STREAM, 0); //create a TCP socket on the server
+    getaddrinfo(NULL, "7777", &host, &server); //the 7777 needs to use "port" instead
+     
     
-    bind(serversocket, (struct sockaddr *)& server, sizeof(struct sockaddr)); //bind a socket to the 
+    serversocket = socket(server->ai_family, server->ai_socktype, server->ai_protocol); //create a TCP socket on the server
+    if (serversocket < 0) {
+        cout << "error creating socket" << endl;
+    }
+
+
+    if (bind(serversocket, server->ai_addr, server->ai_addrlen) < 0) { //bind a socket to the port
+        cout << "error binding" << endl;
+    }
+   
     
     listensocket = listen(serversocket, 50); //50 = number of allowed connections 
-    
+    if (listensocket < 0) {
+        cout << "error listening" << endl;
+    }
+ 
     
     return listensocket;
     

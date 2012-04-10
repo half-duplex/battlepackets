@@ -48,12 +48,17 @@ int main(int argc, char** argv) {
 #endif
     
     
-    
+//    if (argc != 2) {
+//        fprintf(stderr, "Usage: %s port\n", argv[0]);
+//        exit(EXIT_FAILURE);
+//    }
     
    // Set up shared stuff
 
     // Launch first net listener
-
+    boost::thread listen(netlisten, 7777);
+   
+    
 
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
     

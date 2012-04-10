@@ -3,16 +3,9 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df name="battlepackets" root=".">
       <df name="src">
-        <df name="frontend">
-          <in>cli.h</in>
-        </df>
-        <df name="game">
-          <in>game.h</in>
-        </df>
         <df name="net">
           <in>net.cpp</in>
           <in>net.h</in>
-          <in>packets.pb.h</in>
         </df>
         <in>client.cpp</in>
         <in>client.h</in>
@@ -53,6 +46,7 @@
               <pElem>/usr/include/pangomm-1.4</pElem>
               <pElem>/usr/include/gtk-unix-print-2.0</pElem>
               <pElem>/usr/include/atkmm-1.6</pElem>
+              <pElem>/usr/include/gio-unix-2.0/</pElem>
               <pElem>/usr/include/cairo</pElem>
               <pElem>/usr/lib/gtk-2.0/include</pElem>
               <pElem>/usr/include/pixman-1</pElem>
@@ -67,8 +61,8 @@
               <pElem>/usr/include/gdkmm-2.4</pElem>
               <pElem>/usr/include/glib-2.0</pElem>
               <pElem>.</pElem>
-              <pElem>/usr/lib/glibmm-2.4/include</pElem>
               <pElem>/usr/lib/pangomm-1.4/include</pElem>
+              <pElem>/usr/lib/glibmm-2.4/include</pElem>
               <pElem>/usr/include/glibmm-2.4</pElem>
               <pElem>/usr/lib/gdkmm-2.4/include</pElem>
               <pElem>/usr/include/pango-1.0</pElem>
@@ -78,27 +72,6 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <folder path="battlepackets/src/net">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/include/gio-unix-2.0</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <item path="src/client.cpp" ex="false" tool="1" flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/server.cpp" ex="false" tool="1" flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/include/gio-unix-2.0</pElem>
-          </incDir>
-        </ccTool>
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>
