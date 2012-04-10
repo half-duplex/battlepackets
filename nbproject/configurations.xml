@@ -4,6 +4,8 @@
     <df name="battlepackets" root=".">
       <df name="bin">
         <df name="object">
+          <df name="net">
+          </df>
         </df>
       </df>
       <df name="src">
