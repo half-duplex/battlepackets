@@ -97,5 +97,6 @@ bool netsend(int sockfd, char * data[], int datalen);
 void netrecv(int sockfd, char * data[], int datalen);
 
 
+void* handleclient(int socket);
 
 #endif	/* NET_H */

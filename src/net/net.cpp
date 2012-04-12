@@ -36,6 +36,7 @@
 #include <string.h> //for memset
 #include <cstdlib> //for exit 
 #include <unistd.h> // for fork
+#include <pthread.h>
 #endif
 
 #define DEBUG
@@ -86,57 +87,99 @@ int netconnect(char * addr[], int addrlen, int port) { //create a socket for the
 
 }
 
+void* handleclient(void* socket) {
+
+    int *clientsocket = (int*) socket;
+
+    char buffer[1024]; //may need to adjust
+    char buffer_len = 1024;
+    int bytes;
+
+    memset(buffer, 0, buffer_len);
+    if ((bytes = recv(*clientsocket, buffer, buffer_len, 0)) < 0) {
+        cout << "recv error in handleclient" << endl;
+    }
+
+    strcat(buffer, " Server ECHO");
+
+
+    free(clientsocket);
+}
+
 int netlisten(int port) {
 
 
-    int serversocket, listensocket; // socket to be used to wait for connections from the client
-    struct addrinfo host, *server;
+    int serversocket; // socket to be used to wait for connections from the client
+    //    struct addrinfo host, *server;
+    struct sockaddr_in server;
+    int *ptr;
+    socklen_t len = 0;
+    pthread_t tid = 0;
+    sockaddr_in svradr;
+    int* clientsocket;
+
     //   socklen_t socksize = sizeof(struct sockaddr_in); //to be used in function call later
     //    pid_t child;
-    int *clientsocket;
 
 
 
     /*set the server info*/
-    memset(&host, 0, sizeof (host));
-    host.ai_family = AF_INET;
-    host.ai_socktype = SOCK_STREAM;
-    host.ai_flags = AI_PASSIVE; //get the IP of the host
+    //    memset(&host, 0, sizeof (host));
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port);
+    memset(&(server.sin_zero), 0, 8);
+    server.sin_addr.s_addr = INADDR_ANY; //get the IP of the host
 
 
-    int status = getaddrinfo(NULL, "7777", &host, &server); //the 7777 needs to use "port" instead
-    if (status < 0) {
-        cout << "error getting info" << endl;
-    }
+    //    int status = getaddrinfo(NULL, "7777", &host, &server); //the 7777 needs to use "port" instead
+    //    if (status < 0) {
+    //        cout << "error getting info" << endl;
+    //    }
 
 
-    serversocket = socket(server->ai_family, server->ai_socktype, server->ai_protocol); //create a TCP socket on the server
+    serversocket = socket(AF_INET, SOCK_STREAM, 0); //create a TCP socket on the server
     if (serversocket < 0) {
         cout << "error creating socket" << endl;
     }
 
+    ptr = (int*) malloc(sizeof (int));
+    *ptr = 1;
 
-    if (bind(serversocket, server->ai_addr, server->ai_addrlen) < 0) { //bind a socket to the port
+    if (setsockopt(serversocket, SOL_SOCKET, SO_KEEPALIVE, (char*) ptr, sizeof (int)) < 0) {
+        cout << "error creating socket" << endl;
+    }
+    free(ptr);
+
+    if (bind(serversocket, (sockaddr*) & server, sizeof (server)) < 0) { //bind a socket to the port
         cout << "error binding" << endl;
     }
 
-    while (1) {
-        listensocket = listen(serversocket, 50); //50 = number of allowed connections 
-        if (listensocket < 0) {
-            cout << "error listening" << endl;
-        }
+
+
+
+    if (listen(serversocket, 50) < 0) {
+        cout << "error listening" << endl;
+
     }
 
-    return listensocket;
+    len = sizeof (sockaddr_in);
 
+    while (true) {
+        cout << "server ready and waiting!" << endl;
+        clientsocket = (int*) malloc(sizeof (int));
+        if ((*clientsocket = accept(serversocket, (sockaddr*) & svradr, &len)) != -1) {
+            cout << "got one!" << endl;
+            pthread_create(&tid, 0, &handleclient, (void*)clientsocket);
+            pthread_detach(tid);
+        } else {
+            cout << "we're not very accepting here" << endl;
+        }
 
-
-
-
-
+    }
 
 
 }
+
 
 
 
