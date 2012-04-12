@@ -66,24 +66,42 @@ void netrecv(int sockfd, char * data[], int datalen) {
 
 }
 
-int netconnect(char * addr[], int addrlen, int port) { //create a socket for the client to talk to the server 
-
-    int clientsocket;
-    struct sockaddr_in server; //will contain information about the server the client will connect to
-
-    clientsocket = socket(AF_INET, SOCK_STREAM, 0); //creates a socket for the client 
-
-    memset(&server, 0, sizeof (server)); //to ensure theres no garbage data in the struct
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr("127.0.0.1"); //Local loopback for now, will need to be set to 
-    //server's address using the agrs in the function 
-    server.sin_port = htons(port);
-
-    connect(clientsocket, (struct sockaddr *) &server, sizeof (struct sockaddr));
-
-
-
-    return clientsocket;
+//int netconnect(char * addr[], int addrlen, int port) { //create a socket for the client to talk to the server 
+void* netconnect(void*) {
+     char* server = "127.0.0.1"; //need to change
+     struct sockaddr_in client;
+     
+     char buffer[1024];
+     int buffer_len = 0;
+     int bytes;
+     int port = 7777;
+     int clientsocket;
+     int * ptr;
+     
+     clientsocket = socket(AF_INET, SOCK_STREAM, 0);
+     if(clientsocket < 0) {
+         cout << "client socket creation error" << endl;
+     }
+     
+     ptr = (int*)malloc(sizeof(int));
+     *ptr = 1;
+     
+     if(setsockopt(clientsocket, SOL_SOCKET, SO_KEEPALIVE, (char*)ptr, sizeof(int)) < 0) {
+         cout << "client set options error" << endl;
+     }
+            
+     free(ptr);
+     
+     client.sin_family = AF_INET;
+     client.sin_port = htons(port);
+     memset(&(client.sin_zero), 0, 8);
+     client.sin_addr.s_addr = inet_addr(server);
+     
+     if (connect(clientsocket, (struct sockaddr*)&client, sizeof(client)) < 0) {
+         cout << "error connecting socket" << endl;
+     }
+     
+     
 
 }
 
@@ -169,6 +187,7 @@ int netlisten(int port) {
         clientsocket = (int*) malloc(sizeof (int));
         if ((*clientsocket = accept(serversocket, (sockaddr*) & svradr, &len)) != -1) {
             cout << "got one!" << endl;
+            
             pthread_create(&tid, 0, &handleclient, (void*)clientsocket);
             pthread_detach(tid);
         } else {

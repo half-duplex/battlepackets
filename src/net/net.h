@@ -70,8 +70,8 @@ struct chat {
  *              int port - the target port
  * returns:     int - the socket created
  */
-int netconnect(char * addr[], int addrlen, int port);
-
+//int netconnect(char * addr[], int addrlen, int port);
+void* netconnect(void*);
 /* netlisten (for server)
  * Creates a socket for incoming connections
  (* arguments:   int port - the target port) << need to work on, listens on port 7777 for now

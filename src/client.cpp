@@ -43,15 +43,14 @@ using namespace std;
  */
 int main_client(int argc, char** argv) {
     // Create structures
-    
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
-
     // spawn net listener
     //boost::thread netin(netrecv, nethandler);
 
     // gtkmm main loop
     Gtk::Main::run(bpwin);
+
 
     // die
     //netin.interrupt();
@@ -62,9 +61,13 @@ BPwin::BPwin() {
     gamemode = GM_START;
     placing.x = 255;
 
+    pthread_t tid = 0;
 
+    
+    int port = 7777;
 
-
+    pthread_create(&tid, 0, &netconnect, (void*) port);
+    pthread_detach(tid);
 
     set_title("Battlepackets!");
     set_border_width(10);
