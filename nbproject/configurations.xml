@@ -47,7 +47,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>client</executablePath>
+          <executablePath>bin/client</executablePath>
           <ccTool>
             <incDir>
               <pElem>/usr/lib/gtkmm-2.4/include</pElem>
