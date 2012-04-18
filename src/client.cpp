@@ -4,7 +4,7 @@
  * Norwich University IS460 Spring 2012
  * Battlepackets Group - battlepackets@googlegroups.com
 
- * **HI**
+ * **HI** oh hai
     Copyright 2012 Battlepackets Group
 
     This file is part of Battlepackets.
