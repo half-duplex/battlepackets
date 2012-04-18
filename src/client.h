@@ -76,6 +76,7 @@ protected:
     t_gamemode gamemode;
     location placing; // for the first click for placing ships
     location prev;
+    int count;
 
     // Signal handlers
     void tile_clicked(int btn_num); // ONLY FOR MY BOARD, not needed for enemy
