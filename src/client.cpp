@@ -59,8 +59,9 @@ int main(int argc, char** argv) {
 }
 
 BPwin::BPwin() {
-    gamemode = GM_START;
+    gamemode = GM_SHIP1;
     placing.x = 255;
+    count = 0;
     
 
 
@@ -147,7 +148,7 @@ BPwin::~BPwin() {
 }
 
 void BPwin::tile_clicked(int btn_num) {
-    location loc((btn_num / BOARDSIZE), (btn_num % BOARDSIZE));
+    location loc((btn_num % BOARDSIZE), (btn_num / BOARDSIZE));
     std::cout << "Clicked: " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
     switch (gamemode) {
         case GM_START: // not connected, in a game, etc.: just started the app
@@ -164,14 +165,15 @@ void BPwin::tile_clicked(int btn_num) {
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
-            log("You placed a submarine!\n");
+           
             if (mj[(int)loc.x][(int)loc.y]==1)
             {
-                log("Dude. There's already a ship there. Try again.");
+                log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
             else
             mj[(int)loc.x][(int)loc.y]=1;
+             log("You placed a submarine!\n");
            
             gamemode = GM_SHIP3;
 
@@ -179,21 +181,21 @@ void BPwin::tile_clicked(int btn_num) {
         case GM_SHIP3: // placing ship: see client.h typedef enum t_gamemode
               if (mj[(int)loc.x][(int)loc.y]==1)
             {
-                log("Dude. There's already a ship there. Try again.");
+                log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (placing.x==255)
+            if (count==0)
             {
             log("You placed a destroyer!\n");
             mj[(int)loc.x][(int)loc.y]=1;
             prev.x=(int)loc.x;
             prev.y=(int)loc.y;
             
-            placing.x--;
+            count++;
             break;
             
             }
-            else if (placing.x == 244)
+            else if (count== 1)
             {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
@@ -202,7 +204,7 @@ void BPwin::tile_clicked(int btn_num) {
                 {
                     log("You placed a destroyer!!!\n");
                     mj[(int)loc.x][(int)loc.y]=1;
-                    placing.x=255;
+                    count=0;
                     gamemode = GM_SHIP4;
                     
             break;
@@ -220,30 +222,31 @@ void BPwin::tile_clicked(int btn_num) {
         case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
               if (mj[(int)loc.x][(int)loc.y]==1)
             {
-                log("Dude. There's already a ship there. Try again.");
+                log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (placing.x==255)
+            if (count==0)
             {
             log("You placed a destroyer!\n");
             mj[(int)loc.x][(int)loc.y]=1;
             prev.x=(int)loc.x;
             prev.y=(int)loc.y;
             
-            placing.x--;
+            count++;
             break;
             
             }
-            else if (placing.x == 244)
+            else if (count == 1)
             {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
                 
-                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+              if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y))||(loc.x == (prev.x +1)&&loc.y ==(prev.y)))
+                   
                 {
                     log("You placed a destroyer!!!\n");
                     mj[(int)loc.x][(int)loc.y]=1;
-                    placing.x=255;
+                    count = 0;
                     gamemode = GM_SHIP5;
                     
             break;
@@ -261,21 +264,21 @@ void BPwin::tile_clicked(int btn_num) {
         case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
                if (mj[(int)loc.x][(int)loc.y]==1)
             {
-                log("Dude. There's already a ship there. Try again.");
+                log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (placing.x==255)
+            if (count==0)
             {
             log("You placed a cruiser!\n");
             mj[(int)loc.x][(int)loc.y]=1;
             prev.x=(int)loc.x;
             prev.y=(int)loc.y;
             
-            placing.x--;
+            count++;
             break;
             
             }
-            else if (placing.x == 244||placing.x == 243)
+            else if (count == 1||count == 2)
             {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
@@ -286,13 +289,13 @@ void BPwin::tile_clicked(int btn_num) {
                     mj[(int)loc.x][(int)loc.y]=1;
                     prev.x=(int)loc.x;
             prev.y=(int)loc.y;
-                    if(placing.x==243)
+                    if(count == 2)
                     {
-                    placing.x=255;
+                    count = 0;
                     gamemode = GM_SHIP6;
                     break;
                     }
-            placing.x--;
+            count++;
                     
             break;
                 }
@@ -308,21 +311,21 @@ void BPwin::tile_clicked(int btn_num) {
         case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
               if (mj[(int)loc.x][(int)loc.y]==1)
             {
-                log("Dude. There's already a ship there. Try again.");
+                log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (placing.x==255)
+            if (count==0)
             {
             log("You placed a battleship!\n");
             mj[(int)loc.x][(int)loc.y]=1;
             prev.x=(int)loc.x;
             prev.y=(int)loc.y;
             
-            placing.x--;
+            count++;
             break;
             
             }
-            else if (placing.x == 244||placing.x == 243||placing.x==242)
+            else if (count == 1||count == 2||count==3)
             {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
@@ -333,13 +336,13 @@ void BPwin::tile_clicked(int btn_num) {
                     mj[(int)loc.x][(int)loc.y]=1;
                     prev.x=(int)loc.x;
             prev.y=(int)loc.y;
-                    if(placing.x==242)
+                    if(count == 3)
                     {
-                    placing.x=255;
+                    count = 0;
                     gamemode = GM_SHIP7;
                     break;
                     }
-            placing.x--;
+            count++;
                     
             break;
                 }
@@ -353,21 +356,21 @@ void BPwin::tile_clicked(int btn_num) {
         case GM_SHIP7: // placing ship: see client.h typedef enum t_gamemode
            if (mj[(int)loc.x][(int)loc.y]==1)
             {
-                log("Dude. There's already a ship there. Try again.");
+                log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (placing.x==255)
+            if (count==0)
             {
             log("You placed a carrier!\n");
             mj[(int)loc.x][(int)loc.y]=1;
             prev.x=(int)loc.x;
             prev.y=(int)loc.y;
             
-            placing.x--;
+            count++;
             break;
             
             }
-            else if (placing.x == 244||placing.x == 243||placing.x==242||placing.x==241)
+            else if (count == 1||count == 2||count==3||count==4)
             {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
@@ -378,13 +381,13 @@ void BPwin::tile_clicked(int btn_num) {
                     mj[(int)loc.x][(int)loc.y]=1;
                     prev.x=(int)loc.x;
             prev.y=(int)loc.y;
-                    if(placing.x==241)
+                    if(count==4)
                     {
-                    placing.x=255;
+                    count=0;
                     gamemode = GM_PLAYTIME;
                     break;
                     }
-            placing.x--;
+            count++;
                     
             break;
                 }
