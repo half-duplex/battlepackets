@@ -43,7 +43,7 @@ using namespace std;
  */
 int main_client(int argc, char** argv) {
     // Create structures
-    
+
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
 
@@ -95,7 +95,7 @@ BPwin::BPwin() {
     show_all_children();
 }
 
-BPwin::board::board() {
+BPwin::vboard::vboard() {
     for (int j = 0; j < BOARDSIZE; j++) { // for each column
         m_box_board.pack_start(m_box_tile_column[j]);
         for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
@@ -106,7 +106,7 @@ BPwin::board::board() {
     }
 }
 
-void BPwin::board::init(BPwin & that, char which) { // which: 0=mine,1=enemy
+void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
     if (which > 1) {
         cout << "What did you break -.-\n";
         return;

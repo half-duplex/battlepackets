@@ -28,7 +28,7 @@ location::location() {
 
 }
 
-location::location(char ix, char iy) {
+location::location(uint8_t ix, uint8_t iy) {
     x = ix;
     y = iy;
 }

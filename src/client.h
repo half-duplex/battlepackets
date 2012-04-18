@@ -49,7 +49,7 @@ int main_client(int argc, char** argv);
  *              char * data[] - the data to send
  *              int datalen - the length of the data
  */
-//void nethandler(int sockfd, char * data[], int datalen); 
+//void nethandler(int sockfd, char * data[], int datalen);
 //not going to need this because the netrecv will handle the data and call the appropraite function
 
 class BPwin : public Gtk::Window {
@@ -85,7 +85,7 @@ protected:
     Gtk::VBox m_box_everything;
     Gtk::HBox m_box_boards;
 
-    struct board {
+    struct vboard {
         Gtk::HBox m_box_board;
 
         // images: must all exist, else memory leak...?
@@ -96,10 +96,10 @@ protected:
         Gtk::VBox m_box_tile_column[BOARDSIZE]; // columns
         Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
 
-        board();
+        vboard();
         void init(BPwin & that, char which); // which: 0=my,1=enemy
     };
-    board boards[2]; // 0 is me, 1 is enemy
+    vboard boards[2]; // 0 is me, 1 is enemy
 
     // Chat
     Gtk::VBox m_box_chat;

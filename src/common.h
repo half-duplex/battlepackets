@@ -27,12 +27,27 @@
 
 #define BOARDSIZE 10
 
+#include <stdint.h>
+
 struct location {
-    char x;
-    char y;
+    uint8_t x;
+    uint8_t y;
     location();
-    location(char x, char y);
+    location(uint8_t ix, uint8_t iy);
 };
+
+    struct lboard_t {
+    public:
+        void import(); // don't know arg format yet
+        // bool player: 0=self 1=enemy
+        bool get_ship(bool player, location loc); // won't cheat on client: no data
+        void set_ship(bool player, location loc);
+        bool get_fired(bool player, location loc);
+        void set_fired(bool player, location loc);
+    private:
+        uint8_t board_data[BOARDSIZE][BOARDSIZE];
+    };
+//    lboard_t lboard;
 
 #endif	/* COMMON_H */
 
