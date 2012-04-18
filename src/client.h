@@ -37,9 +37,9 @@
 #include <gtkmm/scrolledwindow.h>
 
 #define M_IMG_EMPTY "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/add.png"
+#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/address-book-new.png"
+#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/call-stop.png"
+#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/format-justify-center.png"
 
 int main_client(int argc, char** argv);
 
