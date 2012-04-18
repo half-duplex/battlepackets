@@ -200,7 +200,7 @@ void BPwin::tile_clicked(int btn_num) {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
                 
-                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
                 {
                     log("You placed a destroyer!!!\n");
                     mj[(int)loc.x][(int)loc.y]=1;
@@ -241,7 +241,7 @@ void BPwin::tile_clicked(int btn_num) {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
                 
-              if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y))||(loc.x == (prev.x +1)&&loc.y ==(prev.y)))
+              if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
                    
                 {
                     log("You placed a destroyer!!!\n");
@@ -283,7 +283,7 @@ void BPwin::tile_clicked(int btn_num) {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
                 
-                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
                 {
                     log("You placed a cruiser!!!\n");
                     mj[(int)loc.x][(int)loc.y]=1;
@@ -330,7 +330,7 @@ void BPwin::tile_clicked(int btn_num) {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
                 
-                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
                 {
                     log("You placed a battleship!!\n");
                     mj[(int)loc.x][(int)loc.y]=1;
@@ -375,7 +375,7 @@ void BPwin::tile_clicked(int btn_num) {
                 loc.x = (int)loc.x;
                 loc.y = (int)loc.y;
                 
-                if((loc.x ==prev.x && ((loc.y==prev.y||loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.x==(prev.x-1)&&loc.y == (prev.y+1))||(loc.x == (prev.x +1)&&loc.y ==(prev.y+1)))
+                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
                 {
                     log("You placed a carrier!!\n");
                     mj[(int)loc.x][(int)loc.y]=1;
