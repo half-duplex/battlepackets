@@ -25,6 +25,7 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
+#include "common.h"
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/entry.h>
@@ -40,13 +41,16 @@
 #define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/add.png"
 #define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/add.png"
 
+int main_client(int argc, char** argv);
+
 /* nethandler
  * called by net/netrecv when it gets data
  * arguments:   int sockfd - the socket data was recieved on
  *              char * data[] - the data to send
  *              int datalen - the length of the data
  */
-void nethandler(int sockfd, char * data[], int datalen);
+//void nethandler(int sockfd, char * data[], int datalen); 
+//not going to need this because the netrecv will handle the data and call the appropraite function
 
 class BPwin : public Gtk::Window {
 public:
@@ -55,7 +59,7 @@ public:
 
 protected:
     // Variables
-    
+
 
     typedef enum {
         GM_START = 0, // just started the program

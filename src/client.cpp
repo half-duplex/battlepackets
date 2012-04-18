@@ -22,7 +22,6 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
 #include "client.h"
 #include "net/net.h"
 #include <iostream>
@@ -42,19 +41,20 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
-int main(int argc, char** argv) {
+int main_client(int argc, char** argv) {
     // Create structures
+    
     Gtk::Main kit(argc, argv);
     BPwin bpwin;
 
     // spawn net listener
-    boost::thread netin(netrecv, nethandler);
+    //boost::thread netin(netrecv, nethandler);
 
     // gtkmm main loop
     Gtk::Main::run(bpwin);
 
     // die
-    netin.interrupt();
+    //netin.interrupt();
     return 0;
 }
 
@@ -65,7 +65,8 @@ BPwin::BPwin() {
     
 
 
-    
+
+
 
     set_title("Battlepackets!");
     set_border_width(10);
@@ -159,7 +160,7 @@ void BPwin::tile_clicked(int btn_num) {
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
-            mj[loc.x][loc.y]=1;
+            mj[loc.x][loc.y] = 1;
 #warning Change tile
 #warning Send to server
             gamemode = GM_SHIP2;
@@ -206,19 +207,17 @@ void BPwin::tile_clicked(int btn_num) {
                     mj[(int)loc.x][(int)loc.y]=1;
                     count=0;
                     gamemode = GM_SHIP4;
-                    
-            break;
-                }
-                else
-                {
+
+                    break;
+                } else {
                     log("You can't split up your ship!!!\n");
                     break;
                 }
-                
-           }
-            
-           
-            
+
+            }
+
+
+
         case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
               if (mj[(int)loc.x][(int)loc.y]==1)
             {
@@ -248,17 +247,15 @@ void BPwin::tile_clicked(int btn_num) {
                     mj[(int)loc.x][(int)loc.y]=1;
                     count = 0;
                     gamemode = GM_SHIP5;
-                    
-            break;
-                }
-                else
-                {
+
+                    break;
+                } else {
                     log("You can't split up your ship!!!\n");
                     break;
                 }
             }
-                
-            
+
+
 
             break;
         case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
@@ -305,9 +302,9 @@ void BPwin::tile_clicked(int btn_num) {
                     break;
                 }
             }
-            
 
-            
+
+
         case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
               if (mj[(int)loc.x][(int)loc.y]==1)
             {

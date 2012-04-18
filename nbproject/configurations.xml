@@ -2,6 +2,12 @@
 <configurationDescriptor version="80">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df name="battlepackets" root=".">
+      <df name="bin">
+        <df name="object">
+          <df name="net">
+          </df>
+        </df>
+      </df>
       <df name="src">
         <df name="net">
           <in>net.cpp</in>
@@ -10,10 +16,12 @@
         <in>check.cpp</in>
         <in>client.cpp</in>
         <in>client.h</in>
+        <in>client_wrap.cpp</in>
         <in>common.cpp</in>
         <in>common.h</in>
         <in>server.cpp</in>
         <in>server.h</in>
+        <in>server_wrap.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -39,7 +47,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>client</executablePath>
+          <executablePath>bin/client</executablePath>
           <ccTool>
             <incDir>
               <pElem>/usr/lib/gtkmm-2.4/include</pElem>
@@ -94,6 +102,13 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/client_wrap.cpp" ex="false" tool="1" flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/gio-unix-2.0/</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="src/common.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
@@ -102,6 +117,13 @@
         </ccTool>
       </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/gio-unix-2.0/</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/server_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
             <pElem>/usr/include/gio-unix-2.0/</pElem>

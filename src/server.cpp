@@ -39,18 +39,29 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
-int main(int argc, char** argv) {
+int main_server(int argc, char** argv) {
 #ifdef DEBUG
-    cout << "Arguments:\n";
-    for (int i = 0; i < argc; i++) {
-        cout << argv[i] << endl;
+    if (argc != 2) {
+        cout << "Arguments:\n";
+        for (int i = 0; i < argc; i++) {
+            cout << argv[i] << endl;
+        }
     }
 #endif
 
-   // Set up shared stuff
 
+    // Set up shared stuff
     // Launch first net listener
+
+    boost::thread listen(netlisten, 7777);
+    listen.join();
+
+
+
+
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
+
+
 
     // Do something so that it doesn't quit until the last thread is gone?
     // semaphore, maybe?
