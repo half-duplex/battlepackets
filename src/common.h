@@ -49,4 +49,3 @@ struct location {
     };
 
 #endif	/* COMMON_H */
-

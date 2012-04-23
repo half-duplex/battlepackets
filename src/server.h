@@ -25,27 +25,30 @@
 #ifndef SERVER_H
 #define	SERVER_H
 
+#include "common.h"
+
 int main_server(int argc, char** argv);
 
-struct t_player;
-struct t_game;
+struct player_t;
+struct game_t;
 
-struct t_player {
+struct player_t {
 public:
-    t_player();
-    ~t_player();
+    player_t();
+    ~player_t();
     bool setgame(); // returns success
 private:
-    t_game * game();
+    game_t * game;
 };
 
-struct t_game {
+struct game_t {
 public:
-    t_game();
-    ~t_game();
-    bool addplayer(t_player player); // returns success
+    game_t();
+    ~game_t();
+    bool addplayer(player_t player); // returns success
 private:
-    t_player * players[2];
+    lboard_t board;
+    player_t * players[2];
 };
 
 #endif	/* SERVER_H */
