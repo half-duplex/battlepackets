@@ -152,6 +152,10 @@ void BPwin::tile_clicked(int btn_num) {
             log("You placed a submarine!\n");
             mj[loc.x][loc.y] = 1; // TODO: This will change once lboard is implemented
 
+            // replace mj[][] with this:
+            lboard.set_ship(0, loc);
+            cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
+
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
             // TODO: Send to server
 
