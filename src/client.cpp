@@ -27,7 +27,7 @@
 #include <boost/thread.hpp>
 
 #define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
-int mj[BOARDSIZE][BOARDSIZE];
+
 
 
 using namespace std;
@@ -156,37 +156,38 @@ void BPwin::tile_clicked(int btn_num) {
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
-            mj[loc.x][loc.y] = 1; // TODO: This will change once lboard is implemented
-
-            // replace mj[][] with this:
-            lboard.set_ship(0, loc);
-            cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
-
+            
+            lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
-            // TODO: Send to server
-
+#warning Change tile
+#warning Send to server
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
 
-            if (mj[(int) loc.x][(int) loc.y] == 1) {
+            if (lboard.get_ship(0,loc)) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             } else
-                mj[(int) loc.x][(int) loc.y] = 1;
+                 lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
             log("You placed a submarine!\n");
 
             gamemode = GM_SHIP3;
 
             break;
         case GM_SHIP3: // placing ship: see client.h typedef enum t_gamemode
-            if (mj[(int) loc.x][(int) loc.y] == 1) {
+            if (lboard.get_ship(0,loc)) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
             if (count == 0) {
                 log("You placed a destroyer!\n");
-                mj[(int) loc.x][(int) loc.y] = 1;
+                 lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
@@ -199,7 +200,9 @@ void BPwin::tile_clicked(int btn_num) {
 
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a destroyer!!!\n");
-                    mj[(int) loc.x][(int) loc.y] = 1;
+                         lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP4;
 
@@ -214,13 +217,15 @@ void BPwin::tile_clicked(int btn_num) {
 
 
         case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
-            if (mj[(int) loc.x][(int) loc.y] == 1) {
+            if (lboard.get_ship(0,loc)) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
             if (count == 0) {
                 log("You placed a destroyer!\n");
-                mj[(int) loc.x][(int) loc.y] = 1;
+                lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
@@ -233,7 +238,9 @@ void BPwin::tile_clicked(int btn_num) {
 
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a destroyer!!!\n");
-                    mj[(int) loc.x][(int) loc.y] = 1;
+                     lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP5;
 
@@ -248,13 +255,15 @@ void BPwin::tile_clicked(int btn_num) {
 
             break;
         case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
-            if (mj[(int) loc.x][(int) loc.y] == 1) {
+            if (lboard.get_ship(0,loc)) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
             if (count == 0) {
                 log("You placed a cruiser!\n");
-                mj[(int) loc.x][(int) loc.y] = 1;
+                lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
@@ -267,7 +276,9 @@ void BPwin::tile_clicked(int btn_num) {
 
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a cruiser!!!\n");
-                    mj[(int) loc.x][(int) loc.y] = 1;
+                   lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
                     if (count == 2) {
@@ -287,13 +298,15 @@ void BPwin::tile_clicked(int btn_num) {
 
 
         case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
-            if (mj[(int) loc.x][(int) loc.y] == 1) {
+            if (lboard.get_ship(0,loc)) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
             if (count == 0) {
                 log("You placed a battleship!\n");
-                mj[(int) loc.x][(int) loc.y] = 1;
+                lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
@@ -306,7 +319,9 @@ void BPwin::tile_clicked(int btn_num) {
 
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a battleship!!\n");
-                    mj[(int) loc.x][(int) loc.y] = 1;
+                   lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
                     if (count == 3) {
@@ -324,13 +339,15 @@ void BPwin::tile_clicked(int btn_num) {
             }
 
         case GM_SHIP7: // placing ship: see client.h typedef enum t_gamemode
-            if (mj[(int) loc.x][(int) loc.y] == 1) {
+            if (lboard.get_ship(0,loc)) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
             if (count == 0) {
                 log("You placed a carrier!\n");
-                mj[(int) loc.x][(int) loc.y] = 1;
+             lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
@@ -343,7 +360,9 @@ void BPwin::tile_clicked(int btn_num) {
 
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a carrier!!\n");
-                    mj[(int) loc.x][(int) loc.y] = 1;
+                    lboard.set_ship(0,loc);
+            cout<< "Ship at loc: "<<(int)lboard.get_ship(0,loc)<<endl;
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
                     if (count == 4) {
