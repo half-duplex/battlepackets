@@ -22,10 +22,11 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVER_H
-#define	SERVER_H
+#ifndef CLIENT_H
+#define	CLIENT_H
 
 #include "common.h"
+#include "net/net.h"
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/entry.h>
@@ -37,9 +38,9 @@
 #include <gtkmm/scrolledwindow.h>
 
 #define M_IMG_EMPTY "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/add.png"
+#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/address-book-new.png"
+#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/call-stop.png"
+#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/format-justify-center.png"
 
 int main_client(int argc, char** argv);
 
@@ -49,7 +50,7 @@ int main_client(int argc, char** argv);
  *              char * data[] - the data to send
  *              int datalen - the length of the data
  */
-//void nethandler(int sockfd, char * data[], int datalen); 
+//void nethandler(int sockfd, char * data[], int datalen);
 //not going to need this because the netrecv will handle the data and call the appropraite function
 
 class BPwin : public Gtk::Window {
@@ -60,6 +61,8 @@ public:
 protected:
     // Variables
 
+    // The actual board
+    lboard_t lboard;
 
     typedef enum {
         GM_START = 0, // just started the program
@@ -75,7 +78,8 @@ protected:
     } t_gamemode;
     t_gamemode gamemode;
     location placing; // for the first click for placing ships
-    location prev;
+    location prev; // TODO: Remove: Should not be needed
+    int count; // TODO: Remove: Should not be needed
 
     // Signal handlers
     void tile_clicked(int btn_num); // ONLY FOR MY BOARD, not needed for enemy
@@ -85,7 +89,7 @@ protected:
     Gtk::VBox m_box_everything;
     Gtk::HBox m_box_boards;
 
-    struct board {
+    struct vboard {
         Gtk::HBox m_box_board;
 
         // images: must all exist, else memory leak...?
@@ -96,10 +100,10 @@ protected:
         Gtk::VBox m_box_tile_column[BOARDSIZE]; // columns
         Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
 
-        board();
+        vboard();
         void init(BPwin & that, char which); // which: 0=my,1=enemy
     };
-    board boards[2]; // 0 is me, 1 is enemy
+    vboard boards[2]; // 0 is me, 1 is enemy
 
     // Chat
     Gtk::VBox m_box_chat;
@@ -120,4 +124,4 @@ protected:
     Gtk::MenuItem m_menu_help_about;
 };
 
-#endif	/* SERVER_H */
+#endif	/* CLIENT_H */

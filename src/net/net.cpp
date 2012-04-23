@@ -22,19 +22,13 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// EXAMPLE OF HOW TO DECIDE IF IT'S WINDOWS OR NOT:
-// DO NOT EDIT stuff that is not your OS, because you won't be able to test it!
-#if defined(__WIN32__) || defined(_WIN32)
-// windows stuff TODO
-#else
-// linux and mac stuff
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h> //for memset
-#include <cstdlib> //for exit 
+#include <cstdlib> //for exit
 #include <unistd.h> // for fork
 #include <pthread.h>
 #endif
@@ -61,7 +55,7 @@ void netrecv(int sockfd, char * data[], int datalen) {
 
 
 
-    recv(sockfd, data, datalen, 0); //this 0 may have to change 
+    recv(sockfd, data, datalen, 0); //this 0 may have to change
 
 
 }
