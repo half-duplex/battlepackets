@@ -161,6 +161,8 @@ void BPwin::tile_clicked(int btn_num) {
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
+             m_img_set[2][loc.x][loc.y].set(M_IMG_SHIP);
+                m_img_set[2][loc.x][loc.y].set_padding(0, 0);
             mj[loc.x][loc.y] = 1;
 #warning Change tile
 #warning Send to server
