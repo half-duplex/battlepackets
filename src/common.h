@@ -29,6 +29,8 @@
 
 #include <stdint.h>
 
+#pragma GCC poison mj
+
 struct location {
     uint8_t x;
     uint8_t y;
