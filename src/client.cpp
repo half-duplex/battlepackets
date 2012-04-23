@@ -4,7 +4,6 @@
  * Norwich University IS460 Spring 2012
  * Battlepackets Group - battlepackets@googlegroups.com
 
- * **HI** oh hai
     Copyright 2012 Battlepackets Group
 
     This file is part of Battlepackets.
@@ -24,7 +23,6 @@
  */
 
 #include "client.h"
-#include "net/net.h"
 #include <iostream>
 #include <boost/thread.hpp>
 
@@ -60,14 +58,9 @@ int main_client(int argc, char** argv) {
 }
 
 BPwin::BPwin() {
-    gamemode = GM_SHIP1;
+    gamemode = GM_SHIP1; // TODO: Put back to GM_START once connecting is implemented
     placing.x = 255;
     count = 0;
-
-
-
-
-
 
     set_title("Battlepackets!");
     set_border_width(10);
@@ -90,10 +83,6 @@ BPwin::BPwin() {
     m_entry.signal_key_press_event().connect(
             sigc::mem_fun(*this, &BPwin::chat_key_press)
             , false);
-    // Menus
-    add(m_menu_game); // broken atm
-
-
 
     show_all_children();
 }
@@ -162,8 +151,10 @@ void BPwin::tile_clicked(int btn_num) {
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
             mj[loc.x][loc.y] = 1; // TODO: This will change once lboard is implemented
+
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
             // TODO: Send to server
+
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode

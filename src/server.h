@@ -27,20 +27,25 @@
 
 int main_server(int argc, char** argv);
 
-struct t_player{
+struct t_player;
+struct t_game;
+
+struct t_player {
 public:
     t_player();
     ~t_player();
+    bool setgame(); // returns success
+private:
+    t_game * game();
 };
 
-struct t_game{
+struct t_game {
 public:
     t_game();
     ~t_game();
-    char addplayer(t_player player); // returns
+    bool addplayer(t_player player); // returns success
 private:
-    t_player players[2];
-
+    t_player * players[2];
 };
 
 #endif	/* SERVER_H */

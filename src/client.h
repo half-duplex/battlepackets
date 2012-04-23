@@ -22,10 +22,11 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVER_H
-#define	SERVER_H
+#ifndef CLIENT_H
+#define	CLIENT_H
 
 #include "common.h"
+#include "net/net.h"
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/entry.h>
@@ -60,6 +61,8 @@ public:
 protected:
     // Variables
 
+    // The actual board
+    lboard_t lboard;
 
     typedef enum {
         GM_START = 0, // just started the program
@@ -75,8 +78,8 @@ protected:
     } t_gamemode;
     t_gamemode gamemode;
     location placing; // for the first click for placing ships
-    location prev;
-    int count;
+    location prev; // TODO: Remove: Should not be needed
+    int count; // TODO: Remove: Should not be needed
 
     // Signal handlers
     void tile_clicked(int btn_num); // ONLY FOR MY BOARD, not needed for enemy
@@ -121,4 +124,4 @@ protected:
     Gtk::MenuItem m_menu_help_about;
 };
 
-#endif	/* SERVER_H */
+#endif	/* CLIENT_H */

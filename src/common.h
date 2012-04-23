@@ -47,7 +47,6 @@ struct location {
     private:
         uint8_t board_data[BOARDSIZE][BOARDSIZE];
     };
-//    lboard_t lboard;
 
 #endif	/* COMMON_H */
 
