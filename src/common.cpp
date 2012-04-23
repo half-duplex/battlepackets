@@ -32,3 +32,58 @@ location::location(uint8_t ix, uint8_t iy) {
     x = ix;
     y = iy;
 }
+
+void location::set(uint8_t ix, uint8_t iy) {
+    x = ix;
+    y = iy;
+}
+
+void location::set(location il) {
+    x = il.x;
+    y = il.y;
+}
+
+lboard_t::lboard_t() {
+    for (int i = 0; i < BOARDSIZE; i++) {
+        for (int j = 0; j < BOARDSIZE; j++) {
+            board_data[i][j] = 0;
+        }
+    }
+}
+
+void lboard_t::import(uint8_t * board) {
+    for (int i = 0; i < BOARDSIZE; i++) {
+        for (int j = 0; j < BOARDSIZE; j++) {
+            // Don't know why this doesn't work
+            //            board_data[i][j] =
+            //                    board[i][j];
+        }
+    }
+}
+
+// bool player: 0=self 1=enemy
+// board_data format: 0000dcba
+// a = player 0 ship
+// b = player 1 ship
+// c = player 0 fired
+// d = player 1 fired
+
+bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data
+    return board_data[loc.x][loc.y]&(1 << (player));
+}
+
+void lboard_t::set_ship(bool player, location loc) {
+    board_data[loc.x][loc.y] |= (1 << (player));
+}
+
+bool lboard_t::get_fired(bool player, location loc) {
+    return board_data[loc.x][loc.y]&(1 << (2 + player));
+}
+
+void lboard_t::set_fired(bool player, location loc) {
+    board_data[loc.x][loc.y] |= (1 << (2 + player));
+}
+
+uint8_t lboard_t::get_tile_raw(location loc) {
+    return board_data[loc.x][loc.y];
+}

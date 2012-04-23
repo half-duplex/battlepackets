@@ -22,21 +22,14 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// EXAMPLE OF HOW TO DECIDE IF IT'S WINDOWS OR NOT:
-// DO NOT EDIT stuff that is not your OS, because you won't be able to test it!
-#if defined(__WIN32__) || defined(_WIN32)
-// windows stuff TODO
-#else
-// linux and mac stuff
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h> //for memset
-#include <cstdlib> //for exit 
+#include <cstdlib> //for exit
 #include <unistd.h> // for fork
-#endif
 
 #define DEBUG
 #ifdef DEBUG
@@ -60,22 +53,22 @@ void netrecv(int sockfd, char * data[], int datalen) {
 
 
 
-    recv(sockfd, data, datalen, 0); //this 0 may have to change 
+    recv(sockfd, data, datalen, 0); //this 0 may have to change
 
 
 }
 
-int netconnect(char * addr[], int addrlen, int port) { //create a socket for the client to talk to the server 
+int netconnect(char * addr[], int addrlen, int port) { //create a socket for the client to talk to the server
 
     int clientsocket;
     struct sockaddr_in server; //will contain information about the server the client will connect to
 
-    clientsocket = socket(AF_INET, SOCK_STREAM, 0); //creates a socket for the client 
+    clientsocket = socket(AF_INET, SOCK_STREAM, 0); //creates a socket for the client
 
     memset(&server, 0, sizeof (server)); //to ensure theres no garbage data in the struct
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr("127.0.0.1"); //Local loopback for now, will need to be set to 
-    //server's address using the agrs in the function 
+    server.sin_addr.s_addr = inet_addr("127.0.0.1"); //Local loopback for now, will need to be set to
+    //server's address using the agrs in the function
     server.sin_port = htons(port);
 
     connect(clientsocket, (struct sockaddr *) &server, sizeof (struct sockaddr));
@@ -121,7 +114,7 @@ int netlisten(int port) {
     }
 
     while (1) {
-        listensocket = listen(serversocket, 50); //50 = number of allowed connections 
+        listensocket = listen(serversocket, 50); //50 = number of allowed connections
         if (listensocket < 0) {
             cout << "error listening" << endl;
         }
