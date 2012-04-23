@@ -63,7 +63,7 @@ BPwin::BPwin() {
     gamemode = GM_SHIP1;
     placing.x = 255;
     count = 0;
-    
+
 
 
 
@@ -103,8 +103,8 @@ BPwin::vboard::vboard() {
         m_box_board.pack_start(m_box_tile_column[j]);
         for (int i = 0; i < BOARDSIZE; i++) { // for each in a column
             // Set up the tile
-            m_button[i][j].set_image_position(Gtk::POS_LEFT);
-            m_button[i][j].set_border_width(0);
+            m_button[j][i].set_image_position(Gtk::POS_LEFT);
+            m_button[j][i].set_border_width(0);
         }
     }
 }
@@ -119,25 +119,25 @@ void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
     for (j = 0; j < BOARDSIZE; j++) { // for each column
         for (i = 0; i < BOARDSIZE; i++) { // for each in a column
             // create images
-            m_img_set[0][i][j].set(M_IMG_EMPTY);
-            m_img_set[0][i][j].set_padding(0, 0);
-            m_img_set[1][i][j].set(M_IMG_HIT);
-            m_img_set[1][i][j].set_padding(0, 0);
+            m_img_set[0][j][i].set(M_IMG_EMPTY);
+            m_img_set[0][j][i].set_padding(0, 0);
+            m_img_set[1][j][i].set(M_IMG_HIT);
+            m_img_set[1][j][i].set_padding(0, 0);
             if (!which) {
-                m_img_set[2][i][j].set(M_IMG_SHIP);
-                m_img_set[2][i][j].set_padding(0, 0);
+                m_img_set[2][j][i].set(M_IMG_SHIP);
+                m_img_set[2][j][i].set_padding(0, 0);
             } else {
-                m_img_set[2][i][j].set(M_IMG_MISS);
-                m_img_set[2][i][j].set_padding(0, 0);
+                m_img_set[2][j][i].set(M_IMG_MISS);
+                m_img_set[2][j][i].set_padding(0, 0);
             }
 
             // assign image
-            m_button[i][j].set_image_position(Gtk::POS_LEFT);
-            m_button[i][j].set_image(m_img_set[0][i][j]);
-            m_button[i][j].set_border_width(0);
-            m_box_tile_column[j].pack_start(m_button[i][j]);
+            m_button[j][i].set_image_position(Gtk::POS_LEFT);
+            m_button[j][i].set_image(m_img_set[0][j][i]);
+            m_button[j][i].set_border_width(0);
+            m_box_tile_column[j].pack_start(m_button[j][i]);
             if (which == 0) { // only my board needs signals
-                m_button[i][j].signal_clicked().connect(
+                m_button[j][i].signal_clicked().connect(
                         sigc::bind<int>(
                         sigc::mem_fun(that, &BPwin::tile_clicked)
                         , i * BOARDSIZE + j));
@@ -161,52 +161,45 @@ void BPwin::tile_clicked(int btn_num) {
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
             log("You placed a submarine!\n");
-            mj[loc.x][loc.y] = 1;
-#warning Change tile
-#warning Send to server
+            mj[loc.x][loc.y] = 1; // TODO: This will change once lboard is implemented
+            boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
+            // TODO: Send to server
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
-           
-            if (mj[(int)loc.x][(int)loc.y]==1)
-            {
+
+            if (mj[(int) loc.x][(int) loc.y] == 1) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
-            }
-            else
-            mj[(int)loc.x][(int)loc.y]=1;
-             log("You placed a submarine!\n");
-           
+            } else
+                mj[(int) loc.x][(int) loc.y] = 1;
+            log("You placed a submarine!\n");
+
             gamemode = GM_SHIP3;
 
             break;
         case GM_SHIP3: // placing ship: see client.h typedef enum t_gamemode
-              if (mj[(int)loc.x][(int)loc.y]==1)
-            {
+            if (mj[(int) loc.x][(int) loc.y] == 1) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (count==0)
-            {
-            log("You placed a destroyer!\n");
-            mj[(int)loc.x][(int)loc.y]=1;
-            prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-            
-            count++;
-            break;
-            
-            }
-            else if (count== 1)
-            {
-                loc.x = (int)loc.x;
-                loc.y = (int)loc.y;
-                
-                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
-                {
+            if (count == 0) {
+                log("You placed a destroyer!\n");
+                mj[(int) loc.x][(int) loc.y] = 1;
+                prev.x = (int) loc.x;
+                prev.y = (int) loc.y;
+
+                count++;
+                break;
+
+            } else if (count == 1) {
+                loc.x = (int) loc.x;
+                loc.y = (int) loc.y;
+
+                if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a destroyer!!!\n");
-                    mj[(int)loc.x][(int)loc.y]=1;
-                    count=0;
+                    mj[(int) loc.x][(int) loc.y] = 1;
+                    count = 0;
                     gamemode = GM_SHIP4;
 
                     break;
@@ -220,32 +213,26 @@ void BPwin::tile_clicked(int btn_num) {
 
 
         case GM_SHIP4: // placing ship: see client.h typedef enum t_gamemode
-              if (mj[(int)loc.x][(int)loc.y]==1)
-            {
+            if (mj[(int) loc.x][(int) loc.y] == 1) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (count==0)
-            {
-            log("You placed a destroyer!\n");
-            mj[(int)loc.x][(int)loc.y]=1;
-            prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-            
-            count++;
-            break;
-            
-            }
-            else if (count == 1)
-            {
-                loc.x = (int)loc.x;
-                loc.y = (int)loc.y;
-                
-              if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
-                   
-                {
+            if (count == 0) {
+                log("You placed a destroyer!\n");
+                mj[(int) loc.x][(int) loc.y] = 1;
+                prev.x = (int) loc.x;
+                prev.y = (int) loc.y;
+
+                count++;
+                break;
+
+            } else if (count == 1) {
+                loc.x = (int) loc.x;
+                loc.y = (int) loc.y;
+
+                if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a destroyer!!!\n");
-                    mj[(int)loc.x][(int)loc.y]=1;
+                    mj[(int) loc.x][(int) loc.y] = 1;
                     count = 0;
                     gamemode = GM_SHIP5;
 
@@ -260,45 +247,37 @@ void BPwin::tile_clicked(int btn_num) {
 
             break;
         case GM_SHIP5: // placing ship: see client.h typedef enum t_gamemode
-               if (mj[(int)loc.x][(int)loc.y]==1)
-            {
+            if (mj[(int) loc.x][(int) loc.y] == 1) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (count==0)
-            {
-            log("You placed a cruiser!\n");
-            mj[(int)loc.x][(int)loc.y]=1;
-            prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-            
-            count++;
-            break;
-            
-            }
-            else if (count == 1||count == 2)
-            {
-                loc.x = (int)loc.x;
-                loc.y = (int)loc.y;
-                
-                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
-                {
+            if (count == 0) {
+                log("You placed a cruiser!\n");
+                mj[(int) loc.x][(int) loc.y] = 1;
+                prev.x = (int) loc.x;
+                prev.y = (int) loc.y;
+
+                count++;
+                break;
+
+            } else if (count == 1 || count == 2) {
+                loc.x = (int) loc.x;
+                loc.y = (int) loc.y;
+
+                if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a cruiser!!!\n");
-                    mj[(int)loc.x][(int)loc.y]=1;
-                    prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-                    if(count == 2)
-                    {
-                    count = 0;
-                    gamemode = GM_SHIP6;
-                    break;
+                    mj[(int) loc.x][(int) loc.y] = 1;
+                    prev.x = (int) loc.x;
+                    prev.y = (int) loc.y;
+                    if (count == 2) {
+                        count = 0;
+                        gamemode = GM_SHIP6;
+                        break;
                     }
-            count++;
-                    
-            break;
-                }
-                else
-                {
+                    count++;
+
+                    break;
+                } else {
                     log("You can't split up your ship!!!\n");
                     break;
                 }
@@ -307,95 +286,79 @@ void BPwin::tile_clicked(int btn_num) {
 
 
         case GM_SHIP6: // placing ship: see client.h typedef enum t_gamemode
-              if (mj[(int)loc.x][(int)loc.y]==1)
-            {
+            if (mj[(int) loc.x][(int) loc.y] == 1) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (count==0)
-            {
-            log("You placed a battleship!\n");
-            mj[(int)loc.x][(int)loc.y]=1;
-            prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-            
-            count++;
-            break;
-            
-            }
-            else if (count == 1||count == 2||count==3)
-            {
-                loc.x = (int)loc.x;
-                loc.y = (int)loc.y;
-                
-                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
-                {
+            if (count == 0) {
+                log("You placed a battleship!\n");
+                mj[(int) loc.x][(int) loc.y] = 1;
+                prev.x = (int) loc.x;
+                prev.y = (int) loc.y;
+
+                count++;
+                break;
+
+            } else if (count == 1 || count == 2 || count == 3) {
+                loc.x = (int) loc.x;
+                loc.y = (int) loc.y;
+
+                if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a battleship!!\n");
-                    mj[(int)loc.x][(int)loc.y]=1;
-                    prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-                    if(count == 3)
-                    {
-                    count = 0;
-                    gamemode = GM_SHIP7;
-                    break;
+                    mj[(int) loc.x][(int) loc.y] = 1;
+                    prev.x = (int) loc.x;
+                    prev.y = (int) loc.y;
+                    if (count == 3) {
+                        count = 0;
+                        gamemode = GM_SHIP7;
+                        break;
                     }
-            count++;
-                    
-            break;
-                }
-                else
-                {
+                    count++;
+
+                    break;
+                } else {
                     log("You can't split up your ship!!!\n");
                     break;
                 }
             }
 
         case GM_SHIP7: // placing ship: see client.h typedef enum t_gamemode
-           if (mj[(int)loc.x][(int)loc.y]==1)
-            {
+            if (mj[(int) loc.x][(int) loc.y] == 1) {
                 log("Dude. There's already a ship there. Try again.\n");
                 break;
             }
-            if (count==0)
-            {
-            log("You placed a carrier!\n");
-            mj[(int)loc.x][(int)loc.y]=1;
-            prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-            
-            count++;
-            break;
-            
-            }
-            else if (count == 1||count == 2||count==3||count==4)
-            {
-                loc.x = (int)loc.x;
-                loc.y = (int)loc.y;
-                
-                 if((loc.x ==prev.x && ((loc.y==(prev.y-1))||loc.y==(prev.y+1)))||(loc.y ==prev.y && ((loc.x==(prev.x-1))||loc.x==(prev.x+1))))
-                {
+            if (count == 0) {
+                log("You placed a carrier!\n");
+                mj[(int) loc.x][(int) loc.y] = 1;
+                prev.x = (int) loc.x;
+                prev.y = (int) loc.y;
+
+                count++;
+                break;
+
+            } else if (count == 1 || count == 2 || count == 3 || count == 4) {
+                loc.x = (int) loc.x;
+                loc.y = (int) loc.y;
+
+                if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a carrier!!\n");
-                    mj[(int)loc.x][(int)loc.y]=1;
-                    prev.x=(int)loc.x;
-            prev.y=(int)loc.y;
-                    if(count==4)
-                    {
-                    count=0;
-                    gamemode = GM_PLAYTIME;
-                    break;
+                    mj[(int) loc.x][(int) loc.y] = 1;
+                    prev.x = (int) loc.x;
+                    prev.y = (int) loc.y;
+                    if (count == 4) {
+                        count = 0;
+                        gamemode = GM_PLAYTIME;
+                        break;
                     }
-            count++;
-                    
-            break;
-                }
-                else
-                {
+                    count++;
+
+                    break;
+                } else {
                     log("You can't split up your ship!!!\n");
                     break;
                 }
             }
-#warning Do stuff
+            // TODO: Do stuff
             break;
         case GM_PLAYTIME: // ingame
             log("Server has not sent game info!\n");
