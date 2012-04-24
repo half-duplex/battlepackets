@@ -466,22 +466,41 @@ void BPwin::Connwin::do_connect() {
     }
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
     char addr[] = "localhost";
-    netconnect(addr, strlen(addr), 7777, nethandler);
+    connect();
     // TODO: Send handshake packet
 
     gtk_main_quit();
 }
 
-void nethandler(int sockfd, char * data, int datalen) {
-    if (datalen < 1) return;
-    switch (data[0]) {
-        case 0: // Handshake
-            handshake_t * handshake;
-            handshake = new handshake_t(data, datalen);
-            // display game ID
-            break;
-        default:
-            cout << "Invalid packet recieved.\n";
-            break;
+int socketid;
+
+void connect() {
+    char addr[] = "localhost";
+    int port = SERVPORT;
+    // connect, spawn wait_data with socketid
+    boost::thread waiter(wait_data);
+}
+
+void wait_data() {
+    for (;;) {
+        // wait for data on socketid (global)
+//        if (datalen < 1) return;
+//        switch (data[0]) {
+//            case 0: // Handshake
+//                handshake_t * handshake;
+//                handshake = new handshake_t(data, datalen);
+//                // display game ID
+//                break;
+//            default:
+//                cout << "Invalid packet recieved.\n";
+//                break;
+//        }
     }
+}
+
+// called like:
+// send_data((void*)myhandshake, sizeof(handshake_t));
+
+void send_data(void * data, int datalen) {
+    // send data using socketid (global)
 }

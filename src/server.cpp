@@ -49,23 +49,41 @@ int main_server(int argc, char** argv) {
     }
 #endif
 
+    player_t * player;
+    int sockfd;
 
-    // Set up shared stuff
-    // Launch first net listener
+    // make socket
 
-    boost::thread listen(netlisten, 7777);
-    listen.join();
-
-
-
-
-
-    //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
-
-
-
-    // Do something so that it doesn't quit until the last thread is gone?
-    // semaphore, maybe?
+    for (;;) {
+        // when a connection is made,
+        // accept
+        //        player = new player_t(sockfd);
+    }
 
     return 0;
+}
+
+player_t::player_t(int new_sockfd) {
+    sockfd = new_sockfd;
+    boost::thread waiter(wait_data, this);
+}
+
+player_t::~player_t() {
+
+}
+
+void wait_data(player_t * player) {
+    for (;;) {
+        // wait for data on sockfd
+
+        //        if(connection is dead){
+        //            delete player;
+        //        }
+
+        // do stuff with the data ( see client.cpp wait_data )
+    }
+}
+
+void player_t::send_data(void * data, int datalen) {
+    // send on sockfd
 }

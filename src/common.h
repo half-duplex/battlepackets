@@ -25,6 +25,7 @@
 #ifndef COMMON_H
 #define	COMMON_H
 
+#define SERVPORT 7777
 #define BOARDSIZE 10
 #define PROTOVERSION 0
 

@@ -27,17 +27,20 @@
 
 #include "common.h"
 
-int main_server(int argc, char** argv);
-
 struct player_t;
 struct game_t;
 
+int main_server(int argc, char** argv);
+void wait_data(player_t * player);
+
 struct player_t {
 public:
-    player_t();
+    player_t(int new_sockfd);
     ~player_t();
     bool setgame(); // returns success
+    void send_data(void * data, int datalen);
 private:
+    int sockfd;
     game_t * game;
 };
 
