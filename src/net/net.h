@@ -27,7 +27,7 @@
 
 
 
-//handshake 
+//handshake
 
 struct handshake {
     char pktID;
@@ -37,7 +37,7 @@ struct handshake {
     int gameID[8];
 };
 
-//move 
+//move
 
 struct move {
     char ID; // = 1
@@ -46,7 +46,7 @@ struct move {
     char action; //each action will have a value of 0-7 (see protocol)
 };
 
-//board refresh     
+//board refresh
 
 struct refresh {
     char ID; // = 2
@@ -57,7 +57,7 @@ struct refresh {
 
 struct chat {
     char ID; // = 3
-    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent 
+    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
     short size;
     char msg[100];
 };
@@ -71,7 +71,7 @@ struct chat {
  * returns:     int - the socket created
  */
 //int netconnect(char * addr[], int addrlen, int port);
-void* netconnect(void*);
+void netconnect();
 /* netlisten (for server)
  * Creates a socket for incoming connections
  (* arguments:   int port - the target port) << need to work on, listens on port 7777 for now

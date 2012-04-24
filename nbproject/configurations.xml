@@ -8,6 +8,10 @@
           </df>
         </df>
       </df>
+      <df name="local">
+        <in>client.cpp</in>
+        <in>client.h</in>
+      </df>
       <df name="src">
         <df name="net">
           <in>net.cpp</in>
@@ -102,8 +106,6 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/client.h" ex="true" tool="3" flavor="0">
-      </item>
       <item path="src/client_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
@@ -118,18 +120,12 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/common.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="src/net/net.h" ex="true" tool="3" flavor="0">
-      </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
             <pElem>/usr/include/gio-unix-2.0/</pElem>
           </incDir>
         </ccTool>
-      </item>
-      <item path="src/server.h" ex="true" tool="3" flavor="0">
       </item>
       <item path="src/server_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>

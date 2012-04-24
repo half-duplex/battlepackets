@@ -88,6 +88,10 @@ protected:
     // Big frames
     Gtk::VBox m_box_everything;
     Gtk::HBox m_box_boards;
+    Gtk::HBox m_box_chat_input;
+    Gtk::Button m_btn_chat_send;
+    void chat_send();
+    void draw_connect_window();
 
     struct vboard {
         Gtk::HBox m_box_board;
@@ -114,14 +118,21 @@ protected:
     Gtk::TextView m_log;
     Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 
-    // Menus
-    Gtk::MenuBar m_menu_bar;
-    Gtk::Menu m_menu_game;
-    Gtk::MenuItem m_menu_game_connect;
-    Gtk::MenuItem m_menu_game_refresh;
-    Gtk::Menu m_menu_help;
-    Gtk::MenuItem m_menu_help_manual;
-    Gtk::MenuItem m_menu_help_about;
+    // Connect button
+    Gtk::Button m_btn_connect;
+
+    class Connwin : public Gtk::Window {
+    public:
+        Connwin();
+        virtual ~Connwin();
+    protected:
+        Gtk::VBox m_box_everything;
+        Gtk::Entry m_user;
+        Gtk::Entry m_pass;
+        Gtk::Entry m_game;
+        Gtk::Button m_btn_go;
+        void do_connect();
+    };
 };
 
 #endif	/* CLIENT_H */

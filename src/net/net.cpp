@@ -60,7 +60,7 @@ void netrecv(int sockfd, char * data[], int datalen) {
 }
 
 //int netconnect(char * addr[], int addrlen, int port) { //create a socket for the client to talk to the server
-void* netconnect(void*) {
+void netconnect() {
      char* server = "127.0.0.1"; //need to change
      struct sockaddr_in client;
 
