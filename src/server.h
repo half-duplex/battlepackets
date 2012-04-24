@@ -26,6 +26,7 @@
 #define	SERVER_H
 
 #include "common.h"
+#include <boost/thread.hpp>
 
 int main_server(int argc, char** argv);
 
@@ -36,9 +37,12 @@ struct player_t {
 public:
     player_t();
     ~player_t();
+    void set_tid(boost::thread * tid);
+    boost::thread * get_tid();
     bool setgame(); // returns success
 private:
     game_t * game;
+    boost::thread *tid;
 };
 
 struct game_t {
@@ -50,5 +54,11 @@ private:
     lboard_t board;
     player_t * players[2];
 };
+
+
+void serverhandler(int socket);
+
+
+
 
 #endif	/* SERVER_H */

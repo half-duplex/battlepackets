@@ -47,11 +47,12 @@ int main_client(int argc, char** argv);
 /* nethandler
  * called by net/netrecv when it gets data
  * arguments:   int sockfd - the socket data was recieved on
- *              char * data[] - the data to send
+ *              char * data - the data to send
  *              int datalen - the length of the data
  */
-//void nethandler(int sockfd, char * data[], int datalen);
-//not going to need this because the netrecv will handle the data and call the appropraite function
+void nethandler(int sockfd, char * data, int datalen);
+
+
 
 class BPwin : public Gtk::Window {
 public:

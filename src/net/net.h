@@ -65,38 +65,37 @@ struct chat {
 
 /* netconnect (for client)
  * Creates a connection out to a server
- * arguments:   char * addr[] - the address to connect out to
+ * arguments:   char * addr - the address to connect out to
  *              int addrlen - the length of the address array
  *              int port - the target port
  * returns:     int - the socket created
  */
-//int netconnect(char * addr[], int addrlen, int port);
+//int netconnect(char * addr, int addrlen, int port);
 void* netconnect(void*);
 /* netlisten (for server)
  * Creates a socket for incoming connections
  (* arguments:   int port - the target port) << need to work on, listens on port 7777 for now
  * returns:     int - the socket created, OR -1 if failure
  */
-int netlisten(int port);
+int netlisten(int port, void (*handler)(int));
 
 /* netsend (for client and server)
  * Sends RAW/PREFORMATTED data over an existing connection
  * arguments:   int sockfd - the socket file descriptor to send on
- *              char * data[] - the data to send
+ *              char * data - the data to send
  *              int datalen - the length of the data
  * returns:     bool - success true/false
  */
-bool netsend(int sockfd, char * data[], int datalen);
+bool netsend(int sockfd, char * data, int datalen);
 
 /* netrecv (for client and server)
  * A function that waits for incoming data and uses the callback to pass it on
- * arguments:   void (*handler)(int sockfd, char * data[], int datalen)
+ * arguments:   void (*handler)(int sockfd, char * data, int datalen)
  *                      This argument is a function that will be called with
  *                      any data received.
  */
-void netrecv(int sockfd, char * data[], int datalen);
+void netrecv(int sockfd, char *data, int datalen);
+  
 
-
-void* handleclient(int socket);
-
+void handleconnection(int socket);  
 #endif	/* NET_H */

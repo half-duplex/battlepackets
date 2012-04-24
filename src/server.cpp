@@ -27,6 +27,7 @@
 #include "server.h"
 #include "common.h"
 #include "net/net.h"
+#include "sys/socket.h"
 #define DEBUG
 
 using namespace std;
@@ -39,6 +40,14 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
+
+void serverhandler(int socket) {
+    
+    while(1) {
+        //wait for data, then when it gets some process it
+    }
+}
+
 int main_server(int argc, char** argv) {
 #ifdef DEBUG
     if (argc != 2) {
@@ -48,19 +57,27 @@ int main_server(int argc, char** argv) {
         }
     }
 #endif
+ 
+   
 
+    
 
     // Set up shared stuff
     // Launch first net listener
 
-    boost::thread listen(netlisten, 7777);
+    boost::thread listen(netlisten, '7777'); //"bind" problem thread
+                                                                //serverhandler is passed as the callback
     listen.join();
+    
+    
 
-
+    
+    
 
 
 
     //boost::thread nameOfThreadInstance(functionToRun, firstArgument, secondArgument, callbackFunction, etc);
+
 
 
 
@@ -69,3 +86,4 @@ int main_server(int argc, char** argv) {
 
     return 0;
 }
+

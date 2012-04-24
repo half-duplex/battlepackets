@@ -60,13 +60,14 @@ BPwin::BPwin() {
     gamemode = GM_SHIP1; // TODO: Put back to GM_START once connecting is implemented
     placing.x = 255;
 
-    pthread_t tid = 0;
+    //pthread_t tid = 0;
 
     
     int port = 7777;
 
-    pthread_create(&tid, 0, &netconnect, (void*) port);
-    pthread_detach(tid);
+//    pthread_create(&tid, 0, &netconnect, (void*) port);
+//    pthread_detach(tid);
+   //netconnect()
 
     set_title("Battlepackets!");
     set_border_width(10);

@@ -8,10 +8,6 @@
           </df>
         </df>
       </df>
-      <df name="local">
-        <in>client.cpp</in>
-        <in>client.h</in>
-      </df>
       <df name="src">
         <df name="net">
           <in>net.cpp</in>
@@ -123,14 +119,14 @@
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/server_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>
