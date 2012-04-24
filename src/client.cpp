@@ -25,6 +25,9 @@
 #include "client.h"
 #include <iostream>
 #include <boost/thread.hpp>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 #define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
 
@@ -472,12 +475,42 @@ void BPwin::Connwin::do_connect() {
     gtk_main_quit();
 }
 
-int socketid;
+int socketid; 
 
 void connect() {
-    char addr[] = "localhost";
+    char* serveraddr = "127.0.0.1";
     int port = SERVPORT;
     // connect, spawn wait_data with socketid
+    struct sockaddr_in client;
+    int socketid;
+    int * ptr;
+
+    socketid = socket(AF_INET, SOCK_STREAM, 0);
+    if (socketid < 0) {
+        std::cout << "client socket creation error" << std::endl;
+    }
+
+    ptr = (int*) malloc(sizeof (int));
+    *ptr = 1;
+
+    if (setsockopt(socketid, SOL_SOCKET, SO_KEEPALIVE, (char*) ptr, sizeof (int)) < 0) {
+        std::cout << "client set options error" << std::endl;
+    }
+
+    free(ptr);
+
+    client.sin_family = AF_INET;
+    client.sin_port = htons(port);
+    memset(&(client.sin_zero), 0, 8);
+    client.sin_addr.s_addr = inet_addr(serveraddr);
+
+    if (connect(socketid, (struct sockaddr*) &client, sizeof (client)) < 0) {
+        std::cout << "error connecting socket" << std::endl;
+    }
+
+    boost::thread clientthread(wait_data); //in this case, clientsocket is the socket ON THE CLIENT that data
+                                                                                //will be sent to from the server 
+
     boost::thread waiter(wait_data);
 }
 
