@@ -468,7 +468,7 @@ void BPwin::Connwin::do_connect() {
     netconnect();
     // TODO: Send handshake packet
 
-    destroy_();
+    gtk_main_quit();
 }
 
 void nethandler(int sockfd, char * data[], int datalen) {
