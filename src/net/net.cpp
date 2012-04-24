@@ -22,6 +22,7 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "net.h"
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -29,39 +30,50 @@
 #include <sys/socket.h>
 #include <string.h> //for memset
 #include <cstdlib> //for exit
-#include "iostream"
-#include "../server.h"
-#include <boost/thread.hpp>
+#include <unistd.h> // for fork
+#include <pthread.h>
+#include <iostream> // for cout (debugging)
+using namespace std;
 
-
-
-
-
-// common stuff
-
-
-// iostream is not allowed. no cout or cin here.
-
-bool netsend(int sockfd, char * data, int datalen) {
-
-
+bool netsend(int sockfd, char * data[], int datalen) {
     send(sockfd, data, datalen, 0);
+    return true;
 }
 
-void netrecv(int sockfd, char * data, int datalen) {
+int netconnect(char * addr, int addrlen, int port, void (*callback)(int sockfd, char * data, int datalen)) { //create a socket for the client to talk to the server
+    char* server = "127.0.0.1"; //need to change // TODO: need to make nonstatic: should be static in the client
+    struct sockaddr_in client;
+
+    char buffer[1024];
+    int buffer_len = 0;
+    int bytes;
+    int clientsocket;
+    int * ptr;
+
+    clientsocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientsocket < 0) {
+        cout << "client socket creation error" << endl;
+    }
+
+    ptr = (int*) malloc(sizeof (int));
+    *ptr = 1;
+
+    if (setsockopt(clientsocket, SOL_SOCKET, SO_KEEPALIVE, (char*) ptr, sizeof (int)) < 0) {
+        cout << "client set options error" << endl;
+    }
+
+    free(ptr);
+
+    client.sin_family = AF_INET;
+    client.sin_port = htons(port);
+    memset(&(client.sin_zero), 0, 8);
+    client.sin_addr.s_addr = inet_addr(server);
+
+    if (connect(clientsocket, (struct sockaddr*) &client, sizeof (client)) < 0) {
+        cout << "error connecting socket" << endl;
+    }
 
 
-
-    recv(sockfd, data, datalen, 0); //this 0 may have to change
-
-
-}
-
-/* this belongs in net because its common
- need to add a function (callback) as an argument
- then depending on whether or not its the client
- or the server requesting to use it they will
- pass it a different function to use*/
 
 //void handleconnection(int socket, void (*handler)(int socket)) {
 
@@ -186,14 +198,11 @@ int netlisten(int port) {
     while (true) {
         std::cout << "server ready and waiting!" << std::endl;
         clientsocket = (int*) malloc(sizeof (int));
-        if ((*clientsocket = accept(serversocket, (sockaddr*) & svradr, &len)) != -1) { //in this case, clientsocket is the client socket ON THE SERVER
-            //serversocket is the listening socket on the server
-            std::cout << "got one!" << std::endl;
+        if ((*clientsocket = accept(serversocket, (sockaddr*) & svradr, &len)) != -1) {
+            cout << "got one!" << endl;
 
-            //            pthread_create(&tid, 0, &handleclient, (void*)clientsocket);
-            //            pthread_detach(tid);
-            boost::thread serverthread(handleconnection, *clientsocket); //the handler in this case will be a function that sits on the 
-            //server and loops as it waits for data... i think
+            pthread_create(&tid, 0, &handleclient, (void*) clientsocket);
+            pthread_detach(tid);
         } else {
             std::cout << "we're not very accepting here" << std::endl;
         }
@@ -203,6 +212,35 @@ int netlisten(int port) {
 
 }
 
+// Packets
 
+handshake_t::handshake_t() {
+}
 
+handshake_t::handshake_t(char * data, int datalen) {
+    if (datalen != sizeof (handshake_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    if (protover != PROTOVERSION) {
+        cout << "Old protocol version!\n";
+        return;
+    }
+    if (boardsize != BOARDSIZE) {
+        cout << "Different board size!\n";
+        return;
+    }
+    username[19 - 3] = '\0';
+    // gameid is restricted to printable characters less ' '
+    gameid[52 - 20] = '\0';
+}
 
+move_t::move_t(){
+}
+
+move_t::move_t(char* data, int datalen){
+    if (datalen != sizeof (move_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (move_t));
+    if (loc.x>=BOARDSIZE||loc.y>=BOARDSIZE){
+        cout << "Invalid coordinates\n";
+    }
+    // action needs checking
+}

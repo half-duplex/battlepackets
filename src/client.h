@@ -44,15 +44,13 @@
 
 int main_client(int argc, char** argv);
 
-/* nethandler
- * called by net/netrecv when it gets data
- * arguments:   int sockfd - the socket data was recieved on
- *              char * data - the data to send
- *              int datalen - the length of the data
+/* wait_data
+ * spawned as a thread to wait for and handle data
  */
-void nethandler(int sockfd, char * data, int datalen);
+void wait_data();
+void send_data(void * data, int datalen);
 
-
+void connect();
 
 class BPwin : public Gtk::Window {
 public:
@@ -89,6 +87,10 @@ protected:
     // Big frames
     Gtk::VBox m_box_everything;
     Gtk::HBox m_box_boards;
+    Gtk::HBox m_box_chat_input;
+    Gtk::Button m_btn_chat_send;
+    void chat_send();
+    void draw_connect_window();
 
     struct vboard {
         Gtk::HBox m_box_board;
@@ -115,14 +117,21 @@ protected:
     Gtk::TextView m_log;
     Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 
-    // Menus
-    Gtk::MenuBar m_menu_bar;
-    Gtk::Menu m_menu_game;
-    Gtk::MenuItem m_menu_game_connect;
-    Gtk::MenuItem m_menu_game_refresh;
-    Gtk::Menu m_menu_help;
-    Gtk::MenuItem m_menu_help_manual;
-    Gtk::MenuItem m_menu_help_about;
+    // Connect button
+    Gtk::Button m_btn_connect;
+
+    class Connwin : public Gtk::Window {
+    public:
+        Connwin();
+        virtual ~Connwin();
+    protected:
+        Gtk::VBox m_box_everything;
+        Gtk::Entry m_user;
+        Gtk::Entry m_pass;
+        Gtk::Entry m_game;
+        Gtk::Button m_btn_go;
+        void do_connect();
+    };
 };
 
 #endif	/* CLIENT_H */

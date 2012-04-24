@@ -24,44 +24,7 @@
 
 #ifndef NET_H
 #define	NET_H
-
-
-
-//handshake 
-
-struct handshake {
-    char pktID;
-    char protocolVersion;
-    char boardsize;
-    char username[8];
-    int gameID[8];
-};
-
-//move 
-
-struct move {
-    char ID; // = 1
-    char x;
-    char y;
-    char action; //each action will have a value of 0-7 (see protocol)
-};
-
-//board refresh     
-
-struct refresh {
-    char ID; // = 2
-    char board[15][15]; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
-};
-
-//chat
-
-struct chat {
-    char ID; // = 3
-    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent 
-    short size;
-    char msg[100];
-};
-
+#include "../common.h"
 
 /* netconnect (for client)
  * Creates a connection out to a server
@@ -70,8 +33,8 @@ struct chat {
  *              int port - the target port
  * returns:     int - the socket created
  */
-//int netconnect(char * addr, int addrlen, int port);
-void* netconnect(void*);
+int netconnect(char * addr, int addrlen, int port, void (*callback)(int sockfd, char * data, int datalen));
+
 /* netlisten (for server)
  * Creates a socket for incoming connections
  (* arguments:   int port - the target port) << need to work on, listens on port 7777 for now
@@ -97,5 +60,41 @@ bool netsend(int sockfd, char * data, int datalen);
 void netrecv(int sockfd, char *data, int datalen);
   
 
-void handleconnection(int socket);  
+
+void* handleclient(int socket);
+
+// Packet types
+
+struct handshake_t {
+    char pktid; // = 0
+    char protover; // = PROTOVERSION
+    char boardsize; // = BOARDSIZE
+    char username[19 - 3];
+    char gameid[52 - 20];
+
+    handshake_t();
+    handshake_t(char * data, int datalen);
+};
+
+struct move_t {
+    char ID; // = 1
+    location loc;
+    char action; // (see protocol)
+
+    move_t();
+    move_t(char * data, int datalen);
+};
+
+struct refresh {
+    char ID; // = 2
+    char board[15][15]; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
+};
+
+struct chat {
+    char ID; // = 3
+    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
+    short size;
+    char msg[100];
+};
+
 #endif	/* NET_H */

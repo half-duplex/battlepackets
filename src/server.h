@@ -28,19 +28,22 @@
 #include "common.h"
 #include <boost/thread.hpp>
 
-int main_server(int argc, char** argv);
-
 struct player_t;
 struct game_t;
 
+int main_server(int argc, char** argv);
+void wait_data(player_t * player);
+
 struct player_t {
 public:
-    player_t();
+    player_t(int new_sockfd);
     ~player_t();
     void set_tid(boost::thread * tid);
     boost::thread * get_tid();
     bool setgame(); // returns success
+    void send_data(void * data, int datalen);
 private:
+    int sockfd;
     game_t * game;
     boost::thread *tid;
 };
