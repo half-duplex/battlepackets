@@ -31,18 +31,8 @@
 #include <cstdlib> //for exit
 #include <unistd.h> // for fork
 #include <pthread.h>
-
-#define DEBUG
-#ifdef DEBUG
-#include <iostream>
+#include <iostream> // for cout (debugging)
 using namespace std;
-#endif
-
-
-// common stuff
-
-
-// iostream is not allowed. no cout or cin here.
 
 bool netsend(int sockfd, char * data[], int datalen) {
 
@@ -50,49 +40,38 @@ bool netsend(int sockfd, char * data[], int datalen) {
     send(sockfd, data, datalen, 0);
 }
 
-void netrecv(int sockfd, char * data[], int datalen) {
+int netconnect(char * addr, int addrlen, int port, void (*callback)(int sockfd, char * data[], int datalen)) { //create a socket for the client to talk to the server
+    char* server = "127.0.0.1"; //need to change // TODO: need to make nonstatic: should be static in the client
+    struct sockaddr_in client;
 
+    char buffer[1024];
+    int buffer_len = 0;
+    int bytes;
+    int clientsocket;
+    int * ptr;
 
+    clientsocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientsocket < 0) {
+        cout << "client socket creation error" << endl;
+    }
 
-    recv(sockfd, data, datalen, 0); //this 0 may have to change
+    ptr = (int*) malloc(sizeof (int));
+    *ptr = 1;
 
+    if (setsockopt(clientsocket, SOL_SOCKET, SO_KEEPALIVE, (char*) ptr, sizeof (int)) < 0) {
+        cout << "client set options error" << endl;
+    }
 
-}
+    free(ptr);
 
-//int netconnect(char * addr[], int addrlen, int port) { //create a socket for the client to talk to the server
-void netconnect() {
-     char* server = "127.0.0.1"; //need to change
-     struct sockaddr_in client;
+    client.sin_family = AF_INET;
+    client.sin_port = htons(port);
+    memset(&(client.sin_zero), 0, 8);
+    client.sin_addr.s_addr = inet_addr(server);
 
-     char buffer[1024];
-     int buffer_len = 0;
-     int bytes;
-     int port = 7777;
-     int clientsocket;
-     int * ptr;
-
-     clientsocket = socket(AF_INET, SOCK_STREAM, 0);
-     if(clientsocket < 0) {
-         cout << "client socket creation error" << endl;
-     }
-
-     ptr = (int*)malloc(sizeof(int));
-     *ptr = 1;
-
-     if(setsockopt(clientsocket, SOL_SOCKET, SO_KEEPALIVE, (char*)ptr, sizeof(int)) < 0) {
-         cout << "client set options error" << endl;
-     }
-
-     free(ptr);
-
-     client.sin_family = AF_INET;
-     client.sin_port = htons(port);
-     memset(&(client.sin_zero), 0, 8);
-     client.sin_addr.s_addr = inet_addr(server);
-
-     if (connect(clientsocket, (struct sockaddr*)&client, sizeof(client)) < 0) {
-         cout << "error connecting socket" << endl;
-     }
+    if (connect(clientsocket, (struct sockaddr*) &client, sizeof (client)) < 0) {
+        cout << "error connecting socket" << endl;
+    }
 
 
 
@@ -181,7 +160,7 @@ int netlisten(int port) {
         if ((*clientsocket = accept(serversocket, (sockaddr*) & svradr, &len)) != -1) {
             cout << "got one!" << endl;
 
-            pthread_create(&tid, 0, &handleclient, (void*)clientsocket);
+            pthread_create(&tid, 0, &handleclient, (void*) clientsocket);
             pthread_detach(tid);
         } else {
             cout << "we're not very accepting here" << endl;

@@ -465,7 +465,8 @@ void BPwin::Connwin::do_connect() {
         return;
     }
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
-    netconnect();
+    char addr[] = "localhost";
+    netconnect(addr, strlen(addr), 7777, nethandler);
     // TODO: Send handshake packet
 
     gtk_main_quit();
