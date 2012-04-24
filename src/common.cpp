@@ -23,6 +23,10 @@
  */
 
 #include "common.h"
+#include <cstring>
+
+#include <iostream>
+using namespace std;
 
 location::location() {
 
@@ -86,4 +90,38 @@ void lboard_t::set_fired(bool player, location loc) {
 
 uint8_t lboard_t::get_tile_raw(location loc) {
     return board_data[loc.x][loc.y];
+}
+
+
+// Packets
+
+handshake_t::handshake_t() {
+}
+
+handshake_t::handshake_t(char * data, int datalen) {
+    if (datalen != sizeof (handshake_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    if (protover != PROTOVERSION) {
+        cout << "Old protocol version!\n";
+        return;
+    }
+    if (boardsize != BOARDSIZE) {
+        cout << "Different board size!\n";
+        return;
+    }
+    username[19 - 3] = '\0';
+    // gameid is restricted to printable characters less ' '
+    gameid[52 - 20] = '\0';
+}
+
+move_t::move_t() {
+}
+
+move_t::move_t(char* data, int datalen) {
+    if (datalen != sizeof (move_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (move_t));
+    if (loc.x >= BOARDSIZE || loc.y >= BOARDSIZE) {
+        cout << "Invalid coordinates\n";
+    }
+    // action needs checking
 }

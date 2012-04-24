@@ -8,11 +8,11 @@
           </df>
         </df>
       </df>
+      <df name="local">
+        <in>client.cpp</in>
+        <in>client.h</in>
+      </df>
       <df name="src">
-        <df name="net">
-          <in>net.cpp</in>
-          <in>net.h</in>
-        </df>
         <in>check.cpp</in>
         <in>client.cpp</in>
         <in>client.h</in>
@@ -81,13 +81,8 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <folder path="battlepackets/src/net">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
+      <item path="local/client.h" ex="true" tool="3" flavor="0">
+      </item>
       <item path="src/check.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
@@ -101,6 +96,8 @@
             <pElem>/usr/include/gio-unix-2.0/</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="src/client.h" ex="true" tool="3" flavor="0">
       </item>
       <item path="src/client_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
@@ -116,17 +113,21 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/common.h" ex="true" tool="3" flavor="0">
+      </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="src/server.h" ex="true" tool="3" flavor="0">
       </item>
       <item path="src/server_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>

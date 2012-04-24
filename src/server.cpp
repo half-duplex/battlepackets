@@ -26,7 +26,6 @@
 #include <boost/thread.hpp>
 #include "server.h"
 #include "common.h"
-#include "net/net.h"
 #include "sys/socket.h"
 #include <sys/types.h>
 #include <netinet/in.h> //for INADDR_ANY
@@ -44,7 +43,7 @@
  */
 
 void serverhandler(int socket) {
-    
+
     while(1) {
         //wait for data, then when it gets some process it
     }
@@ -59,8 +58,8 @@ int main_server(int argc, char** argv) {
         }
     }
 #endif
- 
-   
+
+
 
     player_t * player;
     int sockfd;
@@ -131,8 +130,8 @@ int main_server(int argc, char** argv) {
     for (;;) {
         // when a connection is made,
         // accept
-        
-        
+
+
         //        player = new player_t(sockfd);
     }
 
