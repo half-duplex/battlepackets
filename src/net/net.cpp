@@ -63,7 +63,7 @@ void netrecv(int sockfd, char * data, int datalen) {
  or the server requesting to use it they will
  pass it a different function to use*/
 
-void handleconnection(int socket, void (*handler)(int socket)) {
+//void handleconnection(int socket, void (*handler)(int socket)) {
 
     //        int *clientsocket = (int*)socket;
     //
@@ -80,6 +80,10 @@ void handleconnection(int socket, void (*handler)(int socket)) {
     //
     //
     //        free(clientsocket);
+//}
+
+void handleconnection(int socket) {
+    
 }
 
 
@@ -188,7 +192,7 @@ int netlisten(int port) {
 
             //            pthread_create(&tid, 0, &handleclient, (void*)clientsocket);
             //            pthread_detach(tid);
-            boost::thread serverthread(handleconnection, *clientsocket, serverhandler); //the handler in this case will be a function that sits on the 
+            boost::thread serverthread(handleconnection, *clientsocket); //the handler in this case will be a function that sits on the 
             //server and loops as it waits for data... i think
         } else {
             std::cout << "we're not very accepting here" << std::endl;
