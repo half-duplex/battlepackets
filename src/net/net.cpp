@@ -22,6 +22,7 @@
     along with Battlepackets.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "net.h"
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -36,9 +37,10 @@ using namespace std;
 
 bool netsend(int sockfd, char * data[], int datalen) {
     send(sockfd, data, datalen, 0);
+    return true;
 }
 
-int netconnect(char * addr, int addrlen, int port, void (*callback)(int sockfd, char * data[], int datalen)) { //create a socket for the client to talk to the server
+int netconnect(char * addr, int addrlen, int port, void (*callback)(int sockfd, char * data, int datalen)) { //create a socket for the client to talk to the server
     char* server = "127.0.0.1"; //need to change // TODO: need to make nonstatic: should be static in the client
     struct sockaddr_in client;
 
@@ -169,6 +171,35 @@ int netlisten(int port) {
 
 }
 
+// Packets
 
+handshake_t::handshake_t() {
+}
 
+handshake_t::handshake_t(char * data, int datalen) {
+    if (datalen != sizeof (handshake_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    if (protover != PROTOVERSION) {
+        cout << "Old protocol version!\n";
+        return;
+    }
+    if (boardsize != BOARDSIZE) {
+        cout << "Different board size!\n";
+        return;
+    }
+    username[19 - 3] = '\0';
+    // gameid is restricted to printable characters less ' '
+    gameid[52 - 20] = '\0';
+}
 
+move_t::move_t(){
+}
+
+move_t::move_t(char* data, int datalen){
+    if (datalen != sizeof (move_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (move_t));
+    if (loc.x>=BOARDSIZE||loc.y>=BOARDSIZE){
+        cout << "Invalid coordinates\n";
+    }
+    // action needs checking
+}

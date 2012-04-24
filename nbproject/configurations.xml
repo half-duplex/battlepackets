@@ -116,21 +116,21 @@
       <item path="src/common.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/server_wrap.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/gio-unix-2.0/</pElem>
+            <pElem>/usr/include/gio-unix-2.0</pElem>
           </incDir>
         </ccTool>
       </item>

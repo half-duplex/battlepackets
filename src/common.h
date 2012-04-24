@@ -26,6 +26,7 @@
 #define	COMMON_H
 
 #define BOARDSIZE 10
+#define PROTOVERSION 0
 
 #include <stdint.h>
 

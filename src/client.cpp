@@ -472,8 +472,16 @@ void BPwin::Connwin::do_connect() {
     gtk_main_quit();
 }
 
-void nethandler(int sockfd, char * data[], int datalen) {
-    // grab first char (packet id)
-    // switch(packetID){etc}
-    // do stuff like update the gui
+void nethandler(int sockfd, char * data, int datalen) {
+    if (datalen < 1) return;
+    switch (data[0]) {
+        case 0: // Handshake
+            handshake_t * handshake;
+            handshake = new handshake_t(data, datalen);
+            // display game ID
+            break;
+        default:
+            cout << "Invalid packet recieved.\n";
+            break;
+    }
 }

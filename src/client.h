@@ -50,7 +50,7 @@ int main_client(int argc, char** argv);
  *              char * data[] - the data to send
  *              int datalen - the length of the data
  */
-void nethandler(int sockfd, char * data[], int datalen);
+void nethandler(int sockfd, char * data, int datalen);
 
 class BPwin : public Gtk::Window {
 public:
