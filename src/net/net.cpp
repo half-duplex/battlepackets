@@ -35,8 +35,6 @@
 using namespace std;
 
 bool netsend(int sockfd, char * data[], int datalen) {
-
-
     send(sockfd, data, datalen, 0);
 }
 
