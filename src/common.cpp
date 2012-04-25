@@ -30,7 +30,6 @@ using namespace std;
 
 
 location::location() {
-
 }
 
 location::location(uint8_t ix, uint8_t iy) {

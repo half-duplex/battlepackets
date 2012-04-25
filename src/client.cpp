@@ -164,7 +164,6 @@ void BPwin::tile_clicked(int btn_num) {
             log("Next, is another submarine, which is one block =)\n");
 
             lboard.set_ship(0, loc);
-            cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
             // TODO: Send to server
             gamemode = GM_SHIP2;
@@ -176,7 +175,6 @@ void BPwin::tile_clicked(int btn_num) {
                 break;
             } else
                 lboard.set_ship(0, loc);
-            cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
 
             log("You placed a submarine!\n");
@@ -193,7 +191,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed destroyer block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -211,7 +208,6 @@ void BPwin::tile_clicked(int btn_num) {
                     log("Next, is another destroyer, which is two blocks =)\n");
 
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP4;
@@ -233,7 +229,6 @@ void BPwin::tile_clicked(int btn_num) {
                 log("You placed destroyer block!\n");
 
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -251,7 +246,6 @@ void BPwin::tile_clicked(int btn_num) {
                     log("Next, is a cruiser, which is three blocks =)\n");
 
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP5;
@@ -272,7 +266,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed a cruiser block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -288,7 +281,6 @@ void BPwin::tile_clicked(int btn_num) {
                     log("You placed a cruiser block!!!\n");
 
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
@@ -315,7 +307,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed a battleship block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -330,7 +321,6 @@ void BPwin::tile_clicked(int btn_num) {
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a battleship block!!\n");
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
@@ -357,7 +347,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed a carrier block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -372,7 +361,6 @@ void BPwin::tile_clicked(int btn_num) {
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a carrier block!!\n");
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
@@ -470,7 +458,7 @@ void BPwin::Connwin::do_connect() {
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
     connect();
     // TODO: Send handshake packet
-    
+
 
     gtk_main_quit();
 }
@@ -509,7 +497,7 @@ void connect() {
     }
 
     boost::thread clientthread(wait_data); //in this case, clientsocket is the socket ON THE CLIENT that data
-    //will be sent to from the server 
+    //will be sent to from the server
 
     boost::thread waiter(wait_data);
 }
@@ -520,7 +508,7 @@ void wait_data() {
         char data[MAXDATASIZE];
         int datalen;
         if (recv(socketid, data, datalen, 0) < 0) {
-            cout << "client error recieving data" << endl;
+            cout << "client error receiving data" << endl;
         } else { //handle the data
             //         wait for data on socketid (global)
             if (datalen < 1) return;
@@ -531,7 +519,7 @@ void wait_data() {
                     // display game ID
                     break;
                 default:
-                    cout << "client Invalid packet recieved.\n";
+                    cout << "client Invalid packet received.\n";
                     break;
             }
         }
@@ -543,7 +531,7 @@ void wait_data() {
 
 void send_data(void * data, int datalen) {
     // send data using socketid (global)
-    
-    
-    
+
+
+
 }
