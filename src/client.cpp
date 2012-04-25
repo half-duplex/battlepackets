@@ -30,8 +30,8 @@
 #include <netdb.h>
 
 #define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
-
-
+#define MAXDATASIZE 100
+int socketid; //global
 
 using namespace std;
 
@@ -468,14 +468,14 @@ void BPwin::Connwin::do_connect() {
         return;
     }
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
-    char addr[] = "localhost";
     connect();
     // TODO: Send handshake packet
+    
 
     gtk_main_quit();
 }
 
-int socketid; 
+
 
 void connect() {
     char* serveraddr = "127.0.0.1";
@@ -509,25 +509,32 @@ void connect() {
     }
 
     boost::thread clientthread(wait_data); //in this case, clientsocket is the socket ON THE CLIENT that data
-                                                                                //will be sent to from the server 
+    //will be sent to from the server 
 
     boost::thread waiter(wait_data);
 }
 
 void wait_data() {
+
     for (;;) {
-        // wait for data on socketid (global)
-//        if (datalen < 1) return;
-//        switch (data[0]) {
-//            case 0: // Handshake
-//                handshake_t * handshake;
-//                handshake = new handshake_t(data, datalen);
-//                // display game ID
-//                break;
-//            default:
-//                cout << "Invalid packet recieved.\n";
-//                break;
-//        }
+        char data[MAXDATASIZE];
+        int datalen;
+        if (recv(socketid, data, datalen, 0) < 0) {
+            cout << "client error recieving data" << endl;
+        } else { //handle the data
+            //         wait for data on socketid (global)
+            if (datalen < 1) return;
+            switch (data[0]) {
+                case 0: // Handshake
+                    handshake_t * handshake;
+                    handshake = new handshake_t(data, datalen);
+                    // display game ID
+                    break;
+                default:
+                    cout << "client Invalid packet recieved.\n";
+                    break;
+            }
+        }
     }
 }
 
@@ -536,4 +543,7 @@ void wait_data() {
 
 void send_data(void * data, int datalen) {
     // send data using socketid (global)
+    
+    
+    
 }

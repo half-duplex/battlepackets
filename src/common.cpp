@@ -24,6 +24,7 @@
 
 #include "common.h"
 
+
 location::location() {
 
 }
@@ -60,6 +61,40 @@ void lboard_t::import(uint8_t * board) {
         }
     }
 }
+
+// Packets
+
+handshake_t::handshake_t() {
+}
+
+handshake_t::handshake_t(char * data, int datalen) {
+    if (datalen != sizeof (handshake_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    if (protover != PROTOVERSION) {
+        std::cout << "Old protocol version!\n";
+        return;
+    }
+    if (boardsize != BOARDSIZE) {
+        std::cout << "Different board size!\n";
+        return;
+    }
+    username[19 - 3] = '\0';
+    // gameid is restricted to printable characters less ' '
+    gameid[52 - 20] = '\0';
+}
+
+move_t::move_t(){
+}
+
+move_t::move_t(char* data, int datalen){
+    if (datalen != sizeof (move_t)) return;
+    memcpy((void*) data, (void*) this, sizeof (move_t));
+    if (loc.x>=BOARDSIZE||loc.y>=BOARDSIZE){
+        std::cout << "Invalid coordinates\n";
+    }
+    // action needs checking
+}
+
 
 // bool player: 0=self 1=enemy
 // board_data format: 0000dcba

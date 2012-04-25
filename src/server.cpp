@@ -32,7 +32,7 @@
 #include <netinet/in.h> //for INADDR_ANY
 
 #define DEBUG
-
+#define MAXDATASIZE 100
 
 /*
  * Main server function
@@ -44,8 +44,8 @@
  */
 
 void serverhandler(int socket) {
-    
-    while(1) {
+
+    while (1) {
         //wait for data, then when it gets some process it
     }
 }
@@ -59,8 +59,8 @@ int main_server(int argc, char** argv) {
         }
     }
 #endif
- 
-   
+
+
 
     player_t * player;
     int sockfd;
@@ -119,7 +119,7 @@ int main_server(int argc, char** argv) {
 
     while (true) {
         std::cout << "server ready and waiting!" << std::endl;
-//        sockfd = (int *) malloc(sizeof (int)); ->> I dont think this is needed
+        //        sockfd = (int *) malloc(sizeof (int)); ->> I dont think this is needed
         if ((sockfd = accept(listensocket, (sockaddr*) & svradr, &len)) != -1) {
             std::cout << "got one!" << std::endl;
             player = new player_t(sockfd); //doing this will then create a thread in player_t
@@ -131,8 +131,8 @@ int main_server(int argc, char** argv) {
     for (;;) {
         // when a connection is made,
         // accept
-        
-        
+
+
         //        player = new player_t(sockfd);
     }
 
@@ -148,7 +148,14 @@ player_t::~player_t() {
 
 }
 
+int player_t::get_sockid() {
+    return sockfd;
+}
+
 void wait_data(player_t * player) {
+
+    int socketid = player->get_sockid();
+
     for (;;) {
         // wait for data on sockfd
 
@@ -157,6 +164,24 @@ void wait_data(player_t * player) {
         //        }
 
         // do stuff with the data ( see client.cpp wait_data )
+        char data[MAXDATASIZE];
+        int datalen;
+        if (recv(socketid, data, datalen, 0) < 0) {
+            std::cout << "server error recieving data" << std::endl;
+        } else { //handle the data
+            //         wait for data on socketid (global)
+            if (datalen < 1) return;
+            switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
+                case 0: // Handshake
+                    handshake_t * handshake;
+                    handshake = new handshake_t(data, datalen);
+                    // display game ID
+                    break;
+                default:
+                    std::cout << "server Invalid packet recieved.\n";
+                    break;
+            }
+        }
     }
 }
 

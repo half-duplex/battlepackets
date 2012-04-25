@@ -38,8 +38,7 @@ struct player_t {
 public:
     player_t(int new_sockfd);
     ~player_t();
-    void set_tid(boost::thread * tid);
-    boost::thread * get_tid();
+    int get_sockid(); //return sockid
     bool setgame(); // returns success
     void send_data(void * data, int datalen);
 private:
