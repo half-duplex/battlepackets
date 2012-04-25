@@ -33,6 +33,30 @@
 #include <string.h>
 #include "iostream"
 
+struct location {
+    uint8_t x;
+    uint8_t y;
+    location();
+    location(uint8_t ix, uint8_t iy);
+    void set(uint8_t ix, uint8_t iy);
+    void set(location il);
+};
+
+struct lboard_t {
+public:
+    lboard_t();
+    void import(uint8_t * board);
+    // bool player: 0=self 1=enemy
+    bool get_ship(bool player, location loc); // won't cheat on client: no data
+    void set_ship(bool player, location loc);
+    bool get_fired(bool player, location loc);
+    void set_fired(bool player, location loc);
+    uint8_t get_tile_raw(location loc);
+private:
+    uint8_t board_data[BOARDSIZE][BOARDSIZE];
+};
+
+
 // Packet types
 
 struct handshake_t {
@@ -44,15 +68,6 @@ struct handshake_t {
 
     handshake_t();
     handshake_t(char * data, int datalen);
-};
-
-struct location {
-    uint8_t x;
-    uint8_t y;
-    location();
-    location(uint8_t ix, uint8_t iy);
-    void set(uint8_t ix, uint8_t iy);
-    void set(location il);
 };
 
 struct move_t {
@@ -75,21 +90,5 @@ struct chat {
     short size;
     char msg[100];
 };
-
-struct lboard_t {
-public:
-    lboard_t();
-    void import(uint8_t * board);
-    // bool player: 0=self 1=enemy
-    bool get_ship(bool player, location loc); // won't cheat on client: no data
-    void set_ship(bool player, location loc);
-    bool get_fired(bool player, location loc);
-    void set_fired(bool player, location loc);
-    uint8_t get_tile_raw(location loc);
-private:
-    uint8_t board_data[BOARDSIZE][BOARDSIZE];
-};
-
-
 
 #endif	/* COMMON_H */

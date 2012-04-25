@@ -164,7 +164,6 @@ void BPwin::tile_clicked(int btn_num) {
             log("Next, is another submarine, which is one block =)\n");
 
             lboard.set_ship(0, loc);
-            cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
             // TODO: Send to server
             gamemode = GM_SHIP2;
@@ -176,7 +175,6 @@ void BPwin::tile_clicked(int btn_num) {
                 break;
             } else
                 lboard.set_ship(0, loc);
-            cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
 
             log("You placed a submarine!\n");
@@ -193,7 +191,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed destroyer block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -211,7 +208,6 @@ void BPwin::tile_clicked(int btn_num) {
                     log("Next, is another destroyer, which is two blocks =)\n");
 
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP4;
@@ -233,7 +229,6 @@ void BPwin::tile_clicked(int btn_num) {
                 log("You placed destroyer block!\n");
 
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -251,7 +246,6 @@ void BPwin::tile_clicked(int btn_num) {
                     log("Next, is a cruiser, which is three blocks =)\n");
 
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP5;
@@ -272,7 +266,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed a cruiser block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -288,7 +281,6 @@ void BPwin::tile_clicked(int btn_num) {
                     log("You placed a cruiser block!!!\n");
 
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
@@ -315,7 +307,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed a battleship block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -330,7 +321,6 @@ void BPwin::tile_clicked(int btn_num) {
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a battleship block!!\n");
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
@@ -357,7 +347,6 @@ void BPwin::tile_clicked(int btn_num) {
             if (count == 0) {
                 log("You placed a carrier block!\n");
                 lboard.set_ship(0, loc);
-                cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                 boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
@@ -372,7 +361,6 @@ void BPwin::tile_clicked(int btn_num) {
                 if ((loc.x == prev.x && ((loc.y == (prev.y - 1)) || loc.y == (prev.y + 1))) || (loc.y == prev.y && ((loc.x == (prev.x - 1)) || loc.x == (prev.x + 1)))) {
                     log("You placed a carrier block!!\n");
                     lboard.set_ship(0, loc);
-                    cout << "Ship at loc: " << (int) lboard.get_ship(0, loc) << endl;
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
@@ -527,7 +515,7 @@ void connect() {
     }
 
     boost::thread clientthread(wait_data); //in this case, clientsocket is the socket ON THE CLIENT that data
-    //will be sent to from the server 
+    //will be sent to from the server
 
 }
 
