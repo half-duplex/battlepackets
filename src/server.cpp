@@ -147,36 +147,37 @@ int player_t::get_sockid() {
 }
 
 void wait_data(player_t * player) {
-
+  
     int socketid = player->get_sockid();
 
-//    for (;;) {
-//        // wait for data on sockfd
-//
-//        //        if(connection is dead){
-//        //            delete player;
-//        //        }
-//
-//        // do stuff with the data ( see client.cpp wait_data )
-//        char data[MAXDATASIZE];
-//        int datalen;
-//        if (recv(socketid, data, datalen, 0) < 0) {
-//            std::cout << "server error recieving data" << std::endl;
-//        } else { //handle the data
-//            //         wait for data on socketid (global)
-//            if (datalen < 1) return;
-//            switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
-//                case 0: // Handshake
-//                    handshake_t * handshake;
-//                    handshake = new handshake_t(data, datalen);
-//                    // display game ID
-//                    break;
-//                default:
-//                    std::cout << "server Invalid packet recieved.\n";
-//                    break;
-//            }
-//        }
-//    }
+    for (;;) {
+        // wait for data on sockfd
+
+        //        if(connection is dead){
+        //            delete player;
+        //        }
+
+        // do stuff with the data ( see client.cpp wait_data )
+        char data[MAXDATASIZE];
+        int datalen;
+        if (recv(socketid, data, datalen, 0) < 0) {
+            std::cout << "server error recieving data" << std::endl;
+        } else { //handle the data
+            //         wait for data on socketid (global)
+            std::cout << "recv'd some data on socket" << socketid << std::endl;
+            if (datalen < 1) return;
+            switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
+                case 0: // Handshake
+                    handshake_t * handshake;
+                    handshake = new handshake_t(data, datalen);
+                    // display game ID
+                    break;
+                default:
+                    std::cout << "server Invalid packet recieved.\n";
+                    break;
+            }
+        }
+    }
 }
 
 void player_t::send_data(void * data, int datalen) {

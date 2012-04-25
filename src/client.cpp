@@ -477,8 +477,14 @@ void BPwin::Connwin::do_connect() {
     handshake_pkt.pktid = 0;
     handshake_pkt.boardsize = BOARDSIZE;
     handshake_pkt.protover = PROTOVERSION;
-
 //    send_data((void*)handshake_pkt, sizeof(handshake_t));
+    int test;
+    test = send(socketid, (const void *)&handshake_pkt, sizeof(handshake_t), 0);
+    if(test < 0) {
+        cout << "client sending error" << endl;
+        cout << test << endl;
+        cout << sizeof(handshake_pkt) << endl;
+    }
 
     gtk_main_quit();
 }
