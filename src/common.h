@@ -91,38 +91,5 @@ private:
 };
 
 
-// Packet types
-
-struct handshake_t {
-    char pktid; // = 0
-    char protover; // = PROTOVERSION
-    char boardsize; // = BOARDSIZE
-    char username[19 - 3];
-    char gameid[52 - 20];
-
-    handshake_t();
-    handshake_t(char * data, int datalen);
-};
-
-struct move_t {
-    char ID; // = 1
-    location loc;
-    char action; // (see protocol)
-
-    move_t();
-    move_t(char * data, int datalen);
-};
-
-struct refresh {
-    char ID; // = 2
-    char board[15][15]; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
-};
-
-struct chat {
-    char ID; // = 3
-    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
-    short size;
-    char msg[100];
-};
 
 #endif	/* COMMON_H */
