@@ -26,7 +26,6 @@
 #define	CLIENT_H
 
 #include "common.h"
-#include "net/net.h"
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/entry.h>

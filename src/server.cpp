@@ -26,7 +26,6 @@
 #include <boost/thread.hpp>
 #include "server.h"
 #include "common.h"
-#include "net/net.h"
 #include "sys/socket.h"
 #include <sys/types.h>
 #include <netinet/in.h> //for INADDR_ANY
@@ -45,7 +44,11 @@
 
 void serverhandler(int socket) {
 
+<<<<<<< HEAD
     while (1) {
+=======
+    while(1) {
+>>>>>>> branch 'saulsbranch' of https://code.google.com/p/battlepackets/
         //wait for data, then when it gets some process it
     }
 }
