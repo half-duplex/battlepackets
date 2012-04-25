@@ -44,11 +44,8 @@
 
 void serverhandler(int socket) {
 
-<<<<<<< HEAD
-    while (1) {
-=======
+
     while(1) {
->>>>>>> branch 'saulsbranch' of https://code.google.com/p/battlepackets/
         //wait for data, then when it gets some process it
     }
 }
