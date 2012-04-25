@@ -57,10 +57,4 @@ private:
     player_t * players[2];
 };
 
-
-void serverhandler(int socket);
-
-
-
-
 #endif	/* SERVER_H */

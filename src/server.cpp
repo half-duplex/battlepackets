@@ -42,14 +42,6 @@
  *              the text of the arguments
  */
 
-void serverhandler(int socket) {
-
-
-    while(1) {
-        //wait for data, then when it gets some process it
-    }
-}
-
 int main_server(int argc, char** argv) {
 #ifdef DEBUG
     if (argc != 2) {
