@@ -71,7 +71,7 @@ void lboard_t::import(uint8_t * board) {
 handshake_t::handshake_t() {
 }
 
-handshake_t::handshake_t(char * data, int datalen) {
+handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
     if (datalen != sizeof (handshake_t)) return;
     memcpy((void*) data, (void*) this, sizeof (handshake_t));
     if (protover != PROTOVERSION) {
