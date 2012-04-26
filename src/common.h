@@ -94,4 +94,5 @@ struct chat_t {
     char msg[100];
 };
 
+
 #endif	/* COMMON_H */

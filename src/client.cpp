@@ -545,14 +545,3 @@ void wait_data() {
     //    }
 }
 
-// called like:
-// send_data((void*)myhandshake, sizeof(handshake_t));
-
-void send_data(void * data, int datalen) {
-    // send data using socketid (global)
-    if (send(socketid, data, datalen, SENDFLAGS) < 0) {
-        cout << "client send data error" << endl;
-    }
-
-
-}

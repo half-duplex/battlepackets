@@ -51,6 +51,7 @@ struct game_t {
 public:
     game_t();
     ~game_t();
+    
     bool addplayer(player_t player); // returns success
 private:
     lboard_t board;

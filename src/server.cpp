@@ -163,7 +163,7 @@ void wait_data(player_t * player) {
         } else { //         wait for data on socketid (global)
             //handle the data
             std::cout << "recv'd some data on socket " << socketid << std::endl;
-            if (recvd < 1) {
+            if (recvd = 0) {
                 std::cout << "Tripping return because of data length" << std::endl;
                 return;
             }
@@ -182,8 +182,4 @@ void wait_data(player_t * player) {
         }
         // do stuff with the data ( see client.cpp wait_data )
     }
-}
-
-void player_t::send_data(void * data, int datalen) {
-    // send on sockfd
 }
