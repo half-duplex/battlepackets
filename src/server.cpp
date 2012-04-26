@@ -161,18 +161,21 @@ void wait_data(player_t * player) {
         if (recvd < 0) {
             std::cout << "server error recieving data: recv ret " << recvd << std::endl;
         } else { //handle the data
-            //         wait for data on socketid (global)
             std::cout << "wait_data recv socket " << socketid << " data ";
             for (int i = 0; i < recvd; i++) {
                 std::cout << (int) data[i] << data[i] << ",";
             }
-            std::cout << "\n";
-            if (recvd < 1) return;
+            if (recvd < 1) {
+                std::cout << "Tripping return because of data length" << std::endl;
+                return;
+            }
             switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
                 case 0: // Handshake
+                    std::cout << "This is a handshake packet" << std::endl;
                     handshake_t * handshake;
                     handshake = new handshake_t(data, recvd);
-                    // do stuff
+                    std::cout << handshake->username << " connected to game " << handshake->gameid << std::endl;
+                    // display game ID
                     break;
                 default:
                     std::cout << "server Invalid packet recieved.\n";
