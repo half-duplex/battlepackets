@@ -61,20 +61,6 @@ protected:
 
     // The actual board
     lboard_t lboard;
-
-    typedef enum {
-        GM_START = 0, // just started the program
-        GM_CONNECT = 1, // connected, waiting for initial board
-        GM_SHIP1 = 10, // placing ship 1: submarine: 1 piece
-        GM_SHIP2 = 11, // placing ship 2: submarine: 1 piece
-        GM_SHIP3 = 12, // placing ship 3: destroyer: 2 pieces
-        GM_SHIP4 = 13, // placing ship 4: destroyer: 2 pieces
-        GM_SHIP5 = 14, // placing ship 5: cruiser: 3 pieces
-        GM_SHIP6 = 15, // placing ship 6: battleship: 4 pieces
-        GM_SHIP7 = 16, // placing ship 7: carrier: 5 pieces
-        GM_PLAYTIME = 255
-    } t_gamemode;
-    t_gamemode gamemode;
     location placing; // for the first click for placing ships
     location prev; // TODO: Remove: Should not be needed
     int count; // TODO: Remove: Should not be needed
