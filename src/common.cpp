@@ -98,11 +98,14 @@ handshake_t::handshake_t() {
 }
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
-    if (datalen != sizeof (handshake_t)) {
-        std::cout << "Wrong packet size! " << datalen << " should be " << sizeof (handshake_t) << "\n";
+    if (datalen != sizeof (handshake_t)) { // check length
+        std::cout << "Wrong packet size for handshake_t! " << datalen << " should be " << sizeof (handshake_t) << "\n";
         return;
     }
-    //    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    if (data[0] != 0) { // check packet id
+        std::cout << "Wrong packet for handshake_t!\n";
+    }
+
     pktid = ((handshake_t *) data)->pktid;
     protover = ((handshake_t *) data)->protover;
     boardsize = ((handshake_t *) data)->boardsize;
@@ -115,7 +118,6 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
     }
     if (boardsize != BOARDSIZE) {
         std::cout << "Different board size! " << boardsize << " should be " << BOARDSIZE << "\n";
-
         return;
     }
     username[19 - 3 - 1] = '\0';
@@ -127,10 +129,25 @@ move_t::move_t() {
 }
 
 move_t::move_t(char* data, int datalen) {
-    if (datalen != sizeof (move_t)) return;
-    memcpy((void*) data, (void*) this, sizeof (move_t));
+    if (datalen != sizeof (move_t)) { // check length
+        std::cout << "Wrong packet size for move_t! " << datalen << " should be " << sizeof (handshake_t) << "\n";
+        return;
+    }
+    if (data[0] != 0) { // check packet id
+        std::cout << "Wrong packet for move_t!\n";
+    }
+
+    pktid = ((move_t *) data)->pktid;
+    loc = ((move_t *) data)->loc;
+    action = ((move_t *) data)->action;
+
     if (loc.x >= BOARDSIZE || loc.y >= BOARDSIZE) {
         std::cout << "Invalid coordinates\n";
     }
-    // action needs checking
+
+    // check action validity
+    // do action
+    // send action to other player
+    
+    // proposal: dump action bits, use only absolute bits. or maybe action bit = the absolute bit changed?
 }

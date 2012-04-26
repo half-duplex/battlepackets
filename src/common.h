@@ -72,7 +72,7 @@ struct handshake_t {
 };
 
 struct move_t {
-    char ID; // = 1
+    char pktid; // = 1
     location loc;
     char action; // (see protocol)
 
@@ -81,17 +81,21 @@ struct move_t {
 };
 
 struct refresh_t {
-    char ID; // = 2
+    char pktid; // = 2
     lboard_t board; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
 
-
+    refresh_t();
+    refresh_t(char * data, int datalen);
 };
 
 struct chat_t {
-    char ID; // = 3
+    char pktid; // = 3
     char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
     short size;
-    char msg[100];
+    char msg[255];
+
+    chat_t();
+    chat_t(char * data, int datalen);
 };
 
 #endif	/* COMMON_H */
