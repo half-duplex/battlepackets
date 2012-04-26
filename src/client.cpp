@@ -429,7 +429,7 @@ bool BPwin::chat_key_press(GdkEventKey* k) {
         //log
         log("\n");
         log(m_entry.get_text());
-        log("Me: ");
+        //log("Me: ");
         //send
         // TODO: Send chat to server
         std::cout << "Send chat: " << m_entry.get_text() << std::endl;

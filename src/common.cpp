@@ -153,3 +153,20 @@ move_t::move_t(char* data, int datalen) {
 
     // proposal: dump action bits, use only absolute bits. or maybe action bit = the absolute bit changed?
 }
+
+chat_t::chat_t() {
+    pktid = 3;
+}
+
+chat_t::chat_t(char * data, int datalen) {
+    if (datalen != sizeof (chat_t)) { // check length
+        std::cout << "Wrong packet size for char_t! " << datalen << " should be " << sizeof (chat_t) << "\n";
+        return;
+    }
+    if (data[0] != 3) { // check packet id
+        std::cout << "Wrong packet for chat_t!\n";
+    }
+
+    msg[255] = ((chat_t *) data)->msg[255];
+
+}

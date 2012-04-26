@@ -8,11 +8,9 @@
           </df>
         </df>
       </df>
-      <df name="local">
-        <in>client.cpp</in>
-        <in>client.h</in>
-      </df>
       <df name="src">
+        <df name="net">
+        </df>
         <in>check.cpp</in>
         <in>client.cpp</in>
         <in>client.h</in>
@@ -55,38 +53,6 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <folder path="battlepackets/local">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/lib/gtkmm-2.4/include</pElem>
-            <pElem>/usr/include/giomm-2.4</pElem>
-            <pElem>/usr/include/gtk-2.0</pElem>
-            <pElem>/usr/include/pangomm-1.4</pElem>
-            <pElem>/usr/include/gtk-unix-print-2.0</pElem>
-            <pElem>/usr/include/atkmm-1.6</pElem>
-            <pElem>/usr/include/cairo</pElem>
-            <pElem>/usr/lib/gtk-2.0/include</pElem>
-            <pElem>/usr/include/pixman-1</pElem>
-            <pElem>/usr/include/gtkmm-2.4</pElem>
-            <pElem>/usr/lib/giomm-2.4/include</pElem>
-            <pElem>/usr/lib/glib-2.0/include</pElem>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>/usr/include/cairomm-1.0</pElem>
-            <pElem>/usr/include/atk-1.0</pElem>
-            <pElem>/usr/lib/cairomm-1.0/include</pElem>
-            <pElem>/usr/include/libpng12</pElem>
-            <pElem>/usr/include/gdkmm-2.4</pElem>
-            <pElem>/usr/include/glib-2.0</pElem>
-            <pElem>/usr/lib/pangomm-1.4/include</pElem>
-            <pElem>/usr/lib/glibmm-2.4/include</pElem>
-            <pElem>/usr/include/glibmm-2.4</pElem>
-            <pElem>/usr/lib/gdkmm-2.4/include</pElem>
-            <pElem>/usr/include/pango-1.0</pElem>
-            <pElem>/usr/lib/sigc++-2.0/include</pElem>
-            <pElem>/usr/include/sigc++-2.0</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
       <item path="src/check.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
@@ -94,12 +60,12 @@
             <pElem>/usr/include/giomm-2.4</pElem>
             <pElem>/usr/include/gtk-2.0</pElem>
             <pElem>/usr/include/pangomm-1.4</pElem>
-            <pElem>/usr/include/atkmm-1.6</pElem>
             <pElem>/usr/include/gtk-unix-print-2.0</pElem>
+            <pElem>/usr/include/atkmm-1.6</pElem>
             <pElem>/usr/include/cairo</pElem>
-            <pElem>/usr/include/gtkmm-2.4</pElem>
-            <pElem>/usr/include/pixman-1</pElem>
             <pElem>/usr/lib/gtk-2.0/include</pElem>
+            <pElem>/usr/include/pixman-1</pElem>
+            <pElem>/usr/include/gtkmm-2.4</pElem>
             <pElem>/usr/lib/giomm-2.4/include</pElem>
             <pElem>/usr/lib/glib-2.0/include</pElem>
             <pElem>/usr/include/freetype2</pElem>
@@ -115,8 +81,8 @@
             <pElem>/usr/include/glibmm-2.4</pElem>
             <pElem>/usr/lib/gdkmm-2.4/include</pElem>
             <pElem>/usr/include/pango-1.0</pElem>
-            <pElem>/usr/include/sigc++-2.0</pElem>
             <pElem>/usr/lib/sigc++-2.0/include</pElem>
+            <pElem>/usr/include/sigc++-2.0</pElem>
           </incDir>
         </ccTool>
       </item>

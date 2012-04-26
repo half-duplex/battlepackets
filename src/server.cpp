@@ -281,12 +281,54 @@ void wait_data(player_t * player) {
                 // TODO: Send game board back to client
                 break;
             case 1: // player move
-                std::cout << "This is a move packet: ";
+                std::cout << "This is a move packet.\n";
                 move_t * move;
                 move = new move_t(data, recvd);
 
                 std::cout << move->loc.x << "," << move->loc.y << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n");
                 break;
+            case 2:
+                std::cout << "The server shouldn't be getting board refreshes...\n";
+                break;
+            case 3:
+                std::cout << "This is a chat packet.\n";
+                chat_t * chatmsg;
+                chatmsg = new chat_t(data, recvd);
+                
+                chat_t * svrreply; //the chat reply from the server to the client(s)
+                svrreply = new chat_t;
+//                svrreply->size = sizeof ();
+
+                //look up the game this is in
+                if (player->game == NULL) { //the player isn't in a game yet, this shouldn't happen!
+
+                    svrreply->msg[] = "You aren't connected to a game: you can't chat yet.\n";
+                    
+                    send(socketid, svrreply->msg, sizeof(chat_t), 0); //send the error message to the client
+                } else { //the client is in a game
+                    if (player->game->players[0] == player) { //this is player[0]
+                        svrreply->msg = "Me: " + data;
+                        send(socketid, svrreply->msg, sizeof(chat_t), 0); //reply to the sender
+                        
+                        svrreply->msg = "Them: " + data;                                             
+                        send(player->game->players[1]->get_sockid(), svrreply->msg, sizeof(chat_t), 0); //reply to the other player
+                                               
+                    }
+                    else { //this is player[1]
+                        svrreply->msg = "Me: " + data;
+                        send(socketid, svrreply->msg, sizeof(chat_t), 0); //reply to the sender
+                        
+                        svrreply->msg = "Them: " + data;                        
+                        send(player->game->players[0]->get_sockid(), svrreply->msg, sizeof(chat_t), 0); //reply to the other player
+                        
+                    }
+                }
+                //make sure player is in a game (its pointer to game isnt NULL)
+                //if this is player[0], send to player[1] as "they said" and player[0] as "you said"
+                //if this is player[1], send to player[0] as "they said" and player[1] as "you said"
+                break;
+
+
             default:
                 std::cout << "Invalid packet received.\n";
                 break;
