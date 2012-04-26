@@ -48,7 +48,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>bin/client</executablePath>
+          <executablePath>bin/server</executablePath>
           <ccTool>
             <incDir>
               <pElem>/usr/lib/gtkmm-2.4/include</pElem>
@@ -109,6 +109,8 @@
             <pElem>/usr/include/gio-unix-2.0/</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="src/net/net.h" ex="true" tool="3" flavor="0">
       </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>

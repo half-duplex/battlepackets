@@ -52,7 +52,8 @@ public:
     game_t();
     ~game_t();
     char gameid[32];
-    bool addplayer(player_t * player, game_t * game); // returns success
+    //timestamp with 3 day expire time
+    bool addplayer(player_t * player); // returns success
 private:
     lboard_t board;
     player_t * players[2];
