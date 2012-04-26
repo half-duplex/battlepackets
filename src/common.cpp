@@ -98,7 +98,10 @@ handshake_t::handshake_t() {
 }
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
-    if (datalen != sizeof (handshake_t)) return;
+    if (datalen != sizeof (handshake_t)) {
+        cout << "datalen != sizeof(handshake_t)" << endl;
+                return;
+    }
     memcpy((void*) data, (void*) this, sizeof (handshake_t));
     if (protover != PROTOVERSION) {
         std::cout << "Old protocol version!\n";
