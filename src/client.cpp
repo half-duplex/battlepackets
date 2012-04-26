@@ -30,6 +30,8 @@
 #include <netdb.h>
 
 #define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
+Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
+
 #define SENDFLAGS 0
 
 typedef enum {
@@ -74,7 +76,7 @@ int main_client(int argc, char** argv) {
 }
 
 BPwin::BPwin() {
-    gamemode = GM_START;
+    gamemode = GM_SHIP1;
     placing.x = 255;
 
     set_title("Battlepackets!");
@@ -167,7 +169,7 @@ void BPwin::tile_clicked(int btn_num) {
     std::cout << "Clicked: " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
     switch (gamemode) {
         case GM_START: // not connected, in a game, etc.: just started the app
-            log("Please connect!\n");
+            log("Please connect first!\n");
             break;
         case GM_CONNECT: // connected, no initial board received
             log("Server has not sent game info!\n");
@@ -436,6 +438,7 @@ bool BPwin::chat_key_press(GdkEventKey* k) {
     }
 
     // else a key other than enter
+
     return false;
 }
 
@@ -476,9 +479,13 @@ void BPwin::Connwin::do_connect() {
         cout << "You need to enter a username!\n"; // can't get to log from here
         return;
     }
+    if (m_game.get_text_length() <= 0) {
+        cout << "You need to enter game ID! Use \"new game\" to start a new game.\n"; // can't get to log from here
+        return;
+    }
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
     connect();
-    // TODO: Send handshake packet
+
     handshake_t * handshake_pkt = new handshake_t; //create an instance of the handshake_t structure
 
     string username = m_user.get_text();
@@ -495,7 +502,6 @@ void BPwin::Connwin::do_connect() {
     //    handshake_pkt->gameid = m_game.get_text();
     handshake_pkt->boardsize = BOARDSIZE;
     handshake_pkt->protover = PROTOVERSION;
-    //    send_data((void*)handshake_pkt, sizeof(handshake_t));
     int test;
     test = send(socketid, (void *) handshake_pkt, sizeof (handshake_t), 0);
     if (test < 0) {
@@ -505,7 +511,9 @@ void BPwin::Connwin::do_connect() {
 
     gtk_main_quit();
 
-//    gamemode = GM_CONNECT;
+    log("You are now connected! Waiting for board...\n");
+
+    //gamemode = GM_CONNECT; // TODO: uncomment once board send join response implemented
 }
 
 void connect() {
@@ -544,26 +552,33 @@ void connect() {
 }
 
 void wait_data() {
+    for (;;) {
+        char data[MAXDATASIZE];
+        int recvd = recv(socketid, data, MAXDATASIZE, 0);
+        if (recvd < 0) {
+            std::cout << "server error receiving data: recv ret " << recvd << std::endl;
+            return;
+        }
+        std::cout << "wait_data recv socket " << socketid << " data ";
+        for (int i = 0; i < recvd; i++) {
+            //                std::cout << (int) data[i] << data[i] << ",";
+        }
+        std::cout << "\n";
+        if (recvd < 1) {
+            std::cout << "Tripping return because of data length" << std::endl;
+            return;
+        }
+        switch (data[0]) {
+            case 0: // Handshake
+                handshake_t * handshake;
+                handshake = new handshake_t(data, recvd);
 
-    //    for (;;) {
-    //        char data[MAXDATASIZE];
-    //        int datalen;
-    //        if (recv(socketid, data, datalen, 0) < 0) {
-    //            cout << "client error recieving data" << endl;
-    //        } else { //handle the data
-    //            //         wait for data on socketid (global)
-    //            if (datalen < 1) return;
-    //            switch (data[0]) {
-    //                case 0: // Handshake
-    //                    handshake_t * handshake;
-    //                    handshake = new handshake_t(data, datalen);
-    //                    // display game ID
-    //                    break;
-    //                default:
-    //                    cout << "client Invalid packet recieved.\n";
-    //                    break;
-    //            }
-    //        }
-    //    }
+                log(handshake->gameid);
+                break;
+            default:
+                cout << "client Invalid packet recieved.\n";
+                break;
+        }
+    }
 }
 

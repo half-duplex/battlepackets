@@ -105,8 +105,8 @@ int main_server(int argc, char** argv) {
 
     if (bind(listensocket, (sockaddr*) & server, sizeof (server)) < 0) { //bind a socket to the port
         std::cout << "error binding" << std::endl;
+        return 1; // nothing else we can do, aside from maybe have a wait-retry loop
     }
-
 
     if (listen(listensocket, 50) < 0) {
         std::cout << "error listening" << std::endl;
@@ -148,16 +148,17 @@ game_t::~game_t() {
 }
 
 bool game_t::addplayer(player_t * player) {
-    if (this->players[1] == 0) { //this slot is empty 
+    if (this->players[1] == 0) { //this slot is empty
         players[1] = player;
-        return 1;
+        // is player->setgame(this); needed, or done before addplayer is called?
+        return true;
     }
     if (this->players[2] == 0) { //this slot is empty
         players[2] = player;
-        return 1;
+        // player->setgame(this); may be needed
+        return true;
     }
-
-    return 0; //if failed
+    return false; // failed: players already exist
 }
 
 player_t::player_t(int new_sockfd) {
@@ -187,65 +188,68 @@ void wait_data(player_t * player) {
 
         int recvd = recv(socketid, data, MAXDATASIZE, 0);
         if (recvd < 0) {
-            std::cout << "server error recieving data: recv ret " << recvd << std::endl;
-        } else { //handle the data
-            std::cout << "wait_data recv socket " << socketid << " data ";
-            for (int i = 0; i < recvd; i++) {
-                //                std::cout << (int) data[i] << data[i] << ",";
-            }
-            std::cout << "\n";
-            if (recvd < 1) {
-                std::cout << "Tripping return because of data length" << std::endl;
-                return;
-            }
-            switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
-                case 0: // Handshake
-                    std::cout << "This is a handshake packet" << std::endl;
-                    handshake_t * handshake;
-                    handshake = new handshake_t(data, recvd);
+            std::cout << "recv error, ret " << recvd << ", listener dying\n";
+            return;
+        }
+        std::cout << "wait_data recv socket " << socketid << " data ";
+        // dump all recieved data
+        //        for (int i = 0; i < recvd; i++) {
+        //            std::cout << (int) data[i] << data[i] << ",";
+        //        }
+        //        std::cout << "\n";
+        if (recvd < 1) { // same as ==0
+            std::cout << "recv len = 0, listener dying, probably shouldn't" << std::endl;
+            return; // TODO: Just reset for loop
+        }
+        switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
+            case 0: // Handshake
+                std::cout << "This is a handshake packet" << std::endl;
+                handshake_t * handshake;
+                handshake = new handshake_t(data, recvd);
 
-                    if (strcmp(handshake->gameid, "0") == 0) { //start a new game                     
-                        game_t * game;
-                        game = new game_t;
-                        /*set the gameid*/
-                        std::cout << "Trying to start a new game" << std::endl;
-                        strcpy(game->gameid, "saul"); //!!!!SAUL NEEDS TO BE A RANDOM GAME ID!!!!
+                if (strcmp(handshake->gameid, "new game") == 0) { //start a new game
+                    game_t * game;
+                    game = new game_t;
+                    // set the gameid
+                    std::cout << "Trying to start a new game" << std::endl;
 
-                        for (int i = 0; i < 10; i++) { //find a place to store the new game
-                            if (gamearray[i] == NULL) { //that spot is empty and we can store the game there
-                                std::cout << "found a spot!" << std::endl;
-                                //                                gamearray[i]->addplayer(player, gamearray[i]);
-                                gamearray[i] = game;
+                    strcpy(game->gameid, "saul"); // TODO: !!!! NEEDS TO BE A RANDOM GAME ID !!!!
+
+                    for (int i = 0; i < 10; i++) { //find a place to store the new game
+                        // TODO: replace static 10 with a #define
+                        if (gamearray[i] == NULL) { //that spot is empty and we can store the game there
+                            std::cout << "found a spot!" << std::endl;
+                            //                                gamearray[i]->addplayer(player, gamearray[i]);
+                            gamearray[i] = game;
+                            break;
+                        } else { //that spot already contains a game
+                            i = i;
+                        } // if gamearray[i]==null
+                    } // for each in gamearray
+                } else { //join an existing game
+                    std::cout << handshake->username << " is joining a game" << std::endl;
+                    for (int i = 0; i < 10; i++) { //find the game
+                        if (gamearray[i] != NULL) {
+                            std::cout << "not null at gamearray " << i << std::endl;
+                            if (strcmp(handshake->gameid, gamearray[i]->gameid) == 0) {
+                                std::cout << "found a game that matches" << std::endl;
+                                gamearray[i]->addplayer(player); //add player to game
+                                std::cout << "Found a game with gameid " << handshake->gameid << " and assigned player "
+                                        << handshake->username << " to it" << std::endl;
                                 break;
-                            } else { //that spot already contains a game
-                                i = i;
-                            }
-                        }
-
-                    } else { //join an existing game
-                        std::cout << handshake->username << " is joining a game" << std::endl;
-                        for (int i = 0; i < 10; i++) { //find the game
-                            if (gamearray[i] != NULL) {
-                                std::cout << "not null at gamearray " << i << std::endl;
-                                if (strcmp(handshake->gameid, gamearray[i]->gameid) == 0) {
-                                    std::cout << "found a game that matches" << std::endl;
-                                    gamearray[i]->addplayer(player); //add player to game
-                                    std::cout << "Found a game with gameid " << handshake->gameid << " and assigned player "
-                                            << handshake->username << " to it" << std::endl;
-                                    break;
-                                }
-
-
                             }
 
+
                         }
+
                     }
-                    // display game ID
-                    break;
-                default:
-                    std::cout << "server Invalid packet recieved.\n";
-                    break;
-            }
+                }
+
+                // TODO: Send game board back to client
+                break;
+            default:
+                std::cout << "server Invalid packet received.\n";
+                break;
         }
         // do stuff with the data ( see client.cpp wait_data )
     }

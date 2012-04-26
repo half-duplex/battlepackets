@@ -100,7 +100,6 @@ protected:
     // helpful for buffers and textview:
     // http://inti.sourceforge.net/tutorial/libinti/textwidget.html
     Gtk::TextView m_log;
-    Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 
     // Connect button
     Gtk::Button m_btn_connect;
