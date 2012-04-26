@@ -97,11 +97,11 @@ int main_server(int argc, char** argv) {
     free(ptr);
 
     if (bind(listensocket, (sockaddr*) & server, sizeof (server)) < 0) { //bind a socket to the port
-        std::cout << "error binding: " << errno << std::endl;
+        std::cout << "Bind error " << errno << ": ";
         switch (errno) {
             case EACCES:
                 std::cout << "The address is protected, and the user is not the superuser.\n";
-                std::cout << "Search permission is denied on a component of the path prefix. (See also path_resolution(7).)\n";
+                std::cout << "Search permission is denied on a component of the path prefix.\n";
                 break;
             case EADDRINUSE:
                 std::cout << "The given address is already in use.\n";
@@ -114,19 +114,19 @@ int main_server(int argc, char** argv) {
                 std::cout << "The addrlen is wrong, or the socket was not in the AF_UNIX family.\n";
                 break;
             case ENOTSOCK:
-                std::cout << "sockfd is a descriptor for a file, not a socket.\nThe following errors are specific to Unix domain(AF_UNIX) sockets:\n";
+                std::cout << "sockfd is a descriptor for a file, not a socket.\nThe following errors are specific to Unix domain(AF_UNIX) sockets.\n";
                 break;
             case EADDRNOTAVAIL:
                 std::cout << "A nonexistent interface was requested or the requested address was not local.\n";
                 break;
             case EFAULT:
-                std::cout << "addr points outside the user's accessible address space.\n";
+                std::cout << "Address points outside the user's accessible address space.\n";
                 break;
             case ELOOP:
                 std::cout << "Too many symbolic links were encountered in resolving addr.\n";
                 break;
             case ENAMETOOLONG:
-                std::cout << "addr is too long.\n";
+                std::cout << "Address is too long.\n";
                 break;
             case ENOENT:
                 std::cout << "The file does not exist.\n";
@@ -218,13 +218,13 @@ void wait_data(player_t * player) {
         //        if(connection is dead){
         //            delete player;
         //        }
-        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
+//        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
         int recvd = recv(socketid, data, MAXDATASIZE, 0);
         if (recvd < 0) {
             std::cout << "recv error, ret " << recvd << ", listener dying\n";
             return;
         }
-        std::cout << "wait_data recv socket " << socketid << " data ";
+//        std::cout << "wait_data recv socket " << socketid << " data ";
         // dump all recieved data
         for (int i = 0; i < recvd; i++) {
             std::cout << (int) data[i] << data[i] << ",";
@@ -236,7 +236,7 @@ void wait_data(player_t * player) {
         }
         switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
             case 0: // Handshake
-                std::cout << "This is a handshake packet" << std::endl;
+                std::cout << "This is a handshake packet\n";
                 handshake_t * handshake;
                 handshake = new handshake_t(data, recvd);
 
@@ -244,14 +244,13 @@ void wait_data(player_t * player) {
                     game_t * game;
                     game = new game_t;
                     // set the gameid
-                    std::cout << "Trying to start a new game" << std::endl;
+                    std::cout << "Creating new game\n";
 
                     strcpy(game->gameid, "saul"); // TODO: !!!! NEEDS TO BE A RANDOM GAME ID !!!!
 
                     for (int i = 0; i < 10; i++) { //find a place to store the new game
                         // TODO: replace static 10 with a #define
                         if (gamearray[i] == NULL) { //that spot is empty and we can store the game there
-                            std::cout << "found a spot!" << std::endl;
                             //                                gamearray[i]->addplayer(player, gamearray[i]);
                             gamearray[i] = game;
                             break;
@@ -278,6 +277,7 @@ void wait_data(player_t * player) {
                     }
                 }
 
+
                 // TODO: Send game board back to client
                 break;
             case 1: // player move
@@ -285,7 +285,7 @@ void wait_data(player_t * player) {
                 move_t * move;
                 move = new move_t(data, recvd);
 
-                std::cout << move->loc.x << "," << move->loc.y << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n");
+                std::cout << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n");
                 break;
             case 2:
                 std::cout << "The server shouldn't be getting board refreshes...\n";
