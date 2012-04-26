@@ -201,8 +201,11 @@ void wait_data(player_t * player) {
                     handshake_t * handshake;
                     handshake = new handshake_t(data, recvd);
                     std::cout << handshake->username << " connected to game " << handshake->gameid << std::endl;
-
-                    if (handshake->gameid == "0") { //start a new game
+                    
+                    std::string * testcompare = new std::string(handshake->gameid);
+                    std::cout << "testcompare contains: " << testcompare << std::endl;
+                    
+                    if (testcompare == testcompare) { //start a new game                     
                         game_t game;
                         /*set the gameid*/
                         std::cout << "Trying to start a new game" << std::endl;
