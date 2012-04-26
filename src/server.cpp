@@ -204,7 +204,7 @@ void wait_data(player_t * player) {
                     handshake_t * handshake;
                     handshake = new handshake_t(data, recvd);
 
-                    if (strcmp(handshake->gameid, "0") == 0) { //start a new game                     
+                    if (strcmp(handshake->gameid, "new game") == 0) { //start a new game                     
                         game_t * game;
                         game = new game_t;
                         /*set the gameid*/
