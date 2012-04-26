@@ -1,5 +1,7 @@
 CC = g++
-CCFLAGS = -Wall -g -std=c++0x -lboost_thread `pkg-config gtkmm-2.4 --cflags --libs`
+BOOST =  -lboost_thread
+GTK =  `pkg-config gtkmm-2.4 --cflags --libs`
+CCFLAGS = -Wall -g -std=c++0x ${BOOST}
 
 all: client server
 clean:
@@ -8,7 +10,7 @@ commonstuff:
 	mkdir -p bin/object/net/
 
 client: client_wrap.o client.o common.o Makefile commonstuff
-	${CC} ${CCFLAGS} -o bin/client bin/object/client_wrap.o bin/object/client.o bin/object/common.o
+	${CC} ${CCFLAGS} ${GTK} -o bin/client bin/object/client_wrap.o bin/object/client.o bin/object/common.o
 server: server_wrap.o server.o common.o Makefile commonstuff
 	${CC} ${CCFLAGS} -o bin/server bin/object/server_wrap.o bin/object/server.o bin/object/common.o
 check: check.o client.o server.o common.o Makefile commonstuff
@@ -20,9 +22,9 @@ check.o: Makefile commonstuff
 common.o: Makefile commonstuff
 	${CC} ${CCFLAGS} -o bin/object/common.o -c src/common.cpp
 client.o: src/client.cpp Makefile commonstuff
-	${CC} ${CCFLAGS} -o bin/object/client.o -c src/client.cpp
+	${CC} ${CCFLAGS} ${GTK} -o bin/object/client.o -c src/client.cpp
 client_wrap.o: src/client_wrap.cpp Makefile commonstuff
-	${CC} ${CCFLAGS} -o bin/object/client_wrap.o -c src/client_wrap.cpp
+	${CC} ${CCFLAGS} ${GTK} -o bin/object/client_wrap.o -c src/client_wrap.cpp
 server.o: src/server.cpp Makefile commonstuff
 	${CC} ${CCFLAGS} -o bin/object/server.o -c src/server.cpp
 server_wrap.o: src/server_wrap.cpp Makefile commonstuff

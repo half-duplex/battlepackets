@@ -25,5 +25,5 @@
 #include "client.h"
 
 int main(int argc, char** argv) {
-    main_client(argc, argv);
+    return main_client(argc, argv);
 }

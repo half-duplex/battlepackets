@@ -25,5 +25,5 @@
 #include "server.h"
 
 int main(int argc, char** argv) {
-    main_server(argc, argv);
+    return main_server(argc, argv);
 }
