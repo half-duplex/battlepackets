@@ -110,8 +110,6 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/net/net.h" ex="true" tool="3" flavor="0">
-      </item>
       <item path="src/server.cpp" ex="false" tool="1" flavor="0">
         <ccTool>
           <incDir>
