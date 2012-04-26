@@ -160,10 +160,13 @@ void wait_data(player_t * player) {
         int recvd = recv(socketid, data, MAXDATASIZE, 0);
         if (recvd < 0) {
             std::cout << "server error recieving data: recv ret " << recvd << std::endl;
-        } else { //         wait for data on socketid (global)
-            //handle the data
-            std::cout << "recv'd some data on socket " << socketid << std::endl;
-            if (recvd = 0) {
+        } else { //handle the data
+            std::cout << "wait_data recv socket " << socketid << " data ";
+            for (int i = 0; i < recvd; i++) {
+                std::cout << (int) data[i] << data[i] << ",";
+            }
+            std::cout << "\n";
+            if (recvd < 1) {
                 std::cout << "Tripping return because of data length" << std::endl;
                 return;
             }
