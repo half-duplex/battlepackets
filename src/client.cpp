@@ -485,7 +485,7 @@ void BPwin::Connwin::do_connect() {
 
     gtk_main_quit();
 
-    gamemode = GM_CONNECT;
+//    gamemode = GM_CONNECT;
 }
 
 void connect() {

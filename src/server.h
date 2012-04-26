@@ -51,8 +51,8 @@ struct game_t {
 public:
     game_t();
     ~game_t();
-    
-    bool addplayer(player_t player); // returns success
+    char gameid[32];
+    bool addplayer(player_t * player, game_t * game); // returns success
 private:
     lboard_t board;
     player_t * players[2];

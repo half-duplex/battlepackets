@@ -41,7 +41,7 @@
  *              the text of the arguments
  */
 
-
+game_t * gamearray[10]; //to store the games
 
 int main_server(int argc, char** argv) {
 #ifdef DEBUG
@@ -54,6 +54,9 @@ int main_server(int argc, char** argv) {
 #endif
 
 
+//    for (int i = 0; i <= 10; i++) {
+//        memset(gamearray[i]->gameid, NULL, sizeof(gamearray[i]->gameid));
+//    }
 
     player_t * player;
     int sockfd;
@@ -132,6 +135,28 @@ int main_server(int argc, char** argv) {
     return 0;
 }
 
+game_t::game_t() {
+    players[1] = NULL;
+    players[2] = NULL;
+}
+
+game_t::~game_t() {
+
+}
+
+bool game_t::addplayer(player_t * player, game_t * game) {
+    if (game->players[1] == 0) { //this slot is empty 
+        players[1] = player;
+        return 1;
+    }
+    if (game->players[2] == 0) { //this slot is empty
+        players[2] = player;
+        return 1;
+    }
+
+    return 0; //if failed
+}
+
 player_t::player_t(int new_sockfd) {
     sockfd = new_sockfd;
     boost::thread waiter(wait_data, this);
@@ -163,7 +188,7 @@ void wait_data(player_t * player) {
         } else { //handle the data
             std::cout << "wait_data recv socket " << socketid << " data ";
             for (int i = 0; i < recvd; i++) {
-                std::cout << (int) data[i] << data[i] << ",";
+//                std::cout << (int) data[i] << data[i] << ",";
             }
             std::cout << "\n";
             if (recvd < 1) {
@@ -176,6 +201,36 @@ void wait_data(player_t * player) {
                     handshake_t * handshake;
                     handshake = new handshake_t(data, recvd);
                     std::cout << handshake->username << " connected to game " << handshake->gameid << std::endl;
+
+                    if (handshake->gameid == "0") { //start a new game
+                        game_t game;
+                        /*set the gameid*/
+                        std::cout << "Trying to start a new game" << std::endl;
+                         strcpy (game.gameid, "saul"); 
+                        for(int i=0; i<=10; i++) { //find a place to store the new game
+                            if (gamearray[i]->gameid == NULL) { //that spot is empty and we can store the game there
+//                                int testid = 4545;
+//                                sprintf(gamearray[i]->gameid, "%d", testid);
+//                                gamearray[i]->gameid = "saul";
+                               
+                            }
+                            else { //that spot already contains a game
+                                i = i;
+                            }
+                        }
+
+                    }
+                    for (int i = 0; 0 <= 10; i++) {
+                        if (gamearray[i]->gameid == handshake->gameid) { //the game exists
+                            gamearray[i]->addplayer(player, gamearray[i]); //add player to game
+                            std::cout << "Found a game with gameid " << handshake->gameid << " and assigned player "
+                                    << handshake->username << " to it" << std::endl;
+                            break;
+                        } else { //the game hasn't been found
+                            i = i;
+                        }
+
+                    }
                     // display game ID
                     break;
                 default:
