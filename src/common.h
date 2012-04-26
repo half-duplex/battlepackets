@@ -80,12 +80,14 @@ struct move_t {
     move_t(char * data, int datalen);
 };
 
-struct refresh {
+struct refresh_t {
     char ID; // = 2
-    char board[15][15]; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
+    lboard_t board; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
+
+
 };
 
-struct chat {
+struct chat_t {
     char ID; // = 3
     char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
     short size;
