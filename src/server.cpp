@@ -164,7 +164,7 @@ void wait_data(player_t * player) {
             //         wait for data on socketid (global)
             std::cout << "wait_data recv socket " << socketid << " data ";
             for (int i = 0; i < recvd; i++) {
-                std::cout << (int)data[i] << ",";
+                std::cout << (int) data[i] << data[i] << ",";
             }
             std::cout << "\n";
             if (recvd < 1) return;
