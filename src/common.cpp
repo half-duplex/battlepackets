@@ -99,30 +99,37 @@ handshake_t::handshake_t() {
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
     if (datalen != sizeof (handshake_t)) {
-        cout << "datalen != sizeof(handshake_t)" << endl;
-                return;
+        std::cout << "Wrong packet size! " << datalen << " should be " << sizeof (handshake_t) << "\n";
+        return;
     }
-    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    //    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    pktid = ((handshake_t *) data)->pktid;
+    protover = ((handshake_t *) data)->protover;
+    boardsize = ((handshake_t *) data)->boardsize;
+    strncpy(username, ((handshake_t *) data)->username, 19 - 3);
+    strncpy(gameid, ((handshake_t *) data)->gameid, 52 - 20);
+
     if (protover != PROTOVERSION) {
-        std::cout << "Old protocol version!\n";
+        std::cout << "Old protocol version! " << protover << " should be " << PROTOVERSION << "\n";
         return;
     }
     if (boardsize != BOARDSIZE) {
-        std::cout << "Different board size!\n";
+        std::cout << "Different board size! " << boardsize << " should be " << BOARDSIZE << "\n";
+
         return;
     }
-    username[19 - 3] = '\0';
+    username[19 - 3 - 1] = '\0';
     // gameid is restricted to printable characters less ' '
-    gameid[52 - 20] = '\0';
+    gameid[52 - 20 - 1] = '\0';
 }
 
-move_t::move_t(){
+move_t::move_t() {
 }
 
-move_t::move_t(char* data, int datalen){
+move_t::move_t(char* data, int datalen) {
     if (datalen != sizeof (move_t)) return;
     memcpy((void*) data, (void*) this, sizeof (move_t));
-    if (loc.x>=BOARDSIZE||loc.y>=BOARDSIZE){
+    if (loc.x >= BOARDSIZE || loc.y >= BOARDSIZE) {
         std::cout << "Invalid coordinates\n";
     }
     // action needs checking
