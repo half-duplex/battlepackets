@@ -111,4 +111,5 @@ public:
     chat_t(char * data, int datalen);
 };
 
+
 #endif	/* COMMON_H */

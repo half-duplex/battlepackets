@@ -47,7 +47,7 @@ int main_client(int argc, char** argv);
  * spawned as a thread to wait for and handle data
  */
 void wait_data();
-void send_data(void * data, int datalen);
+
 
 void connect();
 
