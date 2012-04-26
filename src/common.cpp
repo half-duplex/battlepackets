@@ -103,6 +103,11 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
         return;
     }
     //    memcpy((void*) data, (void*) this, sizeof (handshake_t));
+    pktid = ((handshake_t *) data)->pktid;
+    protover = ((handshake_t *) data)->protover;
+    boardsize = ((handshake_t *) data)->boardsize;
+    strncpy(username, ((handshake_t *) data)->username, 19 - 3);
+    strncpy(gameid, ((handshake_t *) data)->gameid, 52 - 20);
 
     if (protover != PROTOVERSION) {
         std::cout << "Old protocol version! " << protover << " should be " << PROTOVERSION << "\n";
@@ -110,11 +115,12 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
     }
     if (boardsize != BOARDSIZE) {
         std::cout << "Different board size! " << boardsize << " should be " << BOARDSIZE << "\n";
+
         return;
     }
-    username[19 - 3] = '\0';
+    username[19 - 3 - 1] = '\0';
     // gameid is restricted to printable characters less ' '
-    gameid[52 - 20] = '\0';
+    gameid[52 - 20 - 1] = '\0';
 }
 
 move_t::move_t() {
