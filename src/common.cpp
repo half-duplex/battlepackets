@@ -95,6 +95,7 @@ uint8_t lboard_t::get_tile_raw(location loc) {
 // Packets
 
 handshake_t::handshake_t() {
+    pktid = 0;
 }
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
@@ -126,6 +127,7 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
 }
 
 move_t::move_t() {
+    pktid = 1;
 }
 
 move_t::move_t(char* data, int datalen) {
@@ -148,6 +150,6 @@ move_t::move_t(char* data, int datalen) {
     // check action validity
     // do action
     // send action to other player
-    
+
     // proposal: dump action bits, use only absolute bits. or maybe action bit = the absolute bit changed?
 }

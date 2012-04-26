@@ -61,7 +61,9 @@ private:
 // Packet types
 
 struct handshake_t {
+private:
     char pktid; // = 0
+public:
     char protover; // = PROTOVERSION
     char boardsize; // = BOARDSIZE
     char username[19 - 3];
@@ -72,16 +74,25 @@ struct handshake_t {
 };
 
 struct move_t {
+private:
     char pktid; // = 1
+public:
     location loc;
-    char action; // (see protocol)
+
+    typedef enum {
+        ACT_MOVE = 0,
+        ACT_PLACE = 1
+    } action_t;
+    action_t action; // (see protocol)
 
     move_t();
     move_t(char * data, int datalen);
 };
 
 struct refresh_t {
+private:
     char pktid; // = 2
+public:
     lboard_t board; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
 
     refresh_t();
@@ -89,7 +100,9 @@ struct refresh_t {
 };
 
 struct chat_t {
+private:
     char pktid; // = 3
+public:
     char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
     short size;
     char msg[255];
