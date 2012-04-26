@@ -28,7 +28,6 @@
 #include <iostream>
 using namespace std;
 
-
 location::location() {
 }
 

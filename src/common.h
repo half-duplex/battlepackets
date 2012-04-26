@@ -28,6 +28,7 @@
 #define SERVPORT 7777
 #define BOARDSIZE 10
 #define PROTOVERSION 0
+#define MAXDATASIZE 1500
 
 #include <stdint.h>
 #include <string.h>

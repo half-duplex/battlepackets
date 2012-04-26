@@ -30,7 +30,7 @@
 #include <netdb.h>
 
 #define log(a) m_log_buf->insert(m_log_buf->get_iter_at_offset(0), a);
-#define MAXDATASIZE 100
+#define SENDFLAGS 0
 int socketid; //global
 
 using namespace std;
@@ -458,43 +458,39 @@ void BPwin::Connwin::do_connect() {
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
     connect();
     // TODO: Send handshake packet
-    handshake_t handshake_pkt; //create an instance of the handshake_t structure
+    handshake_t * handshake_pkt = new handshake_t; //create an instance of the handshake_t structure
 
     string username = m_user.get_text();
     string gameid = m_game.get_text();
     /*set all the elements for the handshake packet*/
-//    strcpy(handshake_pkt.username, username);
+    //    strcpy(handshake_pkt.username, username);
     size_t u_length;
     size_t g_length;
-    u_length = username.copy(handshake_pkt.username, 16, 0);
-    g_length = gameid.copy(handshake_pkt.gameid, 32, 0);
-    handshake_pkt.username[u_length] = '\0';
-    handshake_pkt.gameid[g_length] = '\0'; 
-    cout << handshake_pkt.username << endl;
-    cout << handshake_pkt.gameid << endl;
-//    handshake_pkt.username = m_user.get_text();
-//    handshake_pkt.gameid = m_game.get_text();
-    handshake_pkt.pktid = 0;
-    handshake_pkt.boardsize = BOARDSIZE;
-    handshake_pkt.protover = PROTOVERSION;
-//    send_data((void*)handshake_pkt, sizeof(handshake_t));
+    u_length = username.copy(handshake_pkt->username, 16, 0);
+    g_length = gameid.copy(handshake_pkt->gameid, 32, 0);
+    //    cout << handshake_pkt->username << endl;
+    //    cout << handshake_pkt->gameid << endl;
+    //    handshake_pkt->username = m_user.get_text();
+    //    handshake_pkt->gameid = m_game.get_text();
+    handshake_pkt->pktid = 0;
+    handshake_pkt->boardsize = BOARDSIZE;
+    handshake_pkt->protover = PROTOVERSION;
+    //    send_data((void*)handshake_pkt, sizeof(handshake_t));
     int test;
-    test = send(socketid, (const void *)&handshake_pkt, sizeof(handshake_t), 0);
-    if(test < 0) {
-        cout << "client sending error" << endl;
-        cout << test << endl;
-        cout << sizeof(handshake_pkt) << endl;
+    test = send(socketid, (void *) handshake_pkt, sizeof (handshake_t), 0);
+    if (test < 0) {
+        cout << "do_connect: send error: handshake: result " << test
+                << " should be " << sizeof (handshake_t) << ", error " << errno << endl;
     }
 
     gtk_main_quit();
 }
 
 void connect() {
-    char* serveraddr = "127.0.0.1";
+    char serveraddr[] = "127.0.0.1";
     int port = SERVPORT;
     // connect, spawn wait_data with socketid
     struct sockaddr_in client;
-    int socketid;
     int * ptr;
 
     socketid = socket(AF_INET, SOCK_STREAM, 0);
@@ -527,26 +523,26 @@ void connect() {
 
 void wait_data() {
 
-//    for (;;) {
-//        char data[MAXDATASIZE];
-//        int datalen;
-//        if (recv(socketid, data, datalen, 0) < 0) {
-//            cout << "client error recieving data" << endl;
-//        } else { //handle the data
-//            //         wait for data on socketid (global)
-//            if (datalen < 1) return;
-//            switch (data[0]) {
-//                case 0: // Handshake
-//                    handshake_t * handshake;
-//                    handshake = new handshake_t(data, datalen);
-//                    // display game ID
-//                    break;
-//                default:
-//                    cout << "client Invalid packet recieved.\n";
-//                    break;
-//            }
-//        }
-//    }
+    //    for (;;) {
+    //        char data[MAXDATASIZE];
+    //        int datalen;
+    //        if (recv(socketid, data, datalen, 0) < 0) {
+    //            cout << "client error recieving data" << endl;
+    //        } else { //handle the data
+    //            //         wait for data on socketid (global)
+    //            if (datalen < 1) return;
+    //            switch (data[0]) {
+    //                case 0: // Handshake
+    //                    handshake_t * handshake;
+    //                    handshake = new handshake_t(data, datalen);
+    //                    // display game ID
+    //                    break;
+    //                default:
+    //                    cout << "client Invalid packet recieved.\n";
+    //                    break;
+    //            }
+    //        }
+    //    }
 }
 
 // called like:
@@ -554,7 +550,7 @@ void wait_data() {
 
 void send_data(void * data, int datalen) {
     // send data using socketid (global)
-    if (send(socketid, data, datalen, 0) < 0) {
+    if (send(socketid, data, datalen, SENDFLAGS) < 0) {
         cout << "client send data error" << endl;
     }
 

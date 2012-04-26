@@ -31,7 +31,6 @@
 #include <netinet/in.h> //for INADDR_ANY
 
 #define DEBUG
-#define MAXDATASIZE 100
 
 /*
  * Main server function
@@ -147,8 +146,9 @@ int player_t::get_sockid() {
 }
 
 void wait_data(player_t * player) {
-  
+
     int socketid = player->get_sockid();
+    char data[MAXDATASIZE];
 
     for (;;) {
         // wait for data on sockfd
@@ -157,19 +157,17 @@ void wait_data(player_t * player) {
         //            delete player;
         //        }
 
-        // do stuff with the data ( see client.cpp wait_data )
-        char data[MAXDATASIZE];
-        int datalen;
-        if (recv(socketid, data, datalen, 0) < 0) {
-            std::cout << "server error recieving data" << std::endl;
+        int recvd = recv(socketid, data, MAXDATASIZE, 0);
+        if (recvd < 0) {
+            std::cout << "server error recieving data: recv ret " << recvd << std::endl;
         } else { //handle the data
             //         wait for data on socketid (global)
-            std::cout << "recv'd some data on socket" << socketid << std::endl;
-            if (datalen < 1) return;
+            std::cout << "recv'd some data on socket " << socketid << std::endl;
+            if (recvd < 1) return;
             switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
                 case 0: // Handshake
                     handshake_t * handshake;
-                    handshake = new handshake_t(data, datalen);
+                    handshake = new handshake_t(data, recvd);
                     // display game ID
                     break;
                 default:
@@ -177,6 +175,7 @@ void wait_data(player_t * player) {
                     break;
             }
         }
+        // do stuff with the data ( see client.cpp wait_data )
     }
 }
 
