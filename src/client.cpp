@@ -179,7 +179,14 @@ void BPwin::tile_clicked(int btn_num) {
 
             lboard.set_ship(0, loc);
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
+
             // TODO: Send to server
+            move_t * move;
+            move = new move_t;
+            move->action = move->ACT_PLACE;
+            move->loc = loc;
+            send(socketid, (void*) move, sizeof (move_t), 0);
+
             gamemode = GM_SHIP2;
             break;
         case GM_SHIP2: // placing ship: see client.h typedef enum t_gamemode
@@ -456,7 +463,7 @@ BPwin::Connwin::Connwin() {
     m_btn_go.set_label("Connect");
     m_btn_go.signal_clicked().connect(sigc::mem_fun(*this, &BPwin::Connwin::do_connect));
     m_user.set_text("username");
-    m_game.set_text("game (empty=new)");
+    m_game.set_text("new game");
 
     show_all_children();
 }
@@ -486,7 +493,6 @@ void BPwin::Connwin::do_connect() {
     //    cout << handshake_pkt->gameid << endl;
     //    handshake_pkt->username = m_user.get_text();
     //    handshake_pkt->gameid = m_game.get_text();
-    handshake_pkt->pktid = 0;
     handshake_pkt->boardsize = BOARDSIZE;
     handshake_pkt->protover = PROTOVERSION;
     //    send_data((void*)handshake_pkt, sizeof(handshake_t));
