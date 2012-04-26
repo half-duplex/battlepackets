@@ -59,8 +59,4 @@ private:
     player_t * players[2];
 };
 
-
-
-
-
 #endif	/* SERVER_H */

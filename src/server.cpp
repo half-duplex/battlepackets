@@ -53,16 +53,9 @@ int main_server(int argc, char** argv) {
     }
 #endif
 
-
-
     for (int i = 0; i < 10; i++) { //set pointers from gamearray to null
         gamearray[i] = NULL;
-        std::cout << "gamearray[" << i << "] is " << gamearray[i] << std::endl;
     }
-
-    int sockfd;
-    player_t * player;
-
 
     int listensocket; // socket to be used to wait for connections from the client
     //    struct addrinfo host, *server;
@@ -98,13 +91,56 @@ int main_server(int argc, char** argv) {
     ptr = (int*) malloc(sizeof (int));
     *ptr = 1;
 
-    if (setsockopt(listensocket, SOL_SOCKET, SO_KEEPALIVE, (char*) ptr, sizeof (int)) < 0) {
+    if (setsockopt(listensocket, SOL_SOCKET, SO_REUSEADDR + SO_KEEPALIVE, (char*) ptr, sizeof (int)) < 0) {
         std::cout << "error creating socket" << std::endl;
     }
     free(ptr);
 
     if (bind(listensocket, (sockaddr*) & server, sizeof (server)) < 0) { //bind a socket to the port
-        std::cout << "error binding" << std::endl;
+        std::cout << "error binding: " << errno << std::endl;
+        switch (errno) {
+            case EACCES:
+                std::cout << "The address is protected, and the user is not the superuser.\n";
+                std::cout << "Search permission is denied on a component of the path prefix. (See also path_resolution(7).)\n";
+                break;
+            case EADDRINUSE:
+                std::cout << "The given address is already in use.\n";
+                break;
+            case EBADF:
+                std::cout << "sockfd is not a valid descriptor.\n";
+                break;
+            case EINVAL:
+                std::cout << "The socket is already bound to an address.\n";
+                std::cout << "The addrlen is wrong, or the socket was not in the AF_UNIX family.\n";
+                break;
+            case ENOTSOCK:
+                std::cout << "sockfd is a descriptor for a file, not a socket.\nThe following errors are specific to Unix domain(AF_UNIX) sockets:\n";
+                break;
+            case EADDRNOTAVAIL:
+                std::cout << "A nonexistent interface was requested or the requested address was not local.\n";
+                break;
+            case EFAULT:
+                std::cout << "addr points outside the user's accessible address space.\n";
+                break;
+            case ELOOP:
+                std::cout << "Too many symbolic links were encountered in resolving addr.\n";
+                break;
+            case ENAMETOOLONG:
+                std::cout << "addr is too long.\n";
+                break;
+            case ENOENT:
+                std::cout << "The file does not exist.\n";
+                break;
+            case ENOMEM:
+                std::cout << "Insufficient kernel memory was available.\n";
+                break;
+            case ENOTDIR:
+                std::cout << "A component of the path prefix is not a directory.\n";
+                break;
+            case EROFS:
+                std::cout << "The socket inode would reside on a read - only file system.\n";
+                break;
+        }
         return 1; // nothing else we can do, aside from maybe have a wait-retry loop
     }
 
@@ -116,31 +152,26 @@ int main_server(int argc, char** argv) {
     len = sizeof (sockaddr_in);
     // make socket
 
+    int sockfd;
     while (true) {
-        std::cout << "server ready and waiting!" << std::endl;
-        //        sockfd = (int *) malloc(sizeof (int)); ->> I dont think this is needed
+        std::cout << "Waiting for connection" << std::endl;
         if ((sockfd = accept(listensocket, (sockaddr*) & svradr, &len)) != -1) {
-            std::cout << "got one!" << std::endl;
+            player_t * player;
+            std::cout << "New connection, fd: " << sockfd << '\n';
             player = new player_t(sockfd); //doing this will then create a thread in player_t
+            std::cout << "main: new player: " << player << "\n";
         } else {
             std::cout << "we're not very accepting here" << std::endl;
         }
 
-    }
-    for (;;) {
-        // when a connection is made,
-        // accept
-
-
-        //        player = new player_t(sockfd);
     }
 
     return 0;
 }
 
 game_t::game_t() {
+    players[0] = NULL;
     players[1] = NULL;
-    players[2] = NULL;
 }
 
 game_t::~game_t() {
@@ -148,13 +179,13 @@ game_t::~game_t() {
 }
 
 bool game_t::addplayer(player_t * player) {
-    if (this->players[1] == 0) { //this slot is empty
-        players[1] = player;
+    if (this->players[0] == NULL) { //this slot is empty
+        players[0] = player;
         // is player->setgame(this); needed, or done before addplayer is called?
         return true;
     }
-    if (this->players[2] == 0) { //this slot is empty
-        players[2] = player;
+    if (this->players[1] == NULL) { //this slot is empty
+        players[1] = player;
         // player->setgame(this); may be needed
         return true;
     }
@@ -162,6 +193,7 @@ bool game_t::addplayer(player_t * player) {
 }
 
 player_t::player_t(int new_sockfd) {
+    std::cout << "New player, fd: " << new_sockfd << " player: " << this << "\n";
     sockfd = new_sockfd;
     boost::thread waiter(wait_data, this);
 }
@@ -175,6 +207,7 @@ int player_t::get_sockid() {
 }
 
 void wait_data(player_t * player) {
+    std::cout << "New wait_data, fd: " << player->get_sockid() << " player: " << player << "\n";
 
     int socketid = player->get_sockid();
     char data[MAXDATASIZE];
@@ -185,7 +218,7 @@ void wait_data(player_t * player) {
         //        if(connection is dead){
         //            delete player;
         //        }
-
+        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
         int recvd = recv(socketid, data, MAXDATASIZE, 0);
         if (recvd < 0) {
             std::cout << "recv error, ret " << recvd << ", listener dying\n";
@@ -193,10 +226,10 @@ void wait_data(player_t * player) {
         }
         std::cout << "wait_data recv socket " << socketid << " data ";
         // dump all recieved data
-        //        for (int i = 0; i < recvd; i++) {
-        //            std::cout << (int) data[i] << data[i] << ",";
-        //        }
-        //        std::cout << "\n";
+        for (int i = 0; i < recvd; i++) {
+            std::cout << (int) data[i] << data[i] << ",";
+        }
+        std::cout << "\n";
         if (recvd < 1) { // same as ==0
             std::cout << "recv len = 0, listener dying, probably shouldn't" << std::endl;
             return; // TODO: Just reset for loop
@@ -247,8 +280,15 @@ void wait_data(player_t * player) {
 
                 // TODO: Send game board back to client
                 break;
+            case 1: // player move
+                std::cout << "This is a move packet: ";
+                move_t * move;
+                move = new move_t(data, recvd);
+
+                std::cout << move->loc.x << "," << move->loc.y << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n");
+                break;
             default:
-                std::cout << "server Invalid packet received.\n";
+                std::cout << "Invalid packet received.\n";
                 break;
         }
         // do stuff with the data ( see client.cpp wait_data )
