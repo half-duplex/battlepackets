@@ -151,10 +151,15 @@ void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
             m_button[j][i].set_image(m_img_set[0][j][i]);
             m_button[j][i].set_border_width(0);
             m_box_tile_column[j].pack_start(m_button[j][i]);
-            if (which == 0) { // only my board needs signals
+            if (which == 0) {
                 m_button[j][i].signal_clicked().connect(
                         sigc::bind<int>(
-                        sigc::mem_fun(that, &BPwin::tile_clicked)
+                        sigc::mem_fun(that, &BPwin::tile_clicked_me)
+                        , i * BOARDSIZE + j));
+            } else {
+                m_button[j][i].signal_clicked().connect(
+                        sigc::bind<int>(
+                        sigc::mem_fun(that, &BPwin::tile_clicked_opponent)
                         , i * BOARDSIZE + j));
             }
         }
@@ -164,9 +169,16 @@ void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
 BPwin::~BPwin() {
 }
 
-void BPwin::tile_clicked(int btn_num) {
+void BPwin::tile_clicked_me(int btn_num) {
     location loc((btn_num % BOARDSIZE), (btn_num / BOARDSIZE));
-    std::cout << "Clicked: " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
+    std::cout << "Clicked my " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
+
+    // prepare for sending move to server
+    move_t * move;
+    move = new move_t;
+    move->action = move->ACT_PLACE;
+    move->loc = loc;
+
     switch (gamemode) {
         case GM_START: // not connected, in a game, etc.: just started the app
             log("Please connect first!\n");
@@ -176,18 +188,13 @@ void BPwin::tile_clicked(int btn_num) {
             break;
         case GM_SHIP1: // placing ship: see client.h typedef enum t_gamemode
 
-            log("You placed a submarine!\n");
-            log("Next, is another submarine, which is one block =)\n");
-
             lboard.set_ship(0, loc);
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
 
-            // TODO: Send to server
-            move_t * move;
-            move = new move_t;
-            move->action = move->ACT_PLACE;
-            move->loc = loc;
             send(socketid, (void*) move, sizeof (move_t), 0);
+
+            log("You placed a submarine!\n");
+            log("Next, is another submarine, which is one block =)\n");
 
             gamemode = GM_SHIP2;
             break;
@@ -199,6 +206,8 @@ void BPwin::tile_clicked(int btn_num) {
             } else
                 lboard.set_ship(0, loc);
             boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
+
+            send(socketid, (void*) move, sizeof (move_t), 0);
 
             log("You placed a submarine!\n");
             log("Next, is a destroyer, which is two blocks =)\n");
@@ -218,6 +227,8 @@ void BPwin::tile_clicked(int btn_num) {
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
+                send(socketid, (void*) move, sizeof (move_t), 0);
+
                 count++;
                 break;
 
@@ -234,6 +245,8 @@ void BPwin::tile_clicked(int btn_num) {
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP4;
+
+                    send(socketid, (void*) move, sizeof (move_t), 0);
 
                     break;
                 } else {
@@ -256,6 +269,8 @@ void BPwin::tile_clicked(int btn_num) {
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
+                send(socketid, (void*) move, sizeof (move_t), 0);
+
                 count++;
                 break;
 
@@ -272,6 +287,8 @@ void BPwin::tile_clicked(int btn_num) {
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     count = 0;
                     gamemode = GM_SHIP5;
+
+                    send(socketid, (void*) move, sizeof (move_t), 0);
 
                     break;
                 } else {
@@ -293,6 +310,8 @@ void BPwin::tile_clicked(int btn_num) {
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
+                send(socketid, (void*) move, sizeof (move_t), 0);
+
                 count++;
                 break;
 
@@ -307,6 +326,9 @@ void BPwin::tile_clicked(int btn_num) {
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
+
+                    send(socketid, (void*) move, sizeof (move_t), 0);
+
                     if (count == 2) {
                         count = 0;
                         log("Next, is a battleship, which is four blocks =)\n");
@@ -334,6 +356,8 @@ void BPwin::tile_clicked(int btn_num) {
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
+                send(socketid, (void*) move, sizeof (move_t), 0);
+
                 count++;
                 break;
 
@@ -347,6 +371,9 @@ void BPwin::tile_clicked(int btn_num) {
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
+
+                    send(socketid, (void*) move, sizeof (move_t), 0);
+
                     if (count == 3) {
                         count = 0;
                         log("Next, is a carrier, which is five blocks =)\n");
@@ -374,6 +401,8 @@ void BPwin::tile_clicked(int btn_num) {
                 prev.x = (int) loc.x;
                 prev.y = (int) loc.y;
 
+                send(socketid, (void*) move, sizeof (move_t), 0);
+
                 count++;
                 break;
 
@@ -387,6 +416,9 @@ void BPwin::tile_clicked(int btn_num) {
                     boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
                     prev.x = (int) loc.x;
                     prev.y = (int) loc.y;
+
+                    send(socketid, (void*) move, sizeof (move_t), 0);
+
                     if (count == 4) {
                         log("Done placing ships!\n");
                         count = 0;
@@ -404,22 +436,50 @@ void BPwin::tile_clicked(int btn_num) {
             // TODO: Do stuff
             break;
         case GM_PLAYTIME: // ingame
-            log("Server has not sent game info!\n");
-            // TODO: Do stuff
-            // TODO: TODO: Change board based on clicked tile
-            // TODO: TODO: Send change, if valid, to server
+            log("Eek! Shoot at the ENEMY's board!\n");
             break;
         default: // should never get here
             log("What just happened?!\n");
             break;
     }
+    delete move;
+}
+
+void BPwin::tile_clicked_opponent(int btn_num) {
+    location loc((btn_num % BOARDSIZE), (btn_num / BOARDSIZE));
+    std::cout << "Clicked enemy " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
+
+    // prepare for sending move to server
+    move_t * move;
+    move = new move_t;
+    move->action = move->ACT_MOVE;
+    move->loc = loc;
+
+    switch (gamemode) {
+        case GM_PLAYTIME:
+            if (lboard.get_fired(0, loc)) {
+                log("We've already hit those coordinates!\n");
+                break;
+            }
+            log("You fired!\n");
+            lboard.set_fired(0, loc);
+            // set to miss, if it was a hit, the server will send a hit packet
+            boards[1].m_button[loc.x][loc.y].set_image(boards[1].m_img_set[2][loc.x][loc.y]);
+            send(socketid, (void*) move, sizeof (move_t), 0);
+            break;
+        default:
+            log("Finish connecting and placing your ships first!\n");
+            break;
+    }
+
+    delete move;
 }
 
 /* Called when a key is pressed in the chat input box
  * return value is apparently whether or not to show the char in the box?
  * possibly whether or not the event has been handled - seems to spam this when false.
  */
-bool BPwin::chat_key_press(GdkEventKey* k) {
+bool BPwin::chat_key_press(GdkEventKey * k) {
     //std::cout << "chat box key press: " << k->keyval << "=" << (char)k->keyval << "\n";
     if (k->keyval == 65293) { // return
         if (m_entry.get_text_length() < 1) {

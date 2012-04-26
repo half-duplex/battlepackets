@@ -66,7 +66,8 @@ protected:
     int count; // TODO: Remove: Should not be needed
 
     // Signal handlers
-    void tile_clicked(int btn_num); // ONLY FOR MY BOARD, not needed for enemy
+    void tile_clicked_me(int btn_num);
+    void tile_clicked_opponent(int btn_num);
     bool chat_key_press(GdkEventKey* k);
 
     // Big frames

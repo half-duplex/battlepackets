@@ -132,10 +132,10 @@ move_t::move_t() {
 
 move_t::move_t(char* data, int datalen) {
     if (datalen != sizeof (move_t)) { // check length
-        std::cout << "Wrong packet size for move_t! " << datalen << " should be " << sizeof (handshake_t) << "\n";
+        std::cout << "Wrong packet size for move_t! " << datalen << " should be " << sizeof (move_t) << "\n";
         return;
     }
-    if (data[0] != 0) { // check packet id
+    if (data[0] != 1) { // check packet id
         std::cout << "Wrong packet for move_t!\n";
     }
 
