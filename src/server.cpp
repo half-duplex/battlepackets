@@ -302,23 +302,28 @@ void wait_data(player_t * player) {
                 //look up the game this is in
                 if (player->game == NULL) { //the player isn't in a game yet, this shouldn't happen!
 
-                    svrreply->msg[] = "You aren't connected to a game: you can't chat yet.\n";
+                    strcpy(svrreply->msg, "You aren't connected to a game: you can't chat yet.\n");
                     
                     send(socketid, svrreply->msg, sizeof(chat_t), 0); //send the error message to the client
                 } else { //the client is in a game
-                    if (player->game->players[0] == player) { //this is player[0]
-                        svrreply->msg = "Me: " + data;
+                    if (player->game->players[0] == player) { //this is player[0]                       
+//                       
+                        strcpy(svrreply->msg, "Me: ");
+                        strcpy(svrreply->msg+4, chatmsg->msg);                                      
                         send(socketid, svrreply->msg, sizeof(chat_t), 0); //reply to the sender
                         
-                        svrreply->msg = "Them: " + data;                                             
+                        strcpy(svrreply->msg, "Them: ");
+                        strcpy(svrreply->msg+6, chatmsg->msg);                                                               
                         send(player->game->players[1]->get_sockid(), svrreply->msg, sizeof(chat_t), 0); //reply to the other player
                                                
                     }
                     else { //this is player[1]
-                        svrreply->msg = "Me: " + data;
+                        strcpy(svrreply->msg, "Me: ");
+                        strcpy(svrreply->msg+4, chatmsg->msg);                                      
                         send(socketid, svrreply->msg, sizeof(chat_t), 0); //reply to the sender
                         
-                        svrreply->msg = "Them: " + data;                        
+                        strcpy(svrreply->msg, "Them: ");
+                        strcpy(svrreply->msg+6, chatmsg->msg);                                                               
                         send(player->game->players[0]->get_sockid(), svrreply->msg, sizeof(chat_t), 0); //reply to the other player
                         
                     }

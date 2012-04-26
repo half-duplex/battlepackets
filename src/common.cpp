@@ -156,6 +156,9 @@ move_t::move_t(char* data, int datalen) {
 
 chat_t::chat_t() {
     pktid = 3;
+    for(int i = 0; i < 255; i++) {
+        msg[i] = NULL;
+    }
 }
 
 chat_t::chat_t(char * data, int datalen) {
