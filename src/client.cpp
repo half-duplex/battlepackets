@@ -60,7 +60,7 @@ int main_client(int argc, char** argv) {
 }
 
 BPwin::BPwin() {
-    gamemode = GM_START; // TODO: Put back to GM_START once connecting is implemented
+    gamemode = GM_START;
     placing.x = 255;
 
     set_title("Battlepackets!");
@@ -110,7 +110,7 @@ BPwin::vboard::vboard() {
 
 void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
     if (which > 1) {
-        cout << "What did you break -.-\n";
+        cout << "Something dun bust...\n";
         return;
     }
 
@@ -153,7 +153,7 @@ void BPwin::tile_clicked(int btn_num) {
     std::cout << "Clicked: " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
     switch (gamemode) {
         case GM_START: // not connected, in a game, etc.: just started the app
-            log("Please wait for a server connection.\n");
+            log("Please connect!\n");
             break;
         case GM_CONNECT: // connected, no initial board received
             log("Server has not sent game info!\n");
@@ -484,6 +484,8 @@ void BPwin::Connwin::do_connect() {
     }
 
     gtk_main_quit();
+
+    gamemode = GM_CONNECT;
 }
 
 void connect() {

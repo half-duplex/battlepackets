@@ -165,6 +165,7 @@ void wait_data(player_t * player) {
             for (int i = 0; i < recvd; i++) {
                 std::cout << (int) data[i] << data[i] << ",";
             }
+            std::cout << "\n";
             if (recvd < 1) {
                 std::cout << "Tripping return because of data length" << std::endl;
                 return;
