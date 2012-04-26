@@ -463,7 +463,7 @@ BPwin::Connwin::Connwin() {
     m_btn_go.set_label("Connect");
     m_btn_go.signal_clicked().connect(sigc::mem_fun(*this, &BPwin::Connwin::do_connect));
     m_user.set_text("username");
-    m_game.set_text("game (empty=new)");
+    m_game.set_text("new game");
 
     show_all_children();
 }
