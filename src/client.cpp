@@ -49,6 +49,7 @@ typedef enum {
 t_gamemode gamemode;
 int socketid; //global
 
+BPwin * bpwin; //this needs to be global
 
 
 using namespace std;
@@ -61,9 +62,6 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
-
- 
-
 int main_client(int argc, char** argv) {
     // Create structures
     //        gtk_init(&argc, &argv);
@@ -72,11 +70,11 @@ int main_client(int argc, char** argv) {
     // spawn net listener
     //boost::thread netin(netrecv, nethandler);
     Gtk::Main kit(argc, argv);
-  
-    BPwin bpwin; //this needs to be global
+
+    bpwin = new BPwin;
 
     // gtkmm main loop
-    Gtk::Main::run(bpwin);
+    Gtk::Main::run(*bpwin);
 
 
     // die
@@ -683,17 +681,18 @@ void wait_data() {
                 }
 
                 break;
-            case 2: //update
+            case 2: //update entire board
                 refresh_t * update;
                 update = new refresh_t(data, recvd);
                 int x, y;
                 for (x = 0; x < BOARDSIZE; x++) { //iterate through x
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
                         //board_data is public for right now
-//                        bpwin.lboard.board_data[x][y] = update->board.board_data[x][y]; //at each [x][y], update
+                        bpwin->lboard.board_data[x][y] = update->board.board_data[x][y]; //at each [x][y], update
                         //????
                         //pretty sure we don't need to update the image
-                        //because it will already be update when you copy over the [x][y] state 
+                        //because it will already be update when you copy over the [x][y] state
+                        // No, it will not. the board structure has absolutely no gui logic, it is backend only. -t
                         //????
                     }
                 }
@@ -713,4 +712,3 @@ void wait_data() {
         }
     }
 }
-
