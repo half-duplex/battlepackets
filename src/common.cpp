@@ -147,9 +147,5 @@ move_t::move_t(char* data, int datalen) {
         std::cout << "Invalid coordinates\n";
     }
 
-    // check action validity
-    // do action
-    // send action to other player
-
     // proposal: dump action bits, use only absolute bits. or maybe action bit = the absolute bit changed?
 }

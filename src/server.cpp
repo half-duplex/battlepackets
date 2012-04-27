@@ -218,13 +218,13 @@ void wait_data(player_t * player) {
         //        if(connection is dead){
         //            delete player;
         //        }
-//        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
+        //        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
         int recvd = recv(socketid, data, MAXDATASIZE, 0);
         if (recvd < 0) {
             std::cout << "recv error, ret " << recvd << ", listener dying\n";
             return;
         }
-//        std::cout << "wait_data recv socket " << socketid << " data ";
+        //        std::cout << "wait_data recv socket " << socketid << " data ";
         // dump all recieved data
         for (int i = 0; i < recvd; i++) {
             std::cout << (int) data[i] << data[i] << ",";
@@ -285,7 +285,15 @@ void wait_data(player_t * player) {
                 move_t * move;
                 move = new move_t(data, recvd);
 
-                std::cout << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n");
+                std::cout << (int) move->loc.x << "," << (int) move->loc.y
+                        << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n") << ", result ";
+
+                // check action validity
+                //if()
+                // do action
+                // send action to other player
+
+
                 break;
             default:
                 std::cout << "Invalid packet received.\n";
