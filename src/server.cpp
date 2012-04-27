@@ -178,6 +178,7 @@ game_t::~game_t() {
 
 }
 
+
 bool game_t::addplayer(player_t * player) {
     if (this->players[0] == NULL) { //this slot is empty
         players[0] = player;
@@ -218,13 +219,13 @@ void wait_data(player_t * player) {
         //        if(connection is dead){
         //            delete player;
         //        }
-//        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
+        //        std::cout << "socketid " << socketid << " waiting for data, player at " << player << "\n";
         int recvd = recv(socketid, data, MAXDATASIZE, 0);
         if (recvd < 0) {
             std::cout << "recv error, ret " << recvd << ", listener dying\n";
             return;
         }
-//        std::cout << "wait_data recv socket " << socketid << " data ";
+        //        std::cout << "wait_data recv socket " << socketid << " data ";
         // dump all recieved data
         for (int i = 0; i < recvd; i++) {
             std::cout << (int) data[i] << data[i] << ",";
@@ -251,9 +252,11 @@ void wait_data(player_t * player) {
                     for (int i = 0; i < 10; i++) { //find a place to store the new game
                         // TODO: replace static 10 with a #define
                         if (gamearray[i] == NULL) { //that spot is empty and we can store the game there
-                            //                                gamearray[i]->addplayer(player, gamearray[i]);
+
                             gamearray[i] = game;
+                            player->game = gamearray[i];
                             break;
+
                         } else { //that spot already contains a game
                             i = i;
                         } // if gamearray[i]==null
@@ -264,10 +267,12 @@ void wait_data(player_t * player) {
                         if (gamearray[i] != NULL) {
                             std::cout << "not null at gamearray " << i << std::endl;
                             if (strcmp(handshake->gameid, gamearray[i]->gameid) == 0) {
+
                                 std::cout << "found a game that matches" << std::endl;
                                 gamearray[i]->addplayer(player); //add player to game
                                 std::cout << "Found a game with gameid " << handshake->gameid << " and assigned player "
                                         << handshake->username << " to it" << std::endl;
+                                player->game = gamearray[i];
                                 break;
                             }
 
@@ -294,38 +299,42 @@ void wait_data(player_t * player) {
                 std::cout << "This is a chat packet.\n";
                 chat_t * chatmsg;
                 chatmsg = new chat_t(data, recvd);
-                
+
+
                 chat_t * svrreply; //the chat reply from the server to the client(s)
                 svrreply = new chat_t;
-//                svrreply->size = sizeof ();
+
+                //                svrreply->size = sizeof ();
 
                 //look up the game this is in
                 if (player->game == NULL) { //the player isn't in a game yet, this shouldn't happen!
 
+                    std::cout << "Silly client... they're not in a game.\n";
                     strcpy(svrreply->msg, "You aren't connected to a game: you can't chat yet.\n");
-                    
-                    send(socketid, svrreply->msg, sizeof(chat_t), 0); //send the error message to the client
+                    send(socketid, (void *) svrreply, sizeof (chat_t), 0); //send the error message to the client
+
                 } else { //the client is in a game
                     if (player->game->players[0] == player) { //this is player[0]                       
-//                       
+                        //                   
+                        std::cout << "player[0] sent a chat\n";
                         strcpy(svrreply->msg, "Me: ");
-                        strcpy(svrreply->msg+4, chatmsg->msg);                                      
-                        send(socketid, svrreply->msg, sizeof(chat_t), 0); //reply to the sender
-                        
+                        strcpy(svrreply->msg + 4, chatmsg->msg);
+                        send(socketid, (void *) svrreply, sizeof (chat_t), 0); //reply to the sender
+                      
                         strcpy(svrreply->msg, "Them: ");
-                        strcpy(svrreply->msg+6, chatmsg->msg);                                                               
-                        send(player->game->players[1]->get_sockid(), svrreply->msg, sizeof(chat_t), 0); //reply to the other player
-                                               
-                    }
-                    else { //this is player[1]
+                        strcpy(svrreply->msg + 6, chatmsg->msg);
+                        send(player->game->players[1]->sockfd, (void *) svrreply, sizeof (chat_t), 0); //reply to the other player
+
+                    } else { //this is player[1]
+                        std::cout << "player[1] sent a chat\n";
                         strcpy(svrreply->msg, "Me: ");
-                        strcpy(svrreply->msg+4, chatmsg->msg);                                      
-                        send(socketid, svrreply->msg, sizeof(chat_t), 0); //reply to the sender
-                        
+                        strcpy(svrreply->msg + 4, chatmsg->msg);
+                        send(socketid, (void *) svrreply, sizeof (chat_t), 0); //reply to the sender
+
                         strcpy(svrreply->msg, "Them: ");
-                        strcpy(svrreply->msg+6, chatmsg->msg);                                                               
-                        send(player->game->players[0]->get_sockid(), svrreply->msg, sizeof(chat_t), 0); //reply to the other player
-                        
+                        strcpy(svrreply->msg + 6, chatmsg->msg);
+                        send(player->game->players[0]->sockfd, (void *) svrreply, sizeof (chat_t), 0); //reply to the other player
+
                     }
                 }
                 //make sure player is in a game (its pointer to game isnt NULL)

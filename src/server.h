@@ -42,9 +42,10 @@ public:
     bool setgame(); // returns success
     void send_data(void * data, int datalen);
     game_t * game;
-private:
     int sockfd;
-    
+private:
+
+
     boost::thread *tid;
 };
 
@@ -58,7 +59,7 @@ public:
     player_t * players[2];
 private:
     lboard_t board;
-    
+
 };
 
 #endif	/* SERVER_H */
