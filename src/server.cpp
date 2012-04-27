@@ -178,15 +178,16 @@ game_t::~game_t() {
 
 }
 
-
 bool game_t::addplayer(player_t * player) {
     if (this->players[0] == NULL) { //this slot is empty
         players[0] = player;
+        player->iszero = true;
         // is player->setgame(this); needed, or done before addplayer is called?
         return true;
     }
     if (this->players[1] == NULL) { //this slot is empty
         players[1] = player;
+        player->iszero = false;
         // player->setgame(this); may be needed
         return true;
     }
@@ -290,12 +291,70 @@ void wait_data(player_t * player) {
                 move_t * move;
                 move = new move_t(data, recvd);
 
+                move_t * svrmove;
+                svrmove = new move_t;
+
                 std::cout << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == move->ACT_MOVE ? "move\n" : "place\n");
+
+                //error checking->already in BOARDSIZE/BOARDSIZE because of move_t(data, len)
+
+                //update board
+                switch (move->action) {
+                    case 0: //this is a fire
+
+                        if (player->iszero == true) { //this is player[0]
+                            if (player->game->board.get_fired(1, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
+                                //update both clients telling them that it was a hit using a move pkt   
+                                svrmove->absolute = svrmove->YOUR_HIT; //tell the client they hit
+                                svrmove->loc = move->loc;
+                                send(player->sockfd, svrmove, sizeof (move_t), 0);
+
+                                svrmove->absolute = svrmove->ENEMY_HIT; //tell the enemy (player[1]) that they've been hit
+                                send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
+                            } else { //it was a miss
+                                //tell both clients it was a miss using a move pkt   
+                            }
+                        }
+                        if (player->iszero == false) { //this is player[1]
+                            if (player->game->board.get_fired(0, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
+                                //update both clients telling them that it was a hit using a move pkt   
+                                svrmove->absolute = svrmove->YOUR_HIT; //tell the client they hit
+                                svrmove->loc = move->loc;
+                                send(player->sockfd, svrmove, sizeof (move_t), 0);
+
+                                svrmove->absolute = svrmove->ENEMY_HIT; //tell the enemy (player[1]) that they've been hit
+                                send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
+                            } else { //it was a miss
+                                //tell both clients it was a miss using a move pkt   
+                            }
+                        }
+                        break;
+                    case 1://this is a move
+                        if (player->game->board.get_ship(0, move->loc) == false) { //there's not a ship there so it can be placed
+                            player->game->board.set_ship(0, move->loc);
+
+                            //send move to this client only
+                            svrmove->action = svrmove->ACT_PLACE;
+                            svrmove->loc = move->loc;
+                            send(player->sockfd, svrmove, sizeof (move_t), 0);
+
+                        } else { //there is a ship there
+                            chat_t * place_err;
+                            place_err = new chat_t;
+                            strcpy(place_err->msg, "You already have a ship there!\n");
+                            send(player->sockfd, place_err, sizeof (chat_t), 0); //tell this client only that they can't send a ship
+
+                        }
+                }
+
+
+                //send move to other clients (if it's valid) 
+
                 break;
-            case 2:
+            case 2: //board refresh
                 std::cout << "The server shouldn't be getting board refreshes...\n";
                 break;
-            case 3:
+            case 3: //chat
                 std::cout << "This is a chat packet.\n";
                 chat_t * chatmsg;
                 chatmsg = new chat_t(data, recvd);
@@ -320,7 +379,7 @@ void wait_data(player_t * player) {
                         strcpy(svrreply->msg, "Me: ");
                         strcpy(svrreply->msg + 4, chatmsg->msg);
                         send(socketid, (void *) svrreply, sizeof (chat_t), 0); //reply to the sender
-                      
+
                         strcpy(svrreply->msg, "Them: ");
                         strcpy(svrreply->msg + 6, chatmsg->msg);
                         send(player->game->players[1]->sockfd, (void *) svrreply, sizeof (chat_t), 0); //reply to the other player

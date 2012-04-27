@@ -43,6 +43,7 @@ public:
     void send_data(void * data, int datalen);
     game_t * game;
     int sockfd;
+    bool iszero;
 private:
 
 
@@ -57,8 +58,9 @@ public:
     //timestamp with 3 day expire time
     bool addplayer(player_t * player); // returns success
     player_t * players[2];
+    lboard_t board; 
 private:
-    lboard_t board;
+    
 
 };
 

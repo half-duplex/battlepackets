@@ -71,8 +71,8 @@ void lboard_t::import(uint8_t * board) {
 // c = player 0 fired
 // d = player 1 fired
 
-bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data
-    return board_data[loc.x][loc.y]&(1 << (player));
+bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data 
+    return board_data[loc.x][loc.y]&(1 << (player)); //returns true if there is a ship
 }
 
 void lboard_t::set_ship(bool player, location loc) {

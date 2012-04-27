@@ -476,7 +476,7 @@ void BPwin::tile_clicked_opponent(int btn_num) {
 }
 
 /* Called when a key is pressed in the chat input box
- * return value is apparently whether or not to show the char in the box?
+ * return value is apparently whether or not to show the char in the box? 
  * possibly whether or not the event has been handled - seems to spam this when false.
  */
 bool BPwin::chat_key_press(GdkEventKey * k) {
@@ -613,8 +613,7 @@ void connect() {
         std::cout << "error connecting socket" << std::endl;
     }
 
-    boost::thread clientthread(wait_data); //in this case, clientsocket is the socket ON THE CLIENT that data
-    //will be sent to from the server
+    boost::thread clientthread(wait_data); 
 
 }
 
@@ -647,16 +646,24 @@ void wait_data() {
                 break;
 
             case 1: //move
+                move_t * move;
+                move = new move_t(data, recvd);
+                
+                
                 break;
             case 2: //update
+                refresh_t * update;
+//                update = new refresh_t(data, recvd); NOT SURE WHY THIS ISN'T WORKING
+                
+                
                 break;
             case 3: //chat
                 chat_t * chatmsg; //created a new chat msg 
                 chatmsg = new chat_t(data, recvd);
-                cout << chatmsg->msg << endl;
+            
                 cout << "got a message!" << endl;
 
-//                log(chatmsg->msg);
+                log(chatmsg->msg);
                 break;
 
             default:

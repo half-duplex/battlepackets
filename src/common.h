@@ -34,6 +34,7 @@
 #include <string.h>
 #include "iostream"
 
+
 struct location {
     uint8_t x;
     uint8_t y;
@@ -48,6 +49,9 @@ public:
     lboard_t();
     void import(uint8_t * board);
     // bool player: 0=self 1=enemy
+    //DO 0 AND 1 ACTUALLY DO ANYTHING YET?!?!!? ie lookup the other player's game/board
+    /* 0 should = player
+     1 should = player->game->player[1] IFF player[0] == player*/
     bool get_ship(bool player, location loc); // won't cheat on client: no data
     void set_ship(bool player, location loc);
     bool get_fired(bool player, location loc);
@@ -77,13 +81,21 @@ struct move_t {
 private:
     char pktid; // = 1
 public:
-    location loc;
+    location loc; //x/y
 
     typedef enum {
-        ACT_MOVE = 0,
+        ACT_MOVE = 0, //fire
         ACT_PLACE = 1
     } action_t;
     action_t action; // (see protocol)
+
+    typedef enum {
+        YOUR_SHIP = 1,
+        YOUR_HIT = 2,
+        YOUR_MISS = 3,
+        ENEMY_HIT = 4 //then from this the client has to derive if it was a hit
+    } absolute_t;
+    absolute_t absolute;
 
     move_t();
     move_t(char * data, int datalen);
