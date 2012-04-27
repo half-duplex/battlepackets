@@ -34,7 +34,6 @@
 #include <string.h>
 #include "iostream"
 
-
 struct location {
     uint8_t x;
     uint8_t y;
@@ -90,10 +89,10 @@ public:
     action_t action; // (see protocol)
 
     typedef enum {
-        YOUR_SHIP = 1,
-        YOUR_HIT = 2,
-        YOUR_MISS = 3,
-        ENEMY_HIT = 4 //then from this the client has to derive if it was a hit
+        YOU_SHIP = 0,
+        YOU_HIT = 1,
+        YOU_MISS = 2,
+        THEY_HIT = 3 //then from this the client has to derive if it was a hit
     } absolute_t;
     absolute_t absolute;
 

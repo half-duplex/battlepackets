@@ -142,12 +142,31 @@ move_t::move_t(char* data, int datalen) {
     pktid = ((move_t *) data)->pktid;
     loc = ((move_t *) data)->loc;
     action = ((move_t *) data)->action;
+    absolute = ((move_t*) data)->absolute;
 
     if (loc.x >= BOARDSIZE || loc.y >= BOARDSIZE) {
         std::cout << "Invalid coordinates\n";
     }
 
     // proposal: dump action bits, use only absolute bits. or maybe action bit = the absolute bit changed?
+}
+
+refresh_t::refresh_t() {
+    pktid = 2;
+}
+
+refresh_t::refresh_t(char* data, int datalen) {
+    if (datalen != sizeof (move_t)) { // check length
+        std::cout << "Wrong packet size for refresh_t! " << datalen << " should be " << sizeof (refresh_t) << "\n";
+        return;
+    }
+    if (data[0] != 1) { // check packet id
+        std::cout << "Wrong packet for refresh_t!\n";
+    }
+
+    pktid = ((refresh_t *) data)->pktid;
+    board = ((refresh_t *) data)->board;
+
 }
 
 chat_t::chat_t() {

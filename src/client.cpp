@@ -647,13 +647,15 @@ void wait_data() {
 
             case 1: //move
                 move_t * move;
-                move = new move_t(data, recvd);
+                move = new move_t(data, recvd); //populates move with the info in data sent from the server
+                
+                //update the game stuff
                 
                 
                 break;
             case 2: //update
                 refresh_t * update;
-//                update = new refresh_t(data, recvd); NOT SURE WHY THIS ISN'T WORKING
+                update = new refresh_t(data, recvd); 
                 
                 
                 break;

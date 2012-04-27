@@ -305,11 +305,11 @@ void wait_data(player_t * player) {
                         if (player->iszero == true) { //this is player[0]
                             if (player->game->board.get_fired(1, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
                                 //update both clients telling them that it was a hit using a move pkt   
-                                svrmove->absolute = svrmove->YOUR_HIT; //tell the client they hit
+                                svrmove->absolute = svrmove->YOU_HIT; //tell the client they hit
                                 svrmove->loc = move->loc;
                                 send(player->sockfd, svrmove, sizeof (move_t), 0);
 
-                                svrmove->absolute = svrmove->ENEMY_HIT; //tell the enemy (player[1]) that they've been hit
+                                svrmove->absolute = svrmove->THEY_HIT; //tell the enemy (player[1]) that they've been hit
                                 send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
                             } else { //it was a miss
                                 //tell both clients it was a miss using a move pkt   
@@ -318,11 +318,11 @@ void wait_data(player_t * player) {
                         if (player->iszero == false) { //this is player[1]
                             if (player->game->board.get_fired(0, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
                                 //update both clients telling them that it was a hit using a move pkt   
-                                svrmove->absolute = svrmove->YOUR_HIT; //tell the client they hit
+                                svrmove->absolute = svrmove->YOU_HIT; //tell the client they hit
                                 svrmove->loc = move->loc;
                                 send(player->sockfd, svrmove, sizeof (move_t), 0);
 
-                                svrmove->absolute = svrmove->ENEMY_HIT; //tell the enemy (player[1]) that they've been hit
+                                svrmove->absolute = svrmove->THEY_HIT; //tell the enemy (player[1]) that they've been hit
                                 send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
                             } else { //it was a miss
                                 //tell both clients it was a miss using a move pkt   
