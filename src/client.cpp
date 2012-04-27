@@ -49,7 +49,7 @@ typedef enum {
 t_gamemode gamemode;
 int socketid; //global
 
-BPwin::vboard boards[2]; // 0 is me, 1 is enemy
+
 
 using namespace std;
 
@@ -62,8 +62,7 @@ using namespace std;
  *              the text of the arguments
  */
 
-  BPwin bpwin; //this needs to be global
-
+ 
 
 int main_client(int argc, char** argv) {
     // Create structures
@@ -74,7 +73,8 @@ int main_client(int argc, char** argv) {
     //boost::thread netin(netrecv, nethandler);
     Gtk::Main kit(argc, argv);
   
-   
+    BPwin bpwin; //this needs to be global
+
     // gtkmm main loop
     Gtk::Main::run(bpwin);
 

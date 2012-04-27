@@ -60,22 +60,6 @@ public:
   
 
    
-
-    struct vboard {
-        Gtk::HBox m_box_board;
-
-        // images: must all exist, else memory leak...?
-        Gtk::Image m_img_set[3][BOARDSIZE][BOARDSIZE];
-        // the 3: 0=ocean/empty,1=hit,2=(my_board?ship:miss)
-
-        // columns/buttons: see google doc
-        Gtk::VBox m_box_tile_column[BOARDSIZE]; // columns
-        Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
-
-        vboard();
-        void init(BPwin & that, char which); // which: 0=my,1=enemy
-    };
-
     lboard_t lboard; //backend, absolute state data
 
 protected:
@@ -99,6 +83,25 @@ protected:
     Gtk::Button m_btn_chat_send;
     void chat_send();
     void draw_connect_window();
+    
+    
+
+    struct vboard {
+        Gtk::HBox m_box_board;
+
+        // images: must all exist, else memory leak...?
+        Gtk::Image m_img_set[3][BOARDSIZE][BOARDSIZE];
+        // the 3: 0=ocean/empty,1=hit,2=(my_board?ship:miss)
+
+        // columns/buttons: see google doc
+        Gtk::VBox m_box_tile_column[BOARDSIZE]; // columns
+        Gtk::Button m_button[BOARDSIZE][BOARDSIZE]; // buttons
+
+        vboard();
+        void init(BPwin & that, char which); // which: 0=my,1=enemy
+    }; 
+    vboard boards[2]; // 0 is me, 1 is enemy
+
 
     // Chat
     Gtk::VBox m_box_chat;
