@@ -71,8 +71,8 @@ int main_client(int argc, char** argv) {
 
     // spawn net listener
     //boost::thread netin(netrecv, nethandler);
-    Gtk::Main kit();
-    BPwin bpwin;
+    Gtk::Main kit(argc, argv);
+    BPwin bpwin; //this needs to be global
    
     // gtkmm main loop
     Gtk::Main::run(bpwin);
