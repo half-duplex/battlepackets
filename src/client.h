@@ -50,14 +50,15 @@ int main_client(int argc, char** argv);
 
 
 void connect();
-    
-void wait_data();
 
+void wait_data();
 
 class BPwin : public Gtk::Window {
 public:
     BPwin();
     virtual ~BPwin();
+
+   
 
     struct vboard {
         Gtk::HBox m_box_board;
@@ -74,11 +75,13 @@ public:
         void init(BPwin & that, char which); // which: 0=my,1=enemy
     };
 
+    lboard_t lboard; //backend, absolute state data
+
 protected:
     // Variables
 
     // The actual board
-    lboard_t lboard; //backend, absolute state data
+
     location placing; // for the first click for placing ships
     location prev; // TODO: Remove: Should not be needed
     int count; // TODO: Remove: Should not be needed

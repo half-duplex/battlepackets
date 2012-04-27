@@ -56,9 +56,10 @@ public:
     bool get_fired(bool player, location loc);
     void set_fired(bool player, location loc);
     uint8_t get_tile_raw(location loc);
-    void set_tile_raw(location loc, uint8_t status);
-private:
+//    void set_tile_raw(location loc, uint8_t status);
     uint8_t board_data[BOARDSIZE][BOARDSIZE];
+private:
+
 };
 
 
@@ -88,7 +89,7 @@ public:
         ACT_PLACE = 1, //c->s
         YOU_SHIP = 2, //s->c, you were able to place a ship
         YOU_HIT = 3, //s->c, you got a hit on the enemy!
-        YOU_MISS = 4,//s->c, this shot was a miss on the enemy's board 
+        YOU_MISS = 4, //s->c, this shot was a miss on the enemy's board 
         THEY_FIRED = 5 //s->c, then from this the client has to derive if it was a hit
     } action_t;
     action_t action; // (see protocol)

@@ -61,13 +61,19 @@ using namespace std;
  *      int argv
  *              the text of the arguments
  */
+
+
+
 int main_client(int argc, char** argv) {
     // Create structures
-    Gtk::Main kit(argc, argv);
-    BPwin bpwin;
+    //        gtk_init(&argc, &argv);
+
+
     // spawn net listener
     //boost::thread netin(netrecv, nethandler);
-
+    Gtk::Main kit();
+    BPwin bpwin;
+   
     // gtkmm main loop
     Gtk::Main::run(bpwin);
 
@@ -619,10 +625,6 @@ void connect() {
 
 }
 
-lboard_t BPwin::get_board() {
-    
-}
-
 void wait_data() {
     for (;;) {
         char data[MAXDATASIZE];
@@ -650,6 +652,7 @@ void wait_data() {
                 handshake = new handshake_t(data, recvd);
                 log(handshake->gameid);
                 break;
+
 
             case 1: //move
                 move_t * move;
@@ -682,17 +685,17 @@ void wait_data() {
             case 2: //update
                 refresh_t * update;
                 update = new refresh_t(data, recvd);
-                int i;
-                int z;
-
-                for (i = 0; i < BOARDSIZE; i++) {
-                    for (z = 0; z < BOARDSIZE; z++) {
-                        //                        update->board[i][z] = 
+                int x, y;
+                for (x = 0; x < BOARDSIZE; x++) { //iterate through x
+                    for (y = 0; y < BOARDSIZE; y++) { //iterate through y
+                        //board_data is public for right now
+                        bpwin.lboard.board_data[x][y] = update->board.board_data[x][y]; //at each [x][y], update
+                        //????
+                        //pretty sure we don't need to update the image
+                        //because it will already be update when you copy over the [x][y] state 
+                        //????
                     }
                 }
-
-
-
                 break;
             case 3: //chat
                 chat_t * chatmsg; //created a new chat msg
@@ -700,7 +703,7 @@ void wait_data() {
 
                 cout << "got a message!" << endl;
 
-                log(chatmsg->msg); //this doesn't work
+                log(chatmsg->msg); //this doesn't work!!!!
                 break;
 
             default:
