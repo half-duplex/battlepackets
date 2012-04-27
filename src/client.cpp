@@ -49,6 +49,8 @@ typedef enum {
 t_gamemode gamemode;
 int socketid; //global
 
+BPwin::vboard boards[2]; // 0 is me, 1 is enemy
+
 using namespace std;
 
 /*
@@ -476,7 +478,7 @@ void BPwin::tile_clicked_opponent(int btn_num) {
 }
 
 /* Called when a key is pressed in the chat input box
- * return value is apparently whether or not to show the char in the box? 
+ * return value is apparently whether or not to show the char in the box?
  * possibly whether or not the event has been handled - seems to spam this when false.
  */
 bool BPwin::chat_key_press(GdkEventKey * k) {
@@ -693,7 +695,7 @@ void wait_data() {
 
                 break;
             case 3: //chat
-                chat_t * chatmsg; //created a new chat msg 
+                chat_t * chatmsg; //created a new chat msg
                 chatmsg = new chat_t(data, recvd);
 
                 cout << "got a message!" << endl;

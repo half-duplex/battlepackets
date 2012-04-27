@@ -8,9 +8,11 @@
           </df>
         </df>
       </df>
+      <df name="local">
+        <in>client.cpp</in>
+        <in>client.h</in>
+      </df>
       <df name="src">
-        <df name="net">
-        </df>
         <in>check.cpp</in>
         <in>client.cpp</in>
         <in>client.h</in>
