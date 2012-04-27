@@ -242,6 +242,9 @@ void wait_data(player_t * player) {
                 handshake_t * handshake;
                 handshake = new handshake_t(data, recvd);
 
+                handshake_t * svrhand;
+                svrhand = new handshake_t;
+
                 if (strcmp(handshake->gameid, "new game") == 0) { //start a new game
                     game_t * game;
                     game = new game_t;
@@ -261,6 +264,8 @@ void wait_data(player_t * player) {
                         } else { //that spot already contains a game
                             i = i;
                         } // if gamearray[i]==null
+
+
                     } // for each in gamearray
                 } else { //join an existing game
                     std::cout << handshake->username << " is joining a game" << std::endl;
@@ -282,6 +287,16 @@ void wait_data(player_t * player) {
 
                     }
                 }
+
+                strcpy(svrhand->username, handshake->username);
+                strcpy(svrhand->gameid, player->game->gameid);
+                send(player->sockfd, svrhand, sizeof (handshake_t), 0); //send the handshake back to the client
+
+                refresh_t * update;
+                update = new refresh_t;
+                update->board = player->game->board;
+                send(player->sockfd, update, sizeof (refresh_t), 0); //send the board update to the client
+
 
 
                 // TODO: Send game board back to client
@@ -305,31 +320,32 @@ void wait_data(player_t * player) {
                         if (player->iszero == true) { //this is player[0]
                             if (player->game->board.get_fired(1, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
                                 //update both clients telling them that it was a hit using a move pkt   
-                                svrmove->absolute = svrmove->YOU_HIT; //tell the client they hit
+                                svrmove->action = svrmove->YOU_HIT; //tell the client they hit
                                 svrmove->loc = move->loc;
                                 send(player->sockfd, svrmove, sizeof (move_t), 0);
 
-                                svrmove->absolute = svrmove->THEY_HIT; //tell the enemy (player[1]) that they've been hit
+                                svrmove->action = svrmove->THEY_FIRED; //tell the enemy (player[1]) that they've been hit
                                 send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
                             } else { //it was a miss
                                 //tell both clients it was a miss using a move pkt   
                             }
                         }
                         if (player->iszero == false) { //this is player[1]
-                            if (player->game->board.get_fired(0, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
+                            if (player->game->board.get_fired(0, move->loc) == true) { //fire at the spot on the enemy's (player[0]) board and HIT
                                 //update both clients telling them that it was a hit using a move pkt   
-                                svrmove->absolute = svrmove->YOU_HIT; //tell the client they hit
+                                svrmove->action = svrmove->YOU_HIT; //tell the client they hit
                                 svrmove->loc = move->loc;
                                 send(player->sockfd, svrmove, sizeof (move_t), 0);
 
-                                svrmove->absolute = svrmove->THEY_HIT; //tell the enemy (player[1]) that they've been hit
+                                svrmove->action = svrmove->THEY_FIRED; //tell the enemy (player[1]) that they've been hit
                                 send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
                             } else { //it was a miss
                                 //tell both clients it was a miss using a move pkt   
+                                
                             }
                         }
                         break;
-                    case 1://this is a move
+                    case 1://this is a place
                         if (player->game->board.get_ship(0, move->loc) == false) { //there's not a ship there so it can be placed
                             player->game->board.set_ship(0, move->loc);
 
@@ -345,6 +361,9 @@ void wait_data(player_t * player) {
                             send(player->sockfd, place_err, sizeof (chat_t), 0); //tell this client only that they can't send a ship
 
                         }
+                    default:
+                        std::cout << "This shouldn't be happening\n";
+                        break;
                 }
 
 

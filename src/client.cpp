@@ -613,8 +613,12 @@ void connect() {
         std::cout << "error connecting socket" << std::endl;
     }
 
-    boost::thread clientthread(wait_data); 
+    boost::thread clientthread(wait_data);
 
+}
+
+lboard_t BPwin::get_board() {
+    
 }
 
 void wait_data() {
@@ -638,7 +642,7 @@ void wait_data() {
             std::cout << "Tripping return because of data length" << std::endl;
             return;
         }
-        switch (data[0]) {
+        switch (data[0]) { //determine what kind of packet this is
             case 0: // Handshake
                 handshake_t * handshake;
                 handshake = new handshake_t(data, recvd);
@@ -648,24 +652,53 @@ void wait_data() {
             case 1: //move
                 move_t * move;
                 move = new move_t(data, recvd); //populates move with the info in data sent from the server
-                
-                //update the game stuff
-                
-                
+
+                //update the game stuff depending on the action type that is being sent from the server
+
+                switch (move->action) {
+
+                    case 2: //the place you sent to the server was a valid move, place a piece at move.loc
+                        break;
+
+                    case 3: //the move you sent to the server was a hit, update at move.loc
+                        break;
+
+                    case 4: //the move you sent to the server was a miss, update at move.loc
+                        break;
+
+                    case 5: //the enemy fired at you, determine if this was a hit and update YOUR board only,
+                        break; //the server already told the enemy if they hit
+
+                    default:
+                        cout << "This shouldn't be happening!\n";
+                        break;
+
+
+                }
+
                 break;
             case 2: //update
                 refresh_t * update;
-                update = new refresh_t(data, recvd); 
-                
-                
+                update = new refresh_t(data, recvd);
+                int i;
+                int z;
+
+                for (i = 0; i < BOARDSIZE; i++) {
+                    for (z = 0; z < BOARDSIZE; z++) {
+                        //                        update->board[i][z] = 
+                    }
+                }
+
+
+
                 break;
             case 3: //chat
                 chat_t * chatmsg; //created a new chat msg 
                 chatmsg = new chat_t(data, recvd);
-            
+
                 cout << "got a message!" << endl;
 
-                log(chatmsg->msg);
+                log(chatmsg->msg); //this doesn't work
                 break;
 
             default:

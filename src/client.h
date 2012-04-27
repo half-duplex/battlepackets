@@ -46,21 +46,24 @@ int main_client(int argc, char** argv);
 /* wait_data
  * spawned as a thread to wait for and handle data
  */
-void wait_data();
+
 
 
 void connect();
+    
+void wait_data();
+
 
 class BPwin : public Gtk::Window {
 public:
     BPwin();
     virtual ~BPwin();
-
+    lboard_t get_board();
 protected:
     // Variables
 
     // The actual board
-    lboard_t lboard;
+    lboard_t lboard; //backend, absolute state data
     location placing; // for the first click for placing ships
     location prev; // TODO: Remove: Should not be needed
     int count; // TODO: Remove: Should not be needed
@@ -77,8 +80,9 @@ protected:
     Gtk::Button m_btn_chat_send;
     void chat_send();
     void draw_connect_window();
-
-    struct vboard {
+    
+    
+    struct vboard { //GTK board of images/buttons
         Gtk::HBox m_box_board;
 
         // images: must all exist, else memory leak...?

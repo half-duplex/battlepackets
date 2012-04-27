@@ -24,7 +24,6 @@
 
 #include "common.h"
 #include <cstring>
-
 #include <iostream>
 using namespace std;
 
@@ -91,11 +90,27 @@ uint8_t lboard_t::get_tile_raw(location loc) {
     return board_data[loc.x][loc.y];
 }
 
+void lboard_t::set_tile_raw(location loc, uint8_t status) {
+    int i, l;
+    for (i = 0; i < BOARDSIZE; i++) {
+        for (l = 0; i < BOARDSIZE; i++) {
+            //set the existing board to the new board
+            //update each icon with:
+            //    boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
+            
+        }
+    }
+    
+    
+
+}
 
 // Packets
 
 handshake_t::handshake_t() {
     pktid = 0;
+    boardsize = BOARDSIZE;
+    protover = PROTOVERSION;
 }
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
@@ -142,8 +157,7 @@ move_t::move_t(char* data, int datalen) {
     pktid = ((move_t *) data)->pktid;
     loc = ((move_t *) data)->loc;
     action = ((move_t *) data)->action;
-    absolute = ((move_t*) data)->absolute;
-
+    
     if (loc.x >= BOARDSIZE || loc.y >= BOARDSIZE) {
         std::cout << "Invalid coordinates\n";
     }

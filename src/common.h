@@ -56,6 +56,7 @@ public:
     bool get_fired(bool player, location loc);
     void set_fired(bool player, location loc);
     uint8_t get_tile_raw(location loc);
+    void set_tile_raw(location loc, uint8_t status);
 private:
     uint8_t board_data[BOARDSIZE][BOARDSIZE];
 };
@@ -83,18 +84,16 @@ public:
     location loc; //x/y
 
     typedef enum {
-        ACT_MOVE = 0, //fire
-        ACT_PLACE = 1
+        ACT_MOVE = 0, //fire  c->s
+        ACT_PLACE = 1, //c->s
+        YOU_SHIP = 2, //s->c, you were able to place a ship
+        YOU_HIT = 3, //s->c, you got a hit on the enemy!
+        YOU_MISS = 4,//s->c, this shot was a miss on the enemy's board 
+        THEY_FIRED = 5 //s->c, then from this the client has to derive if it was a hit
     } action_t;
     action_t action; // (see protocol)
 
-    typedef enum {
-        YOU_SHIP = 0,
-        YOU_HIT = 1,
-        YOU_MISS = 2,
-        THEY_HIT = 3 //then from this the client has to derive if it was a hit
-    } absolute_t;
-    absolute_t absolute;
+
 
     move_t();
     move_t(char * data, int datalen);
