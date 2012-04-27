@@ -103,10 +103,7 @@ struct chat_t {
 private:
     char pktid; // = 3
 public:
-    char sender; //s->c only, will = 0 if its from the server and 1 if its from the opponent
-    short size;
     char msg[255];
-
     chat_t();
     chat_t(char * data, int datalen);
 };

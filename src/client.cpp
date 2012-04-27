@@ -487,12 +487,19 @@ bool BPwin::chat_key_press(GdkEventKey * k) {
         }
 
         //log
-        log("\n");
-        log(m_entry.get_text());
-        log("Me: ");
+        //        log("\n");
+        //        log(m_entry.get_text());
+        //log("Me: ");
         //send
         // TODO: Send chat to server
+        chat_t * chatmsg;
+        chatmsg = new chat_t;
+        string chat = m_entry.get_text();
+        size_t c_length;
+        c_length = chat.copy(chatmsg->msg, 255, 0);
+
         std::cout << "Send chat: " << m_entry.get_text() << std::endl;
+        send(socketid, chatmsg, sizeof (chat_t), 0);
         m_entry.set_text("");
         return true;
     }
@@ -623,6 +630,10 @@ void wait_data() {
         for (int i = 0; i < recvd; i++) {
             //                std::cout << (int) data[i] << data[i] << ",";
         }
+        // dump all recieved data
+        for (int i = 0; i < recvd; i++) {
+            std::cout << (int) data[i] << data[i] << ",";
+        }
         std::cout << "\n";
         if (recvd < 1) {
             std::cout << "Tripping return because of data length" << std::endl;
@@ -632,9 +643,22 @@ void wait_data() {
             case 0: // Handshake
                 handshake_t * handshake;
                 handshake = new handshake_t(data, recvd);
-
                 log(handshake->gameid);
                 break;
+
+            case 1: //move
+                break;
+            case 2: //update
+                break;
+            case 3: //chat
+                chat_t * chatmsg; //created a new chat msg 
+                chatmsg = new chat_t(data, recvd);
+                cout << chatmsg->msg << endl;
+                cout << "got a message!" << endl;
+
+//                log(chatmsg->msg);
+                break;
+
             default:
                 cout << "client Invalid packet recieved.\n";
                 break;
