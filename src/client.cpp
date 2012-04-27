@@ -62,6 +62,7 @@ using namespace std;
  *              the text of the arguments
  */
 
+  BPwin bpwin; //this needs to be global
 
 
 int main_client(int argc, char** argv) {
@@ -72,7 +73,7 @@ int main_client(int argc, char** argv) {
     // spawn net listener
     //boost::thread netin(netrecv, nethandler);
     Gtk::Main kit(argc, argv);
-    BPwin bpwin; //this needs to be global
+  
    
     // gtkmm main loop
     Gtk::Main::run(bpwin);
@@ -689,7 +690,7 @@ void wait_data() {
                 for (x = 0; x < BOARDSIZE; x++) { //iterate through x
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
                         //board_data is public for right now
-                        bpwin.lboard.board_data[x][y] = update->board.board_data[x][y]; //at each [x][y], update
+//                        bpwin.lboard.board_data[x][y] = update->board.board_data[x][y]; //at each [x][y], update
                         //????
                         //pretty sure we don't need to update the image
                         //because it will already be update when you copy over the [x][y] state 

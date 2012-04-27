@@ -57,6 +57,7 @@ class BPwin : public Gtk::Window {
 public:
     BPwin();
     virtual ~BPwin();
+  
 
    
 
