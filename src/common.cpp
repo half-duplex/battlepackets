@@ -31,11 +31,14 @@ location::location() {
 }
 
 location::location(uint8_t ix, uint8_t iy) {
-    x = ix;
-    y = iy;
+    set(ix, iy);
 }
 
 void location::set(uint8_t ix, uint8_t iy) {
+    if (ix >= BOARDSIZE || iy >= BOARDSIZE) {
+        cout << "Invalid location!\n";
+        return;
+    }
     x = ix;
     y = iy;
 }
@@ -203,7 +206,5 @@ chat_t::chat_t(char * data, int datalen) {
         return;
     }
 
-    for (int i = 0; i < 255 - 1; i++) { // -1 so we leave one null byte, just in case
-        msg[i] = ((chat_t *) data)->msg[i];
-    }
+    strncpy(msg, ((chat_t *) data)->msg, 254); // -1 so we leave one null byte, just in case
 }
