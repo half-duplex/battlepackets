@@ -8,6 +8,12 @@
           </df>
         </df>
       </df>
+      <df name="images">
+        <in>hit.png</in>
+        <in>miss.png</in>
+        <in>ocean.png</in>
+        <in>ship.png</in>
+      </df>
       <df name="src">
         <in>check.cpp</in>
         <in>client.cpp</in>

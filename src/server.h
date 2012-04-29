@@ -26,7 +26,11 @@
 #define	SERVER_H
 
 #include "common.h"
+#include <time.h> // for time() and time_t, needed for randomness
+#include <cstdlib> // for rand and srand
 #include <boost/thread.hpp>
+
+#define SENDFLAGS 0
 
 struct player_t;
 struct game_t;
@@ -38,15 +42,16 @@ struct player_t {
 public:
     player_t(int new_sockfd);
     ~player_t();
-    int get_sockid(); //return sockid    
-    bool setgame(); // returns success
+    int get_sockid(); //return sockid
+    game_t * get_game(); // returns success
+    bool set_game(game_t * new_game); // returns success
     void send_data(void * data, int datalen);
-    game_t * game;
+    player_t * otherplayer();
     int sockfd;
-    bool iszero;
+    uint8_t playernum;
+    char username[16];
 private:
-
-
+    game_t * game;
     boost::thread *tid;
 };
 
@@ -58,9 +63,11 @@ public:
     //timestamp with 3 day expire time
     bool addplayer(player_t * player); // returns success
     player_t * players[2];
-    lboard_t board; 
+    char playernames[2][16];
+    gamemode_t modes[2];
+    bool turn;
+    lboard_t board;
 private:
-    
 
 };
 
