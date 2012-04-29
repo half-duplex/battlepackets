@@ -56,10 +56,10 @@ public:
     bool get_fired(bool player, location loc);
     void set_fired(bool player, location loc);
     uint8_t get_tile_raw(location loc);
-//    void set_tile_raw(location loc, uint8_t status);
-    uint8_t board_data[BOARDSIZE][BOARDSIZE];
-private:
+        void set_tile_raw(location loc, uint8_t status);
 
+private:
+    uint8_t board_data[BOARDSIZE][BOARDSIZE];
 };
 
 
