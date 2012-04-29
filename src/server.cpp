@@ -250,9 +250,18 @@ void wait_data(player_t * player) {
                     game_t * game;
                     game = new game_t;
                     // set the gameid
-                    std::cout << "Creating new game\n";
+                    std::cout << "Creating new game: ";
+                    char printables[63] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+                    time_t secs;
+                    time(&secs);
+                    srand((unsigned int) secs);
 
-                    strcpy(game->gameid, "saul"); // TODO: !!!! NEEDS TO BE A RANDOM GAME ID !!!!
+                    for (int i = 0; i < 15; i++) {
+                        game->gameid[i] = printables[rand() % 62];
+                    }
+                    std::cout << game->gameid << std::endl;
+
+                    //                    strcpy(game->gameid, "saul"); // TODO: !!!! NEEDS TO BE A RANDOM GAME ID !!!!
 
                     for (int i = 0; i < 10; i++) { //find a place to store the new game
                         // TODO: replace static 10 with a #define
@@ -296,14 +305,13 @@ void wait_data(player_t * player) {
 
                 break;
             case 1: // player move
-                std::cout << "This is a move packet.\n";
                 move_t * move;
                 move = new move_t(data, recvd);
 
                 move_t * svrmove;
                 svrmove = new move_t;
 
-                std::cout << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == ACT_MOVE ? "move: " : "place");
+                std::cout << "Move from " << player << "/" << !player->iszero << " at " << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == ACT_MOVE ? "move: " : "place: ");
 
                 //error checking->already in BOARDSIZE/BOARDSIZE because of move_t(data, len)
 
@@ -326,8 +334,8 @@ void wait_data(player_t * player) {
 
                                 std::cout << "Miss\n";
                             }
-                                svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
-                                send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
+                            svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
+                            send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
                         }
                         if (player->iszero == false) { //this is player[1]
                             if (player->game->board.get_fired(0, move->loc) == true) { //fire at the spot on the enemy's (player[0]) board and HIT
@@ -346,8 +354,8 @@ void wait_data(player_t * player) {
                                 std::cout << "Miss\n";
 
                             }
-                                svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
-                                send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
+                            svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
+                            send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
                         }
                         break;
                     case ACT_PLACE://this is a place
@@ -359,22 +367,20 @@ void wait_data(player_t * player) {
                             svrmove->loc = move->loc;
                             send(player->sockfd, svrmove, sizeof (move_t), 0);
 
+                            std::cout << "Place\n";
                         } else { //there is a ship there
                             chat_t * place_err;
                             place_err = new chat_t;
                             strcpy(place_err->msg, "You already have a ship there!\n");
                             send(player->sockfd, place_err, sizeof (chat_t), 0); //tell this client only that they can't send a ship
 
+                            std::cout << "Placed / already\n";
                         }
                         break;
                     default:
                         std::cout << "This shouldn't be happening: move action #" << move->action << "\n";
                         break;
                 }
-
-
-                //send move to other clients (if it's valid)
-
                 break;
             case 2: //board refresh
             {

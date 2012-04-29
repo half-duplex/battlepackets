@@ -627,12 +627,14 @@ void wait_data() {
                 log("\n");
                 log(handshake->gameid);
                 log("You are in game ID "); // TODO: allow packet imports to fail
+                cout << "Now in game " << handshake->gameid << "\n";
 
                 // request complete board from server
                 refresh_t * refresh;
                 refresh = new refresh_t;
                 send(socketid, (const void *) refresh, sizeof (refresh_t), 0);
 
+                cout << "Got handshake, wait for board.\n";
                 gamemode = GM_WAIT_BOARD;
                 break;
             }
@@ -717,6 +719,7 @@ void wait_data() {
                         }
                     }
                 }
+                cout << "Got handshake, place ships now.\n";
                 gamemode = GM_SHIP1;
                 // TODO: set gamemode to recieved one
                 break;
@@ -726,10 +729,10 @@ void wait_data() {
                 chat_t * chatmsg; //created a new chat msg
                 chatmsg = new chat_t(data, recvd);
 
-                cout << "got a message: " << chatmsg->msg << endl;
+                cout << "Got chat: " << chatmsg->msg << endl;
 
                 log("\n");
-                log(chatmsg->msg); //this doesn't work!!!! // why the hell not?
+                log(chatmsg->msg);
                 break;
             }
             default:

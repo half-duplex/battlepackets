@@ -122,11 +122,13 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
         return;
     }
 
+    cout << "a";
     pktid = ((handshake_t *) data)->pktid;
     protover = ((handshake_t *) data)->protover;
     boardsize = ((handshake_t *) data)->boardsize;
-    strncpy(username, ((handshake_t *) data)->username, 19 - 3);
-    strncpy(gameid, ((handshake_t *) data)->gameid, 52 - 20);
+    strncpy(username, ((handshake_t *) data)->username, 19 - 3 - 1);
+    strncpy(gameid, ((handshake_t *) data)->gameid, 52 - 20 - 1);
+    cout << "b\n";
 
     if (protover != PROTOVERSION) {
         std::cout << "Old protocol version! " << protover << " should be " << PROTOVERSION << "\n";
@@ -163,8 +165,6 @@ move_t::move_t(char* data, int datalen) {
     if (loc.x >= BOARDSIZE || loc.y >= BOARDSIZE) {
         std::cout << "Invalid coordinates\n";
     }
-
-    // proposal: dump action bits, use only absolute bits. or maybe action bit = the absolute bit changed?
 }
 
 refresh_t::refresh_t() {
@@ -205,8 +205,7 @@ chat_t::chat_t(char * data, int datalen) {
         return;
     }
 
-    for (int i = 0; i < 255; i++) {
+    for (int i = 0; i < 255 - 1; i++) { // -1 so we leave one null byte, just in case
         msg[i] = ((chat_t *) data)->msg[i];
     }
-
 }

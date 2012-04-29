@@ -26,6 +26,8 @@
 #define	SERVER_H
 
 #include "common.h"
+#include <time.h> // for time() and time_t, needed for randomness
+#include <cstdlib> // for rand and srand
 #include <boost/thread.hpp>
 
 struct player_t;
