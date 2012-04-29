@@ -171,6 +171,8 @@ int main_server(int argc, char** argv) {
 game_t::game_t() {
     players[0] = NULL;
     players[1] = NULL;
+    playernames[0][0] = '\0';
+    playernames[1][0] = '\0';
 }
 
 game_t::~game_t() {
@@ -178,16 +180,34 @@ game_t::~game_t() {
 }
 
 bool game_t::addplayer(player_t * player) {
-    if (this->players[0] == NULL) { //this slot is empty
+    if (strcmp(playernames[0], player->username) == 0) { // returning to p0
+        std::cout << "Reassigning " << player->username << " to " << this << " as 0\n";
         players[0] = player;
         player->playernum = 0;
-        // is player->setgame(this); needed, or done before addplayer is called?
+        player->set_game(this);
         return true;
     }
-    if (this->players[1] == NULL) { //this slot is empty
+    if (strcmp(playernames[1], player->username) == 0) { // returning to p1
+        std::cout << "Reassigning " << player->username << " to " << this << " as 1\n";
         players[1] = player;
         player->playernum = 1;
-        // player->setgame(this); may be needed
+        player->set_game(this);
+        return true;
+    }
+    if (players[0] == NULL && playernames[0][0] == '\0') { // this slot is empty and unreserved
+        std::cout << "Assigning " << player->username << " to " << this << " as 0\n";
+        players[0] = player;
+        player->playernum = 0;
+        player->set_game(this);
+        strncpy(playernames[0], player->username, 15);
+        return true;
+    }
+    if (players[1] == NULL && playernames[1][0] == '\0') { // that slot is empty and unreserved
+        std::cout << "Assigning " << player->username << " to " << this << " as 1\n";
+        players[1] = player;
+        player->playernum = 1;
+        player->set_game(this);
+        strncpy(playernames[1], player->username, 15);
         return true;
     }
     return false; // failed: players already exist
@@ -210,6 +230,15 @@ int player_t::get_sockid() {
 player_t * player_t::otherplayer() {
     if (game == NULL) return NULL;
     return game->players[(!playernum)];
+}
+
+bool player_t::set_game(game_t * new_game) {
+    game = new_game;
+    return true;
+}
+
+game_t * player_t::get_game() {
+    return game;
 }
 
 void wait_data(player_t * player) {
@@ -269,7 +298,7 @@ void wait_data(player_t * player) {
                                 gamearray[i]->gameid[j] = printables[rand() % 62];
                             }
                             std::cout << gamearray[i]->gameid << std::endl;
-                            player->game = gamearray[i];
+                            player->set_game(gamearray[i]);
                             break;
 
                         } else { //that spot already contains a game
@@ -287,16 +316,16 @@ void wait_data(player_t * player) {
                             if (strcmp(handshake->gameid, gamearray[i]->gameid) == 0) {
                                 std::cout << "handshake: found game, trying to assign " << handshake->username << "\n";
                                 gamearray[i]->addplayer(player); //add player to game
-                                player->game = gamearray[i];
+                                player->set_game(gamearray[i]);
                                 break;
                             }
                         }
                     }
                 }
 
-                std::cout << "Sending handshake\n";
+                std::cout << "Sending handshake response\n";
                 strcpy(svrhand->username, handshake->username);
-                strcpy(svrhand->gameid, player->game->gameid);
+                strcpy(svrhand->gameid, player->get_game()->gameid);
                 send(player->sockfd, svrhand, sizeof (handshake_t), SENDFLAGS); //send the handshake back to the client
 
                 break;
@@ -314,8 +343,8 @@ void wait_data(player_t * player) {
                 //update board
                 switch (move->action) {
                     case ACT_MOVE: //this is a fire
-                        player->game->board.set_fired(player->playernum, move->loc);
-                        if (player->game->board.get_ship(!player->playernum, move->loc) == true) { // hit
+                        player->get_game()->board.set_fired(player->playernum, move->loc);
+                        if (player->get_game()->board.get_ship(!player->playernum, move->loc) == true) { // hit
                             //update both clients telling them that it was a hit using a move pkt
                             svrmove->action = YOU_HIT; //tell the client they hit
                             svrmove->loc = move->loc;
@@ -335,8 +364,8 @@ void wait_data(player_t * player) {
                             send(player->otherplayer()->sockfd, svrmove, sizeof (move_t), SENDFLAGS);
                         break;
                     case ACT_PLACE://this is a place
-                        if (player->game->board.get_ship(0, move->loc) == false) { //there's not a ship there so it can be placed
-                            player->game->board.set_ship(0, move->loc);
+                        if (player->get_game()->board.get_ship(0, move->loc) == false) { //there's not a ship there so it can be placed
+                            player->get_game()->board.set_ship(0, move->loc);
 
                             //send move to this client only
                             svrmove->action = ACT_PLACE;
@@ -374,9 +403,9 @@ void wait_data(player_t * player) {
                     for (n = 0; n < BOARDSIZE; n++) {
                         locb.set(m, n);
                         if (player->playernum == 0) {
-                            update->board.set_tile_raw(locb, update->board.stripenemyships(player->game->board.get_tile_raw(locb)));
+                            update->board.set_tile_raw(locb, update->board.stripenemyships(player->get_game()->board.get_tile_raw(locb)));
                         } else {
-                            update->board.set_tile_raw(locb, update->board.stripenemyships(update->board.invert(player->game->board.get_tile_raw(locb))));
+                            update->board.set_tile_raw(locb, update->board.stripenemyships(update->board.invert(player->get_game()->board.get_tile_raw(locb))));
                         }
                     }
                 }
@@ -393,14 +422,14 @@ void wait_data(player_t * player) {
                 svrreply = new chat_t;
 
                 //look up the game this is in
-                if (player->game == NULL) { //the player isn't in a game yet, this shouldn't happen!
+                if (player->get_game() == NULL) { //the player isn't in a game yet, this shouldn't happen!
 
                     std::cout << "Silly client... they're not in a game.\n";
                     strcpy(svrreply->msg, "You aren't connected to a game: you can't chat yet.\n");
                     send(socketid, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //send the error message to the client
 
                 } else { //the client is in a game
-                    if (player->game->players[0] == player) { //this is player[0]
+                    if (player->get_game()->players[0] == player) { //this is player[0]
                         //                   TODO: fix and test all this chat stuff
                         std::cout << "player[0] sent a chat\n";
                         strcpy(svrreply->msg, "Me: ");
@@ -409,7 +438,7 @@ void wait_data(player_t * player) {
 
                         strcpy(svrreply->msg, "Them: ");
                         strcpy(svrreply->msg + 6, chatmsg->msg);
-                        send(player->game->players[1]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
+                        send(player->get_game()->players[1]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
 
                     } else { //this is player[1]
                         std::cout << "player[1] sent a chat\n";
@@ -419,7 +448,7 @@ void wait_data(player_t * player) {
 
                         strcpy(svrreply->msg, "Them: ");
                         strcpy(svrreply->msg + 6, chatmsg->msg);
-                        send(player->game->players[0]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
+                        send(player->get_game()->players[0]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
 
                     }
                 }

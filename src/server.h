@@ -43,15 +43,15 @@ public:
     player_t(int new_sockfd);
     ~player_t();
     int get_sockid(); //return sockid
-    bool setgame(); // returns success
+    game_t * get_game(); // returns success
+    bool set_game(game_t * new_game); // returns success
     void send_data(void * data, int datalen);
     player_t * otherplayer();
-    game_t * game;
     int sockfd;
     uint8_t playernum;
+    char username[16];
 private:
-
-
+    game_t * game;
     boost::thread *tid;
 };
 
@@ -63,6 +63,7 @@ public:
     //timestamp with 3 day expire time
     bool addplayer(player_t * player); // returns success
     player_t * players[2];
+    char playernames[2][16];
     gamemode_t modes[2];
     bool turn;
     lboard_t board;
