@@ -681,6 +681,7 @@ void wait_data() {
                 location locb;
                 for (x = 0; x < BOARDSIZE; x++) { //iterate through x
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
+                        cout << "Setting tile/board at " << x << "," << y << "\n";
                         locb.set(x, y);
                         bpwin->lboard.set_tile_raw(locb, update->board.get_tile_raw(locb));
                         // enemy's board
@@ -746,8 +747,8 @@ void wait_data() {
 }
 
 void BPwin::set_tile(uint8_t boarda, uint8_t statea, location loca) {
-    if (boarda > 1 || statea > 2) {
-        cout << "set_tile invalid param: " << (int) boarda << " " << (int) statea << "\n";
+    if (boarda > 1 || statea > 2 || loca.x >= BOARDSIZE || loca.y >= BOARDSIZE) {
+        cout << "set_tile invalid param: " << (int) boarda << " " << (int) statea << " " << (int) loca.x << " " << (int) loca.y << "\n";
         return;
     }
     // states: (from m_img_set)

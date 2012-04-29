@@ -229,6 +229,7 @@ int player_t::get_sockid() {
 
 player_t * player_t::otherplayer() {
     if (game == NULL) return NULL;
+    // don't need to check for null other player: null other player will return null herp derp
     return game->players[(!playernum)];
 }
 
