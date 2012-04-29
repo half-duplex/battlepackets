@@ -205,6 +205,8 @@ chat_t::chat_t(char * data, int datalen) {
         return;
     }
 
-    msg[255] = ((chat_t *) data)->msg[255];
+    for (int i = 0; i < 255; i++) {
+        msg[i] = ((chat_t *) data)->msg[i];
+    }
 
 }

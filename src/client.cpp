@@ -680,7 +680,6 @@ void wait_data() {
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
                         locb.set(x, y);
                         bpwin->lboard.set_tile_raw(locb, update->board.get_tile_raw(locb));
-
                         // enemy's board
                         switch (bpwin->lboard.get_fired(0, locb)) { // i've fired
                             case true:
@@ -716,12 +715,6 @@ void wait_data() {
                                 bpwin->set_tile(0, 0, locb);
                                 break;
                         }
-
-
-
-                        //pretty sure we don't need to update the image
-                        //because it will already be update when you copy over the [x][y] state
-                        // No, it will not. the board structure has absolutely no gui logic, it is backend only. -t
                     }
                 }
                 gamemode = GM_SHIP1;
@@ -749,6 +742,10 @@ void wait_data() {
 }
 
 void BPwin::set_tile(uint8_t boarda, uint8_t statea, location loca) {
+    if (boarda > 1 || statea > 2) {
+        cout << "set_tile invalid param: " << (int) boarda << " " << (int) statea << "\n";
+        return;
+    }
     // states: (from m_img_set)
     // the 3: 0=ocean/empty,1=hit,2=(my_board?ship:miss)
     boards[boarda].m_button[loca.x][loca.y].set_image(boards[boarda].m_img_set[statea][loca.x][loca.y]);
