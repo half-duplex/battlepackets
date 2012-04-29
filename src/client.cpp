@@ -617,6 +617,7 @@ void wait_data() {
         std::cout << "\n";
         if (recvd < 1) {
             std::cout << "Tripping return because of data length" << std::endl;
+            log("Disconnected from server!");
             return;
         }
         switch (data[0]) { //determine what kind of packet this is

@@ -30,6 +30,8 @@
 #include <cstdlib> // for rand and srand
 #include <boost/thread.hpp>
 
+#define SENDFLAGS 0
+
 struct player_t;
 struct game_t;
 
@@ -43,9 +45,10 @@ public:
     int get_sockid(); //return sockid
     bool setgame(); // returns success
     void send_data(void * data, int datalen);
+    player_t * otherplayer();
     game_t * game;
     int sockfd;
-    bool iszero;
+    uint8_t playernum;
 private:
 
 

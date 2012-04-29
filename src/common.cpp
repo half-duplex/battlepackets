@@ -122,13 +122,11 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
         return;
     }
 
-    cout << "a";
     pktid = ((handshake_t *) data)->pktid;
     protover = ((handshake_t *) data)->protover;
     boardsize = ((handshake_t *) data)->boardsize;
     strncpy(username, ((handshake_t *) data)->username, 19 - 3 - 1);
     strncpy(gameid, ((handshake_t *) data)->gameid, 52 - 20 - 1);
-    cout << "b\n";
 
     if (protover != PROTOVERSION) {
         std::cout << "Old protocol version! " << protover << " should be " << PROTOVERSION << "\n";
