@@ -53,12 +53,12 @@ lboard_t::lboard_t() {
     }
 }
 
-void lboard_t::import(uint8_t * board) {
+void lboard_t::import(lboard_t board) {
+    location locb;
     for (int i = 0; i < BOARDSIZE; i++) {
         for (int j = 0; j < BOARDSIZE; j++) {
-            // Don't know why this doesn't work
-            //            board_data[i][j] =
-            //                    board[i][j];
+            locb.set(i, j);
+            board_data[i][j] = board.get_tile_raw(locb);
         }
     }
 }
@@ -66,51 +66,54 @@ void lboard_t::import(uint8_t * board) {
 // bool player: 0=self 1=enemy
 // board_data format: 00dc00ba
 // a = player 0 ship
-// b = player 1 ship
-// c = player 0 fired
+// b = player 0 fired
+// c = player 1 ship
 // d = player 1 fired
 
 bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data
-    return board_data[loc.x][loc.y]&(1 << (player)); //returns true if there is a ship
+    return board_data[loc.x][loc.y]&(1 << (player * 4));
 }
 
 void lboard_t::set_ship(bool player, location loc) {
-    board_data[loc.x][loc.y] |= (1 << (player));
+    board_data[loc.x][loc.y] |= (1 << (player * 4));
 }
 
 bool lboard_t::get_fired(bool player, location loc) {
-    return board_data[loc.x][loc.y]&(1 << (4 + player));
+    return board_data[loc.x][loc.y]&(1 << (1 + (4 * player)));
 }
 
 void lboard_t::set_fired(bool player, location loc) {
-    board_data[loc.x][loc.y] |= (1 << (4 + player));
+    board_data[loc.x][loc.y] |= (1 << (1 + (4 * player)));
 }
 
 uint8_t lboard_t::get_tile_raw(location loc) {
     return board_data[loc.x][loc.y];
 }
 
-//void lboard_t::set_tile_raw(location loc, uint8_t status) {
-//    int i, l;
-//    for (i = 0; i < BOARDSIZE; i++) {
-//        for (l = 0; i < BOARDSIZE; i++) {
-//            //set the existing board to the new board
-//            //update each icon with:
-//            //    boards[0].m_button[loc.x][loc.y].set_image(boards[0].m_img_set[2][loc.x][loc.y]);
-//
-//        }
-//    }
-//}
+void lboard_t::set_tile_raw(location loc, uint8_t status) {
+    board_data[loc.x][loc.y] = status;
+}
+
+uint8_t lboard_t::invert(uint8_t raw) {
+    return ((raw << 4) | (raw >> 4));
+}
+
+uint8_t lboard_t::stripenemyships(uint8_t raw) {
+    return (raw & (255 ^ (1 << 4)));
+}
+
 
 // Packets
 
 handshake_t::handshake_t() {
+    for (int i = sizeof (handshake_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     pktid = 0;
     boardsize = BOARDSIZE;
     protover = PROTOVERSION;
 }
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
+    for (int i = sizeof (handshake_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     if (data[0] != 0) { // check packet id
         std::cout << "Wrong packet for handshake_t!\n";
     }
@@ -139,10 +142,12 @@ handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
 }
 
 move_t::move_t() {
+    for (int i = sizeof (move_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     pktid = 1;
 }
 
 move_t::move_t(char* data, int datalen) {
+    for (int i = sizeof (move_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     if (data[0] != 1) { // check packet id
         std::cout << "Wrong packet for move_t!\n";
     }
@@ -163,10 +168,12 @@ move_t::move_t(char* data, int datalen) {
 }
 
 refresh_t::refresh_t() {
+    for (int i = sizeof (refresh_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     pktid = 2;
 }
 
 refresh_t::refresh_t(char* data, int datalen) {
+    for (int i = sizeof (refresh_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     if (data[0] != 2) { // check packet id
         std::cout << "Wrong packet for refresh_t!\n";
     }
@@ -176,12 +183,12 @@ refresh_t::refresh_t(char* data, int datalen) {
     }
 
     pktid = ((refresh_t *) data)->pktid;
-    board = ((refresh_t *) data)->board;
+    board.import(((refresh_t *) data)->board);
     mode = ((refresh_t *) data)->mode;
-
 }
 
 chat_t::chat_t() {
+    for (int i = sizeof (chat_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     pktid = 3;
     for (int i = 0; i < 255; i++) {
         msg[i] = '\0';
@@ -189,6 +196,7 @@ chat_t::chat_t() {
 }
 
 chat_t::chat_t(char * data, int datalen) {
+    for (int i = sizeof (chat_t) - 1; i >= 0; i--) ((uint8_t *)this)[i] = 0;
     if (data[0] != 3) { // check packet id
         std::cout << "Wrong packet for chat_t!\n";
     }

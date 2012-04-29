@@ -48,12 +48,9 @@ int main_client(int argc, char** argv);
 /* wait_data
  * spawned as a thread to wait for and handle data
  */
-
-
+void wait_data();
 
 void connect();
-
-void wait_data();
 
 class BPwin : public Gtk::Window {
 public:

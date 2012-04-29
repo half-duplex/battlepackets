@@ -527,17 +527,18 @@ BPwin::Connwin::~Connwin() {
 
 void BPwin::Connwin::do_connect() {
     if (m_user.get_text_length() <= 0) {
-        cout << "You need to enter a username!\n"; // can't get to log from here
+        log("You need to enter a username!\n");
         return;
     }
     if (m_game.get_text_length() <= 0) {
-        cout << "You need to enter game ID! Use \"new game\" to start a new game.\n"; // can't get to log from here
+        log("You need to enter game ID! Use \"new game\" to start a new game.\n");
         return;
     }
     cout << "Connecting as user " << m_user.get_text() << " to game " << m_game.get_text() << endl;
     connect();
 
-    handshake_t * handshake_pkt = new handshake_t; //create an instance of the handshake_t structure
+    handshake_t * handshake_pkt;
+    handshake_pkt = new handshake_t; //create an instance of the handshake_t structure
 
     string username = m_user.get_text();
     string gameid = m_game.get_text();
@@ -563,7 +564,8 @@ void BPwin::Connwin::do_connect() {
     gtk_main_quit();
 
     gamemode = GM_WAIT_HANDSHAKE;
-    log("Waiting for server response...\n");
+    log("Waiting for server response\n");
+    cout << "Connected, wait handshake\n";
 }
 
 void connect() {
@@ -624,7 +626,13 @@ void wait_data() {
                 handshake = new handshake_t(data, recvd);
                 log("\n");
                 log(handshake->gameid);
-                log("You are in game ID ");
+                log("You are in game ID "); // TODO: allow packet imports to fail
+
+                // request complete board from server
+                refresh_t * refresh;
+                refresh = new refresh_t;
+                send(socketid, (const void *) refresh, sizeof (refresh_t), 0);
+
                 gamemode = GM_WAIT_BOARD;
                 break;
             }
@@ -635,24 +643,30 @@ void wait_data() {
 
                 //update the game stuff depending on the action type that is being sent from the server
                 switch (move->action) {
-                        // TODO: everything
                     case ACT_MOVE:
-                    case ACT_PLACE:
-                        std::cout << "Danger, will robinson!\n";
+                        std::cout << "SAUL FIX IT OR JUST USE ABSOLUTE STATES\n";
                         break;
-                    case YOU_SHIP: //the place you sent to the server was a valid move, place a piece at move.loc
-
+                    case ACT_PLACE: //the place you sent to the server was a valid move, place a piece at move.loc
+                        bpwin->set_tile(0, 2, move->loc);
                         break;
                     case YOU_HIT: //the move you sent to the server was a hit, update at move.loc
-
+                        log("You hit!\n");
+                        bpwin->set_tile(1, 1, move->loc);
                         break;
                     case YOU_MISS: //the move you sent to the server was a miss, update at move.loc
-
+                        log("You missed.\n");
+                        bpwin->set_tile(1, 0, move->loc);
                         break;
                     case THEY_FIRED: //the enemy fired at you, determine if this was a hit and update YOUR board only,
-
+                        if (bpwin->lboard.get_ship(0, move->loc)) {
+                            log("Enemy hit!\n");
+                            bpwin->set_tile(0, 2, move->loc);
+                        } else {
+                            log("Enemy missed!\n");
+                            // no board update: no my board missed tile
+                        }
                         break; //the server already told the enemy if they hit
-                    // no default: we covered all cases
+                        // no default: we covered all cases
                 }
                 break;
             }
@@ -664,10 +678,9 @@ void wait_data() {
                 location locb;
                 for (x = 0; x < BOARDSIZE; x++) { //iterate through x
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
-                        //board_data is public for right now
-                        bpwin->lboard.board_data[x][y] = update->board.board_data[x][y]; //at each [x][y], update
-
                         locb.set(x, y);
+                        bpwin->lboard.set_tile_raw(locb, update->board.get_tile_raw(locb));
+
                         // enemy's board
                         switch (bpwin->lboard.get_fired(0, locb)) { // i've fired
                             case true:
@@ -681,6 +694,9 @@ void wait_data() {
                                 }
                                 break;
                             case false: // I haven't fired: show ocean/empty
+                                if (bpwin->lboard.get_ship(1, locb)) {
+                                    cout << "SERVER SHOULD NOT SEND ENEMY SHIP STATES UNLESS I'VE FIRED ON THEM\n";
+                                }
                                 bpwin->set_tile(1, 0, locb);
                                 break;
                         }
@@ -717,8 +733,9 @@ void wait_data() {
                 chat_t * chatmsg; //created a new chat msg
                 chatmsg = new chat_t(data, recvd);
 
-                cout << "got a message!" << endl;
+                cout << "got a message: " << chatmsg->msg << endl;
 
+                log("\n");
                 log(chatmsg->msg); //this doesn't work!!!! // why the hell not?
                 break;
             }

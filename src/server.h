@@ -58,6 +58,8 @@ public:
     //timestamp with 3 day expire time
     bool addplayer(player_t * player); // returns success
     player_t * players[2];
+    gamemode_t modes[2];
+    bool turn;
     lboard_t board;
 private:
 

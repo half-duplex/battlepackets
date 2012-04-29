@@ -225,15 +225,17 @@ void wait_data(player_t * player) {
             std::cout << "recv error, ret " << recvd << ", listener dying\n";
             return;
         }
-                std::cout << "wait_data recv socket " << socketid << " data ";
+        //        std::cout << "wait_data recv socket " << socketid << " data ";
         // dump all recieved data
-//        for (int i = 0; i < recvd; i++) {
-//            std::cout << (int) data[i] << data[i] << ",";
-//        }
-//        std::cout << "\n";
+        //        for (int i = 0; i < recvd; i++) {
+        //            std::cout << (int) data[i] << data[i] << ",";
+        //        }
+        //        std::cout << "\n";
         if (recvd < 1) { // same as ==0
-            std::cout << "recv len = 0, listener dying, probably shouldn't" << std::endl;
-            return; // TODO: Just reset for loop
+            std::cout << "recv len = 0, listener dying" << std::endl;
+            // maybe better way to detect closed socket before deleting player / returning?
+            delete player;
+            return; // TODO: Just reset for loop IF socket not dead
         }
         switch (data[0]) { //use the first byte of data in the data array to determine what kind of packet it is
             case 0: // Handshake
@@ -290,7 +292,7 @@ void wait_data(player_t * player) {
                 std::cout << "Sending handshake\n";
                 strcpy(svrhand->username, handshake->username);
                 strcpy(svrhand->gameid, player->game->gameid);
-                send(player->sockfd, svrhand, sizeof(handshake_t), 0); //send the handshake back to the client
+                send(player->sockfd, svrhand, sizeof (handshake_t), 0); //send the handshake back to the client
 
                 break;
             case 1: // player move
@@ -301,14 +303,13 @@ void wait_data(player_t * player) {
                 move_t * svrmove;
                 svrmove = new move_t;
 
-                std::cout << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == ACT_MOVE ? "move\n" : "place\n");
+                std::cout << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == ACT_MOVE ? "move: " : "place");
 
                 //error checking->already in BOARDSIZE/BOARDSIZE because of move_t(data, len)
 
                 //update board
                 switch (move->action) {
                     case ACT_MOVE: //this is a fire
-
                         if (player->iszero == true) { //this is player[0]
                             if (player->game->board.get_fired(1, move->loc) == true) { //fire at the spot on the enemy's (player[1]) board and HIT
                                 //update both clients telling them that it was a hit using a move pkt
@@ -316,11 +317,17 @@ void wait_data(player_t * player) {
                                 svrmove->loc = move->loc;
                                 send(player->sockfd, svrmove, sizeof (move_t), 0);
 
-                                svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
-                                send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
+                                std::cout << "Hit\n";
                             } else { //it was a miss
                                 //tell both clients it was a miss using a move pkt
+                                svrmove->action = YOU_MISS; //tell the client they hit
+                                svrmove->loc = move->loc;
+                                send(player->sockfd, svrmove, sizeof (move_t), 0);
+
+                                std::cout << "Miss\n";
                             }
+                                svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
+                                send(player->game->players[1]->sockfd, svrmove, sizeof (move_t), 0);
                         }
                         if (player->iszero == false) { //this is player[1]
                             if (player->game->board.get_fired(0, move->loc) == true) { //fire at the spot on the enemy's (player[0]) board and HIT
@@ -329,12 +336,18 @@ void wait_data(player_t * player) {
                                 svrmove->loc = move->loc;
                                 send(player->sockfd, svrmove, sizeof (move_t), 0);
 
-                                svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
-                                send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
+                                std::cout << "Hit\n";
                             } else { //it was a miss
                                 //tell both clients it was a miss using a move pkt
+                                svrmove->action = YOU_MISS; //tell the client they hit
+                                svrmove->loc = move->loc;
+                                send(player->sockfd, svrmove, sizeof (move_t), 0);
+
+                                std::cout << "Miss\n";
 
                             }
+                                svrmove->action = THEY_FIRED; //tell the enemy (player[1]) that they've been hit
+                                send(player->game->players[0]->sockfd, svrmove, sizeof (move_t), 0);
                         }
                         break;
                     case ACT_PLACE://this is a place
@@ -353,6 +366,7 @@ void wait_data(player_t * player) {
                             send(player->sockfd, place_err, sizeof (chat_t), 0); //tell this client only that they can't send a ship
 
                         }
+                        break;
                     default:
                         std::cout << "This shouldn't be happening: move action #" << move->action << "\n";
                         break;
@@ -363,23 +377,37 @@ void wait_data(player_t * player) {
 
                 break;
             case 2: //board refresh
+            {
                 // client -> server means GIMME ONE, we don't need any checking or import, just reply
+                std::cout << "Sending board refresh\n";
+
                 refresh_t * update;
                 update = new refresh_t;
-                update->board = player->game->board;
-                // TODO: Don't send enemy's
-                send(player->sockfd, update, sizeof(refresh_t), 0); //send the board update to the client
+
+                // can't just import board: needs to have enemy ship info stripped
+                // and needs to be swapped if !iszero
+                int m, n;
+                location locb;
+                for (m = 0; m < BOARDSIZE; m++) {
+                    for (n = 0; n < BOARDSIZE; n++) {
+                        locb.set(m, n);
+                        if (player->iszero) {
+                            update->board.set_tile_raw(locb, update->board.stripenemyships(player->game->board.get_tile_raw(locb)));
+                        } else {
+                            update->board.set_tile_raw(locb, update->board.stripenemyships(update->board.invert(player->game->board.get_tile_raw(locb))));
+                        }
+                    }
+                }
+                send(player->sockfd, update, sizeof (refresh_t), 0); //send the board update to the client
                 break;
+            }
             case 3: //chat
                 std::cout << "This is a chat packet.\n";
                 chat_t * chatmsg;
                 chatmsg = new chat_t(data, recvd);
 
-
                 chat_t * svrreply; //the chat reply from the server to the client(s)
                 svrreply = new chat_t;
-
-                //                svrreply->size = sizeof ();
 
                 //look up the game this is in
                 if (player->game == NULL) { //the player isn't in a game yet, this shouldn't happen!
