@@ -38,7 +38,7 @@ struct player_t {
 public:
     player_t(int new_sockfd);
     ~player_t();
-    int get_sockid(); //return sockid    
+    int get_sockid(); //return sockid
     bool setgame(); // returns success
     void send_data(void * data, int datalen);
     game_t * game;
@@ -58,9 +58,8 @@ public:
     //timestamp with 3 day expire time
     bool addplayer(player_t * player); // returns success
     player_t * players[2];
-    lboard_t board; 
+    lboard_t board;
 private:
-    
 
 };
 

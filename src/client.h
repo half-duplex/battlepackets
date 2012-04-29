@@ -26,6 +26,8 @@
 #define	CLIENT_H
 
 #include "common.h"
+#include <stdio.h>  /* defines FILENAME_MAX */
+#include <unistd.h> // for getcwd
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/entry.h>
@@ -36,10 +38,10 @@
 #include <gtkmm/menubar.h>
 #include <gtkmm/scrolledwindow.h>
 
-#define M_IMG_EMPTY "/usr/share/icons/gnome/16x16/actions/add.png"
-#define M_IMG_SHIP "/usr/share/icons/gnome/16x16/actions/address-book-new.png"
-#define M_IMG_HIT "/usr/share/icons/gnome/16x16/actions/call-stop.png"
-#define M_IMG_MISS "/usr/share/icons/gnome/16x16/actions/format-justify-center.png"
+#define M_IMG_EMPTY "images/ocean.png"
+#define M_IMG_SHIP "images/ship.png"
+#define M_IMG_HIT "images/hit.png"
+#define M_IMG_MISS "images/miss.png"
 
 int main_client(int argc, char** argv);
 
@@ -57,10 +59,11 @@ class BPwin : public Gtk::Window {
 public:
     BPwin();
     virtual ~BPwin();
-  
 
-   
+
+
     lboard_t lboard; //backend, absolute state data
+    void set_tile(uint8_t boarda, uint8_t statea, location loca);
 
 protected:
     // Variables
@@ -83,8 +86,8 @@ protected:
     Gtk::Button m_btn_chat_send;
     void chat_send();
     void draw_connect_window();
-    
-    
+
+
 
     struct vboard {
         Gtk::HBox m_box_board;
@@ -99,7 +102,7 @@ protected:
 
         vboard();
         void init(BPwin & that, char which); // which: 0=my,1=enemy
-    }; 
+    };
     vboard boards[2]; // 0 is me, 1 is enemy
 
 

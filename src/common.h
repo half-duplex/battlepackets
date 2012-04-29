@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "iostream"
+#include <netinet/tcp.h>
 
 struct location {
     uint8_t x;
@@ -56,11 +57,34 @@ public:
     bool get_fired(bool player, location loc);
     void set_fired(bool player, location loc);
     uint8_t get_tile_raw(location loc);
-//    void set_tile_raw(location loc, uint8_t status);
+    //    void set_tile_raw(location loc, uint8_t status);
     uint8_t board_data[BOARDSIZE][BOARDSIZE];
 private:
 
 };
+
+typedef enum {
+    GM_START = 0, // just started the program
+    GM_WAIT_HANDSHAKE = 1, // connected, waiting for initial board
+    GM_WAIT_BOARD = 2, // connected, got handshake, waiting for inital board
+    GM_SHIP1 = 10, // placing ship 1: submarine: 1 piece
+    GM_SHIP2 = 11, // placing ship 2: submarine: 1 piece
+    GM_SHIP3 = 12, // placing ship 3: destroyer: 2 pieces
+    GM_SHIP4 = 13, // placing ship 4: destroyer: 2 pieces
+    GM_SHIP5 = 14, // placing ship 5: cruiser: 3 pieces
+    GM_SHIP6 = 15, // placing ship 6: battleship: 4 pieces
+    GM_SHIP7 = 16, // placing ship 7: carrier: 5 pieces
+    GM_PLAYTIME = 255
+} gamemode_t;
+
+typedef enum {
+    ACT_MOVE = 0, //fire  c->s
+    ACT_PLACE = 1, //c->s
+    YOU_SHIP = 2, //s->c, you were able to place a ship
+    YOU_HIT = 3, //s->c, you got a hit on the enemy!
+    YOU_MISS = 4, //s->c, this shot was a miss on the enemy's board
+    THEY_FIRED = 5 //s->c, then from this the client has to derive if it was a hit
+} move_action_t;
 
 
 // Packet types
@@ -83,18 +107,7 @@ private:
     char pktid; // = 1
 public:
     location loc; //x/y
-
-    typedef enum {
-        ACT_MOVE = 0, //fire  c->s
-        ACT_PLACE = 1, //c->s
-        YOU_SHIP = 2, //s->c, you were able to place a ship
-        YOU_HIT = 3, //s->c, you got a hit on the enemy!
-        YOU_MISS = 4, //s->c, this shot was a miss on the enemy's board 
-        THEY_FIRED = 5 //s->c, then from this the client has to derive if it was a hit
-    } action_t;
-    action_t action; // (see protocol)
-
-
+    move_action_t action; // (see protocol)
 
     move_t();
     move_t(char * data, int datalen);
@@ -105,6 +118,7 @@ private:
     char pktid; // = 2
 public:
     lboard_t board; //each [x][y] cordinate will have a specific absolute state (0-4) (see protocol)
+    gamemode_t mode;
 
     refresh_t();
     refresh_t(char * data, int datalen);

@@ -64,13 +64,13 @@ void lboard_t::import(uint8_t * board) {
 }
 
 // bool player: 0=self 1=enemy
-// board_data format: 0000dcba
+// board_data format: 00dc00ba
 // a = player 0 ship
 // b = player 1 ship
 // c = player 0 fired
 // d = player 1 fired
 
-bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data 
+bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data
     return board_data[loc.x][loc.y]&(1 << (player)); //returns true if there is a ship
 }
 
@@ -79,11 +79,11 @@ void lboard_t::set_ship(bool player, location loc) {
 }
 
 bool lboard_t::get_fired(bool player, location loc) {
-    return board_data[loc.x][loc.y]&(1 << (2 + player));
+    return board_data[loc.x][loc.y]&(1 << (4 + player));
 }
 
 void lboard_t::set_fired(bool player, location loc) {
-    board_data[loc.x][loc.y] |= (1 << (2 + player));
+    board_data[loc.x][loc.y] |= (1 << (4 + player));
 }
 
 uint8_t lboard_t::get_tile_raw(location loc) {
@@ -111,12 +111,12 @@ handshake_t::handshake_t() {
 }
 
 handshake_t::handshake_t(char * data, int datalen) { //for unpackaging data
+    if (data[0] != 0) { // check packet id
+        std::cout << "Wrong packet for handshake_t!\n";
+    }
     if (datalen != sizeof (handshake_t)) { // check length
         std::cout << "Wrong packet size for handshake_t! " << datalen << " should be " << sizeof (handshake_t) << "\n";
         return;
-    }
-    if (data[0] != 0) { // check packet id
-        std::cout << "Wrong packet for handshake_t!\n";
     }
 
     pktid = ((handshake_t *) data)->pktid;
@@ -143,12 +143,12 @@ move_t::move_t() {
 }
 
 move_t::move_t(char* data, int datalen) {
+    if (data[0] != 1) { // check packet id
+        std::cout << "Wrong packet for move_t!\n";
+    }
     if (datalen != sizeof (move_t)) { // check length
         std::cout << "Wrong packet size for move_t! " << datalen << " should be " << sizeof (move_t) << "\n";
         return;
-    }
-    if (data[0] != 1) { // check packet id
-        std::cout << "Wrong packet for move_t!\n";
     }
 
     pktid = ((move_t *) data)->pktid;
@@ -167,16 +167,17 @@ refresh_t::refresh_t() {
 }
 
 refresh_t::refresh_t(char* data, int datalen) {
-    if (datalen != sizeof (move_t)) { // check length
+    if (data[0] != 2) { // check packet id
+        std::cout << "Wrong packet for refresh_t!\n";
+    }
+    if (datalen != sizeof (refresh_t)) { // check length
         std::cout << "Wrong packet size for refresh_t! " << datalen << " should be " << sizeof (refresh_t) << "\n";
         return;
-    }
-    if (data[0] != 1) { // check packet id
-        std::cout << "Wrong packet for refresh_t!\n";
     }
 
     pktid = ((refresh_t *) data)->pktid;
     board = ((refresh_t *) data)->board;
+    mode = ((refresh_t *) data)->mode;
 
 }
 
@@ -188,12 +189,12 @@ chat_t::chat_t() {
 }
 
 chat_t::chat_t(char * data, int datalen) {
+    if (data[0] != 3) { // check packet id
+        std::cout << "Wrong packet for chat_t!\n";
+    }
     if (datalen != sizeof (chat_t)) { // check length
         std::cout << "Wrong packet size for char_t! " << datalen << " should be " << sizeof (chat_t) << "\n";
         return;
-    }
-    if (data[0] != 3) { // check packet id
-        std::cout << "Wrong packet for chat_t!\n";
     }
 
     msg[255] = ((chat_t *) data)->msg[255];
