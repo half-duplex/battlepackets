@@ -600,10 +600,10 @@ void wait_data() {
         }
         std::cout << "wait_data recv socket " << socketid << " data ";
         // dump all recieved data
-//        for (int i = 0; i < recvd; i++) {
-//            std::cout << (int) data[i] << data[i] << ",";
-//        }
-        std::cout << "\n";
+        //        for (int i = 0; i < recvd; i++) {
+        //            std::cout << (int) data[i] << data[i] << ",";
+        //        }
+        //        std::cout << "\n";
         if (recvd < 1) {
             std::cout << "Tripping return because of data length" << std::endl;
             log("Disconnected from server!\n");
