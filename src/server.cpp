@@ -181,14 +181,14 @@ game_t::~game_t() {
 
 bool game_t::addplayer(player_t * player) {
     if (strcmp(playernames[0], player->username) == 0) { // returning to p0
-        std::cout << "Reassigning " << player->username << " to " << this << " as 0\n";
+        std::cout << "Reassigning " << player->username << " to " << this << " as 0/" << playernames[0] << "\n";
         players[0] = player;
         player->playernum = 0;
         player->set_game(this);
         return true;
     }
     if (strcmp(playernames[1], player->username) == 0) { // returning to p1
-        std::cout << "Reassigning " << player->username << " to " << this << " as 1\n";
+        std::cout << "Reassigning " << player->username << " to " << this << " as 1/" << playernames[1] << "\n";
         players[1] = player;
         player->playernum = 1;
         player->set_game(this);
@@ -224,7 +224,7 @@ player_t::~player_t() {
 }
 
 int player_t::get_sockid() {
-   
+
     return sockfd;
 }
 
@@ -441,7 +441,7 @@ void wait_data(player_t * player) {
                     //                        strcpy(svrreply->msg, "Me: ");
                     //                        strcpy(svrreply->msg + 4, chatmsg->msg);
                     //                        send(socketid, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the sender
-                    //                       
+                    //
                     //                        strcpy(svrreply->msg, "Them: ");
                     //                        strcpy(svrreply->msg + 6, chatmsg->msg);
                     //                        send(player->get_game()->players[1]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
@@ -469,11 +469,11 @@ void wait_data(player_t * player) {
                     std::cout << "First strcpy not the problem\n";
                     strcpy(svrreply2->msg + 6, chatmsg->msg);
                     std::cout << "Second strcpy not the problem\n";
-//                    int theirfd = player->otherplayer()->get_sockid(); //chat is exploding here
-//                    std::cout << theirfd << std::endl;
-//                    
-//                    send(theirfd, (void *) svrreply2, sizeof (chat_t), SENDFLAGS); //reply to the other player
-//                    std::cout << "Made it through send!(yeah right)\n";
+                    //                    int theirfd = player->otherplayer()->get_sockid(); //chat is exploding here
+                    //                    std::cout << theirfd << std::endl;
+                    //
+                    //                    send(theirfd, (void *) svrreply2, sizeof (chat_t), SENDFLAGS); //reply to the other player
+                    //                    std::cout << "Made it through send!(yeah right)\n";
 
                 }
             }
