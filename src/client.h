@@ -55,7 +55,6 @@ void connect();
 class BPwin : public Gtk::Window {
 public:
     BPwin();
-    virtual ~BPwin();
 
     lboard_t lboard; //backend, absolute state data
     void set_tile(uint8_t boarda, uint8_t statea, location loca);

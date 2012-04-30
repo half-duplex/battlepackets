@@ -175,9 +175,6 @@ void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
     }
 }
 
-BPwin::~BPwin() {
-}
-
 void BPwin::tile_clicked_me(int btn_num) {
     location loc((btn_num % BOARDSIZE), (btn_num / BOARDSIZE));
     std::cout << "Clicked my " << (int) loc.x << "," << (int) loc.y << ", gm=" << gamemode << "\n";
@@ -567,7 +564,7 @@ void BPwin::Connwin::do_connect() {
 }
 
 void connect() {
-    char serveraddr[] = SERVADDR;
+    char * serveraddr = servaddr;
     int port = SERVPORT;
     // connect, spawn wait_data with socketid
     struct sockaddr_in client;
@@ -593,7 +590,8 @@ void connect() {
     client.sin_addr.s_addr = inet_addr(serveraddr);
 
     if (connect(socketid, (struct sockaddr*) &client, sizeof (client)) < 0) {
-        std::cout << "error connecting socket: " << errno << '\n';
+        std::cout << "connect: connect: error: " << errno << '\n';
+        parse_conn_err(errno);
         return;
     }
 

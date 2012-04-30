@@ -98,49 +98,7 @@ int main_server(int argc, char** argv) {
 
     if (bind(listensocket, (sockaddr*) & server, sizeof (server)) < 0) { //bind a socket to the port
         std::cout << "Bind error " << errno << ": ";
-        switch (errno) {
-            case EACCES:
-                std::cout << "The address is protected, and the user is not the superuser.\n";
-                std::cout << "Search permission is denied on a component of the path prefix.\n";
-                break;
-            case EADDRINUSE:
-                std::cout << "The given address is already in use.\n";
-                break;
-            case EBADF:
-                std::cout << "sockfd is not a valid descriptor.\n";
-                break;
-            case EINVAL:
-                std::cout << "The socket is already bound to an address.\n";
-                std::cout << "The addrlen is wrong, or the socket was not in the AF_UNIX family.\n";
-                break;
-            case ENOTSOCK:
-                std::cout << "sockfd is a descriptor for a file, not a socket.\nThe following errors are specific to Unix domain(AF_UNIX) sockets.\n";
-                break;
-            case EADDRNOTAVAIL:
-                std::cout << "A nonexistent interface was requested or the requested address was not local.\n";
-                break;
-            case EFAULT:
-                std::cout << "Address points outside the user's accessible address space.\n";
-                break;
-            case ELOOP:
-                std::cout << "Too many symbolic links were encountered in resolving addr.\n";
-                break;
-            case ENAMETOOLONG:
-                std::cout << "Address is too long.\n";
-                break;
-            case ENOENT:
-                std::cout << "The file does not exist.\n";
-                break;
-            case ENOMEM:
-                std::cout << "Insufficient kernel memory was available.\n";
-                break;
-            case ENOTDIR:
-                std::cout << "A component of the path prefix is not a directory.\n";
-                break;
-            case EROFS:
-                std::cout << "The socket inode would reside on a read - only file system.\n";
-                break;
-        }
+        parse_conn_err(errno);
         return 1; // nothing else we can do, aside from maybe have a wait-retry loop
     }
 
@@ -353,6 +311,13 @@ void wait_data(player_t * player) {
                 strcpy(svrhand->username, handshake->username);
                 strcpy(svrhand->gameid, player->get_game()->gameid);
                 send(player->sockfd, svrhand, sizeof (handshake_t), SENDFLAGS); //send the handshake back to the client
+
+                if (player->otherplayer() != NULL) {
+                    char msg[64] = "";
+                    strcat(msg, player->username);
+                    strcat(msg, " has joined the game");
+                    player->otherplayer()->send_message(msg);
+                }
 
                 break;
             case 1: // player move

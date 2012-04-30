@@ -88,6 +88,8 @@ typedef enum {
     THEY_FIRED = 5 //s->c, then from this the client has to derive if it was a hit
 } move_action_t;
 
+void parse_conn_err(int errnum);
+
 
 // Packet types
 

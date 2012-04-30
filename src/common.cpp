@@ -110,6 +110,85 @@ uint8_t lboard_t::stripenemyships(uint8_t raw) {
     }
 }
 
+void parse_conn_err(int errnum) {
+    switch (errnum) {
+        case EACCES:
+            std::cout << "The address is protected, and the user is not the superuser.\n";
+            std::cout << "Search permission is denied on a component of the path prefix.\n";
+            break;
+        case EADDRINUSE:
+            std::cout << "The given address is already in use.\n";
+            break;
+        case EBADF:
+            std::cout << "sockfd is not a valid descriptor.\n";
+            break;
+        case EINVAL:
+            std::cout << "The socket is already bound to an address.\n";
+            std::cout << "The addrlen is wrong, or the socket was not in the AF_UNIX family.\n";
+            break;
+        case ENOTSOCK:
+            std::cout << "sockfd is a descriptor for a file, not a socket.\nThe following errors are specific to Unix domain(AF_UNIX) sockets.\n";
+            break;
+        case EADDRNOTAVAIL:
+            std::cout << "A nonexistent interface was requested or the requested address was not local.\n";
+            break;
+        case EFAULT:
+            std::cout << "Address points outside the user's accessible address space.\n";
+            break;
+        case ELOOP:
+            std::cout << "Too many symbolic links were encountered in resolving addr.\n";
+            break;
+        case ENAMETOOLONG:
+            std::cout << "Address is too long.\n";
+            break;
+        case ENOENT:
+            std::cout << "The file does not exist.\n";
+            break;
+        case ENOMEM:
+            std::cout << "Insufficient kernel memory was available.\n";
+            break;
+        case ENOTDIR:
+            std::cout << "A component of the path prefix is not a directory.\n";
+            break;
+        case EROFS:
+            std::cout << "The socket inode would reside on a read - only file system.\n";
+            break;
+        case EPERM:
+            std::cout << "The user tried to connect to a broadcast address without having the socket broadcast flag enabled or the connection request failed because of a local firewall rule. \n";
+            break;
+        case EAFNOSUPPORT:
+            std::cout << "The passed address didn't have the correct address family in its sa_family field. \n";
+            break;
+        case EAGAIN:
+            std::cout << "No more free local ports or insufficient entries in the routing cache. For AF_INET see the description of /proc/sys/net/ipv4/ip_local_port_range ip(7) for information on how to increase the number of local ports. \n";
+            break;
+        case EALREADY:
+            std::cout << "The socket is nonblocking and a previous connection attempt has not yet been completed. \n";
+            break;
+        case ECONNREFUSED:
+            std::cout << "No-one listening on the remote address. \n";
+            break;
+        case EINPROGRESS:
+            std::cout << "The socket is nonblocking and the connection cannot be completed immediately. It is possible to select(2) or poll(2) for completion by selecting the socket for writing. After select(2) indicates writability, use getsockopt(2) to read the SO_ERROR option at level SOL_SOCKET to determine whether connect() completed successfully (SO_ERROR is zero) or unsuccessfully (SO_ERROR is one of the usual error codes listed here, explaining the reason for the failure). \n";
+            break;
+        case EINTR:
+            std::cout << "The system call was interrupted by a signal that was caught; see signal(7). \n";
+            break;
+        case EISCONN:
+            std::cout << "The socket is already connected. \n";
+            break;
+        case ENETUNREACH:
+            std::cout << "Network is unreachable. \n";
+            break;
+        case ETIMEDOUT:
+            std::cout << "Timeout while attempting connection. The server may be too busy to accept new connections. Note that for IP sockets the timeout may be very long when syncookies are enabled on the server.\n";
+            break;
+        default:
+            std::cout << "Unknown error.\n";
+            break;
+    }
+}
+
 
 // Packets
 
