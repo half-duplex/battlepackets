@@ -459,7 +459,7 @@ void wait_data(player_t * player) {
 
                 } else { //the client is in a game
                     if (player->get_game()->get_player(0) == player) { //this is player[0]
-                        //                   TODO: fix and test all this chat stuff
+                     
                         std::cout << "player[0] sent a chat\n";
                         strcpy(svrreply->msg, "Me: ");
                         strcpy(svrreply->msg + 4, chatmsg->msg);
