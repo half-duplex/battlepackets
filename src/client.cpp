@@ -56,7 +56,7 @@ int main_client(int argc, char** argv) {
         servaddr = argv[1];
     } else {
         servaddr = new char[32];
-        servaddr = SERVADDR;
+        strcpy(servaddr, SERVADDR);
     }
 
     bpwin = new BPwin;
