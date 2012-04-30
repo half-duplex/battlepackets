@@ -40,11 +40,10 @@ void wait_data(player_t * player);
 struct player_t {
 public:
     player_t(int new_sockfd);
-    ~player_t();
     int get_sockid(); //return sockid
     game_t * get_game(); // returns success
     bool set_game(game_t * new_game); // returns success
-    void send_data(void * data, int datalen);
+    void send_message(char * message);
     player_t * otherplayer();
     int sockfd;
     uint8_t playernum;

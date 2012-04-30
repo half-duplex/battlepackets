@@ -606,7 +606,7 @@ void wait_data() {
         std::cout << "\n";
         if (recvd < 1) {
             std::cout << "Tripping return because of data length" << std::endl;
-            log("Disconnected from server!");
+            log("Disconnected from server!\n");
             return;
         }
         switch (data[0]) { //determine what kind of packet this is
@@ -651,13 +651,13 @@ void wait_data() {
                     case YOU_MISS: //the move you sent to the server was a miss, update at move.loc
                         log("You missed.\n");
                         bpwin->lboard.set_fired(0, move->loc);
-                        bpwin->set_tile(1, 0, move->loc);
+                        bpwin->set_tile(1, 2, move->loc);
                         break;
                     case THEY_FIRED: //the enemy fired at you, determine if this was a hit and update YOUR board only,
                         if (bpwin->lboard.get_ship(0, move->loc)) {
                             log("Enemy hit!\n");
                             bpwin->lboard.set_fired(1, move->loc);
-                            bpwin->set_tile(0, 2, move->loc);
+                            bpwin->set_tile(0, 1, move->loc);
                         } else {
                             log("Enemy missed!\n");
                             bpwin->lboard.set_fired(1, move->loc);

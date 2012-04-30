@@ -103,7 +103,11 @@ uint8_t lboard_t::invert(uint8_t raw) {
 }
 
 uint8_t lboard_t::stripenemyships(uint8_t raw) {
-    return (raw & (255 ^ (1 << 4)));
+    if ((raw & (1 << 1))) { // if player 0 has fired
+        return raw;
+    } else {
+        return (raw & (255 ^ (1 << 4)));
+    }
 }
 
 
