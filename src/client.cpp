@@ -37,6 +37,7 @@ Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 gamemode_t gamemode;
 int socketid;
 BPwin * bpwin;
+char * servaddr;
 
 using namespace std;
 
@@ -50,6 +51,13 @@ using namespace std;
  */
 int main_client(int argc, char** argv) {
     Gtk::Main kit(argc, argv);
+
+    if (argc > 1) {
+        servaddr = argv[1];
+    } else {
+        servaddr = new char[32];
+        servaddr = SERVADDR;
+    }
 
     bpwin = new BPwin;
 
@@ -585,7 +593,8 @@ void connect() {
     client.sin_addr.s_addr = inet_addr(serveraddr);
 
     if (connect(socketid, (struct sockaddr*) &client, sizeof (client)) < 0) {
-        std::cout << "error connecting socket" << std::endl;
+        std::cout << "error connecting socket: " << errno << '\n';
+        return;
     }
 
     boost::thread clientthread(wait_data);

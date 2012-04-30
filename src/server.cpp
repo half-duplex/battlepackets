@@ -341,6 +341,8 @@ void wait_data(player_t * player) {
                             }
                         }
                     }
+                }
+                if (player->get_game() == NULL) {
                     char msg[] = "Couldn't find that game!";
                     player->send_message(msg);
                     // TODO: Disconnect player
@@ -459,7 +461,7 @@ void wait_data(player_t * player) {
 
                 } else { //the client is in a game
                     if (player->get_game()->get_player(0) == player) { //this is player[0]
-                     
+
                         std::cout << "player[0] sent a chat\n";
                         strcpy(svrreply->msg, "Me: ");
                         strcpy(svrreply->msg + 4, chatmsg->msg);
