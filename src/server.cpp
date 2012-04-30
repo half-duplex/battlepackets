@@ -196,6 +196,15 @@ void player_t::send_message(char * message) {
     chat_t * chat;
     chat = new chat_t;
     strcpy(chat->msg, message);
+    std::cout << "Sending \"" << chat->msg << "\" to " << (int) playernum << '\n';
+    send(sockfd, (const void *) chat, sizeof (chat_t), SENDFLAGS);
+}
+
+void player_t::send_message_s(std::string message) {
+    chat_t * chat;
+    chat = new chat_t;
+    message.copy(chat->msg, 254, 0);
+    std::cout << "Sending \"" << chat->msg << "\" to " << (int) playernum << '\n';
     send(sockfd, (const void *) chat, sizeof (chat_t), SENDFLAGS);
 }
 
@@ -331,8 +340,12 @@ void wait_data(player_t * player) {
                 //update board
                 switch (move->action) {
                     case ACT_MOVE: //this is a fire
+                        if (player->get_game()->modes[player->playernum] == GM_GAMEOVER) {
+                            player->send_message_s("The game is over! Start a new one.");
+                            break;
+                        }
                         player->get_game()->modes[player->playernum] = GM_PLAYTIME;
-                        if (!player->get_game()->modes[!player->playernum] == GM_PLAYTIME) {
+                        if (!player->get_game()->modes[!(player->playernum)] == GM_PLAYTIME) {
                             char msg[] = "Wait for your opponent to finish placing ships!";
                             player->send_message(msg);
                             break;
@@ -340,18 +353,62 @@ void wait_data(player_t * player) {
                         if (!(player->playernum == player->get_game()->turn)) {
                             char msg[] = "It's not your turn!";
                             player->send_message(msg);
-                            std::cout << '\n';
+                            std::cout << '\n'; // formatting in console
                             break;
                         }
-                        player->get_game()->turn = !player->playernum;
+                        player->get_game()->turn = !(player->playernum);
                         player->get_game()->board.set_fired(player->playernum, move->loc);
-                        if (player->get_game()->board.get_ship(!player->playernum, move->loc) == true) { // hit
+                        if (player->get_game()->board.get_ship(!(player->playernum), move->loc) == true) { // hit
                             //update both clients telling them that it was a hit using a move pkt
                             svrmove->action = YOU_HIT; //tell the client they hit
                             svrmove->loc = move->loc;
                             send(player->sockfd, svrmove, sizeof (move_t), SENDFLAGS);
 
                             std::cout << "Hit\n";
+
+                            // check for endgame
+                            location locc;
+                            bool iwon = true;
+                            uint8_t i = 0, j;
+                            for (; i < BOARDSIZE && iwon; i++) {
+                                for (j = 0; j < BOARDSIZE && iwon; j++) {
+                                    locc.set(i, j);
+
+                                    if (player->get_game()->board.get_ship(!(player->playernum), locc)
+                                            && !(player->get_game()->board.get_fired(player->playernum, locc))) {
+                                        iwon = false;
+                                    }
+                                }
+                            }
+                            if (iwon) {
+                                std::cout << "Game over! Winner: " << (int) player->playernum << '\n';
+                                uint8_t cyc = 0;
+                                for (; cyc < 2; cyc++) {
+                                    refresh_t * update;
+                                    update = new refresh_t;
+                                    update->mode = GM_GAMEOVER;
+                                    player->get_game()->modes[cyc] = GM_GAMEOVER;
+
+                                    uint8_t o = 0, p;
+                                    location locb;
+                                    for (; o < BOARDSIZE; o++) {
+                                        for (p = 0; p < BOARDSIZE; p++) {
+                                            locb.set(o, p);
+                                            if (cyc == player->playernum) {
+                                                update->board.set_tile_raw(locb, update->board.stripenemyships(player->get_game()->board.get_tile_raw(locb)));
+                                            } else {
+                                                update->board.set_tile_raw(locb, update->board.stripenemyships(update->board.invert(player->get_game()->board.get_tile_raw(locb))));
+                                            }
+                                        }
+                                    }
+                                    update->mode = player->get_game()->modes[player->playernum];
+                                    send(player->sockfd, update, sizeof (refresh_t), SENDFLAGS);
+                                } // for each player
+                                usleep(15000);
+                                if (player->otherplayer() != NULL)
+                                    player->otherplayer()->send_message_s("Game over, you lost!");
+                                player->send_message_s("Game over, you won!");
+                            }
                         } else { //it was a miss
                             //tell both clients it was a miss using a move pkt
                             svrmove->action = YOU_MISS; //tell the client they hit

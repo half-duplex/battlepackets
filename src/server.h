@@ -28,6 +28,7 @@
 #include "common.h"
 #include <time.h> // for time() and time_t, needed for randomness
 #include <cstdlib> // for rand and srand
+#include <cstring>
 
 #define SENDFLAGS 0
 
@@ -44,6 +45,7 @@ public:
     game_t * get_game(); // returns success
     bool set_game(game_t * new_game); // returns success
     void send_message(char * message);
+    void send_message_s(std::string message);
     player_t * otherplayer();
     int sockfd;
     uint8_t playernum;

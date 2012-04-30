@@ -759,6 +759,6 @@ void BPwin::set_tile(uint8_t boarda, uint8_t statea, location loca) {
     Gtk::Button * btn = &boards[boarda].m_button[loca.x][loca.y];
     img->show();
     btn->show();
-    usleep(10000);
+    usleep(15000);
     btn->set_image(*img);
 }
