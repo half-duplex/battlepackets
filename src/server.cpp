@@ -306,37 +306,33 @@ void wait_data(player_t * player) {
                 strcpy(player->username, handshake->username);
 
                 if (strcmp(handshake->gameid, "new game") == 0) { //start a new game
-                    for (int i = 0; i < 10; i++) { //find a place to store the new game
-                        // TODO: replace static 10 with a #define
+                    for (int i = 0; i < MAXGAMES; i++) { //find a place to store the new game
                         if (gamearray[i] == NULL) { //that spot is empty and we can store the game there
-
                             gamearray[i] = new game_t;
+
                             // set the gameid
                             std::cout << "new game: ";
                             char printables[63] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
                             time_t secs;
                             time(&secs);
                             srand((unsigned int) secs);
-
                             for (int j = 0; j < 5; j++) { // can be up to <15
                                 gamearray[i]->gameid[j] = printables[rand() % 62];
                             }
+
                             std::cout << gamearray[i]->gameid << std::endl;
                             if (!gamearray[i]->add_player(player)) {
-                                char msg[] = "That game is full!";
+                                char msg[] = "That game is full! Try again in a few minutes.";
                                 player->send_message(msg);
                             }
                             break;
                         } // if gamearray[i]==null
-
-
                     } // for each in gamearray
                 } else { //join an existing game
                     std::cout << handshake->username << " joins " << handshake->gameid << std::endl;
-                    for (int i = 0; i < 10; i++) { // for each game
+                    for (int i = 0; i < MAXGAMES; i++) { // for each game
                         // skip empties
                         if (gamearray[i] != NULL) {
-                            std::cout << "not null at gamearray " << i << std::endl;
                             if (strcmp(handshake->gameid, gamearray[i]->gameid) == 0) {
                                 std::cout << "handshake: found game, trying to assign " << handshake->username << "\n";
                                 gamearray[i]->add_player(player); //add player to game
@@ -345,6 +341,10 @@ void wait_data(player_t * player) {
                             }
                         }
                     }
+                    char msg[] = "Couldn't find that game!";
+                    player->send_message(msg);
+                    // TODO: Disconnect player
+                    break;
                 }
 
                 std::cout << "Sending handshake response\n";

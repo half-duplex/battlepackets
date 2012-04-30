@@ -32,6 +32,7 @@
 Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 
 #define SENDFLAGS 0
+#define SERVADDR "blackcatstudios.org"
 
 gamemode_t gamemode;
 int socketid;
@@ -558,7 +559,7 @@ void BPwin::Connwin::do_connect() {
 }
 
 void connect() {
-    char serveraddr[] = "127.0.0.1";
+    char serveraddr[] = SERVADDR;
     int port = SERVPORT;
     // connect, spawn wait_data with socketid
     struct sockaddr_in client;
