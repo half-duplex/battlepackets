@@ -680,7 +680,6 @@ void wait_data() {
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
                         cout << "Setting tile/board at " << x << "," << y << "\n";
                         locb.set(x, y);
-                        bpwin->lboard.lockd.lock();
                         bpwin->lboard.set_tile_raw(locb, update->board.get_tile_raw(locb));
                         // enemy's board
                         switch (bpwin->lboard.get_fired(0, locb)) { // i've fired
@@ -717,7 +716,6 @@ void wait_data() {
                                 bpwin->set_tile(0, 0, locb);
                                 break;
                         }
-                        bpwin->lboard.lockd.unlock();
                     }
                 }
                 cout << "Got handshake, place ships now.\n";
@@ -754,10 +752,8 @@ void BPwin::set_tile(uint8_t boarda, uint8_t statea, location loca) {
     // the 3: 0=ocean/empty,1=hit,2=(my_board?ship:miss)
     Gtk::Image * img = &boards[boarda].m_img_set[statea][loca.x][loca.y];
     Gtk::Button * btn = &boards[boarda].m_button[loca.x][loca.y];
-    boards[boarda].lock.lock();
     img->show();
     btn->show();
     usleep(10000);
     btn->set_image(*img);
-    boards[boarda].lock.unlock();
 }

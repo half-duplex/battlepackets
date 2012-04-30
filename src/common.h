@@ -61,10 +61,8 @@ public:
     void set_tile_raw(location loc, uint8_t status);
     uint8_t invert(uint8_t raw);
     uint8_t stripenemyships(uint8_t raw);
-    boost::mutex lockd; // superceded by private lock?
 private:
     uint8_t board_data[BOARDSIZE][BOARDSIZE];
-    boost::mutex lock;
 };
 
 typedef enum {
