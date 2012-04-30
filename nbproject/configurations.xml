@@ -10,6 +10,8 @@
       </df>
       <df name="images">
       </df>
+      <df name="local">
+      </df>
       <df name="src">
         <in>check.cpp</in>
         <in>client.cpp</in>

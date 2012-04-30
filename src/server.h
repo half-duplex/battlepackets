@@ -28,7 +28,6 @@
 #include "common.h"
 #include <time.h> // for time() and time_t, needed for randomness
 #include <cstdlib> // for rand and srand
-#include <boost/thread.hpp>
 
 #define SENDFLAGS 0
 
