@@ -87,8 +87,6 @@ protected:
 
 
     struct vboard {
-        boost::mutex lock;
-
         Gtk::HBox m_box_board;
 
         // images: must all exist, else memory leak...?
