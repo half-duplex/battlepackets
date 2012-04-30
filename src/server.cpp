@@ -127,10 +127,9 @@ int main_server(int argc, char** argv) {
 }
 
 game_t::game_t() {
-    players[0] = NULL;
-    players[1] = NULL;
-    playernames[0][0] = '\0';
-    playernames[1][0] = '\0';
+    players[0] = players[1] = NULL;
+    playernames[0][0] = playernames[1][0] = '\0';
+    modes[0] = modes[1] = GM_SHIP1;
 }
 
 game_t::~game_t() {
@@ -332,6 +331,12 @@ void wait_data(player_t * player) {
                 //update board
                 switch (move->action) {
                     case ACT_MOVE: //this is a fire
+                        player->get_game()->modes[player->playernum] = GM_PLAYTIME;
+                        if (!player->get_game()->modes[!player->playernum] == GM_PLAYTIME) {
+                            char msg[] = "Wait for your opponent to finish placing ships!";
+                            player->send_message(msg);
+                            break;
+                        }
                         if (!(player->playernum == player->get_game()->turn)) {
                             char msg[] = "It's not your turn!";
                             player->send_message(msg);
@@ -360,6 +365,7 @@ void wait_data(player_t * player) {
                             send(player->otherplayer()->sockfd, svrmove, sizeof (move_t), SENDFLAGS);
                         break;
                     case ACT_PLACE://this is a place
+                        if (player->get_game()->modes[player->playernum] == GM_PLAYTIME) break;
                         if (player->get_game()->board.get_ship(player->playernum, move->loc) == false) { //there's not a ship there so it can be placed
                             player->get_game()->board.set_ship(player->playernum, move->loc);
 
@@ -405,6 +411,7 @@ void wait_data(player_t * player) {
                         }
                     }
                 }
+                update->mode = player->get_game()->modes[player->playernum];
                 send(player->sockfd, update, sizeof (refresh_t), SENDFLAGS); //send the board update to the client
                 break;
             }

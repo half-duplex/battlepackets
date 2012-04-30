@@ -76,7 +76,8 @@ typedef enum {
     GM_SHIP5 = 14, // placing ship 5: cruiser: 3 pieces
     GM_SHIP6 = 15, // placing ship 6: battleship: 4 pieces
     GM_SHIP7 = 16, // placing ship 7: carrier: 5 pieces
-    GM_PLAYTIME = 255
+    GM_PLAYTIME = 254,
+    GM_GAMEOVER = 255
 } gamemode_t;
 
 typedef enum {

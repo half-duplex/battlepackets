@@ -725,8 +725,7 @@ void wait_data() {
                     }
                 }
                 cout << "Got handshake, place ships now.\n";
-                gamemode = GM_SHIP1;
-                // TODO: set gamemode to recieved one
+                gamemode = update->mode;
                 break;
             }
             case 3: //chat
