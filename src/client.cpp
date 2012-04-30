@@ -757,6 +757,7 @@ void BPwin::set_tile(uint8_t boarda, uint8_t statea, location loca) {
     boards[boarda].lock.lock();
     img->show();
     btn->show();
+    usleep(10000);
     btn->set_image(*img);
     boards[boarda].lock.unlock();
 }
