@@ -57,19 +57,14 @@ public:
     BPwin();
     virtual ~BPwin();
 
-
-
     lboard_t lboard; //backend, absolute state data
     void set_tile(uint8_t boarda, uint8_t statea, location loca);
 
 protected:
-    // Variables
-
-    // The actual board
-
+    // for tracking ship placing
     location placing; // for the first click for placing ships
-    location prev; // TODO: Remove: Should not be needed
-    int count; // TODO: Remove: Should not be needed
+    location prev;
+    int count;
 
     // Signal handlers
     void tile_clicked_me(int btn_num);
@@ -83,8 +78,6 @@ protected:
     Gtk::Button m_btn_chat_send;
     void chat_send();
     void draw_connect_window();
-
-
 
     struct vboard {
         Gtk::HBox m_box_board;
@@ -101,7 +94,6 @@ protected:
         void init(BPwin & that, char which); // which: 0=my,1=enemy
     };
     vboard boards[2]; // 0 is me, 1 is enemy
-
 
     // Chat
     Gtk::VBox m_box_chat;
