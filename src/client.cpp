@@ -24,7 +24,6 @@
 
 #include "client.h"
 #include <iostream>
-#include <boost/thread.hpp>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -35,10 +34,8 @@ Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 #define SENDFLAGS 0
 
 gamemode_t gamemode;
-int socketid; //global
-
-BPwin * bpwin; //this needs to be global
-
+int socketid;
+BPwin * bpwin;
 
 using namespace std;
 
@@ -51,12 +48,6 @@ using namespace std;
  *              the text of the arguments
  */
 int main_client(int argc, char** argv) {
-    // Create structures
-    //        gtk_init(&argc, &argv);
-
-
-    // spawn net listener
-    //boost::thread netin(netrecv, nethandler);
     Gtk::Main kit(argc, argv);
 
     bpwin = new BPwin;
@@ -64,9 +55,7 @@ int main_client(int argc, char** argv) {
     // gtkmm main loop
     Gtk::Main::run(*bpwin);
 
-
-    // die
-    //netin.interrupt();
+    std::cout << "So long, and thanks for all the fish!\n";
     return 0;
 }
 
@@ -158,8 +147,10 @@ void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
             }
 
             // assign image
+            lock.lock();
             m_button[j][i].set_image_position(Gtk::POS_LEFT);
             m_button[j][i].set_image(m_img_set[0][j][i]);
+            lock.unlock();
             m_button[j][i].set_border_width(0);
             m_box_tile_column[j].pack_start(m_button[j][i]);
             if (which == 0) {
@@ -483,7 +474,7 @@ bool BPwin::chat_key_press(GdkEventKey * k) {
         c_length = chat.copy(chatmsg->msg, 255, 0);
 
         std::cout << "Send chat: " << m_entry.get_text() << std::endl;
-        send(socketid, chatmsg, sizeof (chat_t), 0);
+        send(socketid, chatmsg, sizeof (chat_t), SENDFLAGS);
         m_entry.set_text("");
         return true;
     }
@@ -650,23 +641,29 @@ void wait_data() {
                         std::cout << "SAUL FIX IT OR JUST USE ABSOLUTE STATES\n";
                         break;
                     case ACT_PLACE: //the place you sent to the server was a valid move, place a piece at move.loc
+                        bpwin->lboard.set_ship(0, move->loc);
                         bpwin->set_tile(0, 2, move->loc);
+                        // TODO: move meg's code here?
                         break;
                     case YOU_HIT: //the move you sent to the server was a hit, update at move.loc
                         log("You hit!\n");
+                        bpwin->lboard.set_fired(0, move->loc);
                         bpwin->set_tile(1, 1, move->loc);
                         break;
                     case YOU_MISS: //the move you sent to the server was a miss, update at move.loc
                         log("You missed.\n");
+                        bpwin->lboard.set_fired(0, move->loc);
                         bpwin->set_tile(1, 0, move->loc);
                         break;
                     case THEY_FIRED: //the enemy fired at you, determine if this was a hit and update YOUR board only,
                         if (bpwin->lboard.get_ship(0, move->loc)) {
                             log("Enemy hit!\n");
+                            bpwin->lboard.set_fired(1, move->loc);
                             bpwin->set_tile(0, 2, move->loc);
                         } else {
                             log("Enemy missed!\n");
-                            // no board update: no my board missed tile
+                            bpwin->lboard.set_fired(1, move->loc);
+                            // no vboard update: no my board missed tile
                         }
                         break; //the server already told the enemy if they hit
                         // no default: we covered all cases
@@ -683,6 +680,7 @@ void wait_data() {
                     for (y = 0; y < BOARDSIZE; y++) { //iterate through y
                         cout << "Setting tile/board at " << x << "," << y << "\n";
                         locb.set(x, y);
+                        bpwin->lboard.lockd.lock();
                         bpwin->lboard.set_tile_raw(locb, update->board.get_tile_raw(locb));
                         // enemy's board
                         switch (bpwin->lboard.get_fired(0, locb)) { // i've fired
@@ -719,6 +717,7 @@ void wait_data() {
                                 bpwin->set_tile(0, 0, locb);
                                 break;
                         }
+                        bpwin->lboard.lockd.unlock();
                     }
                 }
                 cout << "Got handshake, place ships now.\n";
@@ -753,5 +752,11 @@ void BPwin::set_tile(uint8_t boarda, uint8_t statea, location loca) {
     }
     // states: (from m_img_set)
     // the 3: 0=ocean/empty,1=hit,2=(my_board?ship:miss)
-    boards[boarda].m_button[loca.x][loca.y].set_image(boards[boarda].m_img_set[statea][loca.x][loca.y]);
+    Gtk::Image * img = &boards[boarda].m_img_set[statea][loca.x][loca.y];
+    Gtk::Button * btn = &boards[boarda].m_button[loca.x][loca.y];
+    boards[boarda].lock.lock();
+    img->show();
+    btn->show();
+    btn->set_image(*img);
+    boards[boarda].lock.unlock();
 }

@@ -56,12 +56,12 @@ lboard_t::lboard_t() {
     }
 }
 
-void lboard_t::import(lboard_t board) {
+void lboard_t::import(lboard_t * board) {
     location locb;
     for (int i = 0; i < BOARDSIZE; i++) {
         for (int j = 0; j < BOARDSIZE; j++) {
             locb.set(i, j);
-            board_data[i][j] = board.get_tile_raw(locb);
+            board_data[i][j] = board->get_tile_raw(locb);
         }
     }
 }
@@ -74,7 +74,8 @@ void lboard_t::import(lboard_t board) {
 // d = player 1 fired
 
 bool lboard_t::get_ship(bool player, location loc) { // won't cheat on client: no data
-    return board_data[loc.x][loc.y]&(1 << (player * 4));
+    bool a = board_data[loc.x][loc.y]&(1 << (player * 4));
+    return a;
 }
 
 void lboard_t::set_ship(bool player, location loc) {
@@ -184,7 +185,7 @@ refresh_t::refresh_t(char* data, int datalen) {
     }
 
     pktid = ((refresh_t *) data)->pktid;
-    board.import(((refresh_t *) data)->board);
+    board.import(&((refresh_t *) data)->board);
     mode = ((refresh_t *) data)->mode;
 }
 

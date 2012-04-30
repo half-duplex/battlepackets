@@ -14,6 +14,8 @@
         <in>ocean.png</in>
         <in>ship.png</in>
       </df>
+      <df name="local">
+      </df>
       <df name="src">
         <in>check.cpp</in>
         <in>client.cpp</in>

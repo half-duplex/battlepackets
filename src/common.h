@@ -34,6 +34,7 @@
 #include <string.h>
 #include "iostream"
 #include <netinet/tcp.h>
+#include <boost/thread.hpp>
 
 struct location {
     uint8_t x;
@@ -47,7 +48,7 @@ struct location {
 struct lboard_t {
 public:
     lboard_t();
-    void import(lboard_t board);
+    void import(lboard_t * board);
     // bool player: 0=self 1=enemy
     //DO 0 AND 1 ACTUALLY DO ANYTHING YET?!?!!? ie lookup the other player's game/board
     /* 0 should = player
@@ -60,8 +61,10 @@ public:
     void set_tile_raw(location loc, uint8_t status);
     uint8_t invert(uint8_t raw);
     uint8_t stripenemyships(uint8_t raw);
+    boost::mutex lockd; // superceded by private lock?
 private:
     uint8_t board_data[BOARDSIZE][BOARDSIZE];
+    boost::mutex lock;
 };
 
 typedef enum {
@@ -79,9 +82,9 @@ typedef enum {
 } gamemode_t;
 
 typedef enum {
-    ACT_MOVE = 0, //fire  c->s
-    ACT_PLACE = 1, //c->s //s->c, you were able to place a ship
-    // YOU_SHIP = 2, // SAME DAMN THING JUST HARDER TO USE
+    ACT_MOVE = 1, //fire  c->s
+    ACT_PLACE = 2, //c->s //s->c, you were able to place a ship
+    // YOU_SHIP = 2, // same thing...?
     YOU_HIT = 3, //s->c, you got a hit on the enemy!
     YOU_MISS = 4, //s->c, this shot was a miss on the enemy's board
     THEY_FIRED = 5 //s->c, then from this the client has to derive if it was a hit
