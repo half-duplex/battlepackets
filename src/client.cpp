@@ -32,7 +32,7 @@
 Glib::RefPtr<Gtk::TextBuffer> m_log_buf;
 
 #define SENDFLAGS 0
-#define SERVADDR "blackcatstudios.org"
+#define SERVADDR "64.79.104.163"
 
 gamemode_t gamemode;
 int socketid;
