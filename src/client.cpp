@@ -475,7 +475,7 @@ bool BPwin::chat_key_press(GdkEventKey * k) {
         //        log(m_entry.get_text());
         //log("Me: ");
         //send
-        // TODO: Send chat to server
+        // Send chat to server
         chat_t * chatmsg;
         chatmsg = new chat_t;
         string chat = m_entry.get_text();
@@ -647,7 +647,7 @@ void wait_data() {
                 //update the game stuff depending on the action type that is being sent from the server
                 switch (move->action) {
                     case ACT_MOVE:
-                        std::cout << "SAUL FIX IT OR JUST USE ABSOLUTE STATES\n";
+                        std::cout << "Client shouldn't be getting this, moves are sent client->server.\n";
                         break;
                     case ACT_PLACE: //the place you sent to the server was a valid move, place a piece at move.loc
                         bpwin->set_tile(0, 2, move->loc);
