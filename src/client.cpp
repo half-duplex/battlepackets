@@ -147,10 +147,8 @@ void BPwin::vboard::init(BPwin & that, char which) { // which: 0=mine,1=enemy
             }
 
             // assign image
-            lock.lock();
             m_button[j][i].set_image_position(Gtk::POS_LEFT);
             m_button[j][i].set_image(m_img_set[0][j][i]);
-            lock.unlock();
             m_button[j][i].set_border_width(0);
             m_box_tile_column[j].pack_start(m_button[j][i]);
             if (which == 0) {

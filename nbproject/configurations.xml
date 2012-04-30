@@ -14,11 +14,6 @@
         <in>ocean.png</in>
         <in>ship.png</in>
       </df>
-      <df name="local">
-        <in>client.h</in>
-        <in>test.cpp</in>
-        <in>testdsp.cpp</in>
-      </df>
       <df name="src">
         <in>check.cpp</in>
         <in>client.cpp</in>
@@ -29,6 +24,7 @@
         <in>server.cpp</in>
         <in>server.h</in>
         <in>server_wrap.cpp</in>
+        <in>sigtest.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -54,7 +50,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>bin/server</executablePath>
+          <executablePath>bin/client</executablePath>
           <ccTool>
             <incDir>
               <pElem>.</pElem>
