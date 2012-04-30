@@ -59,14 +59,15 @@ public:
     ~game_t();
     char gameid[32];
     //timestamp with 3 day expire time
-    bool addplayer(player_t * player); // returns success
-    player_t * players[2];
+    bool add_player(player_t * player); // returns success
+    player_t * get_player(uint8_t playernum);
+    void del_player(uint8_t playernum);
     char playernames[2][16];
     gamemode_t modes[2];
     bool turn;
     lboard_t board;
 private:
-
+    player_t * players[2];
 };
 
 #endif	/* SERVER_H */

@@ -179,15 +179,15 @@ game_t::~game_t() {
     // TODO: clean up
 }
 
-bool game_t::addplayer(player_t * player) {
-    if (strcmp(playernames[0], player->username) == 0) { // returning to p0
+bool game_t::add_player(player_t * player) {
+    if (strcmp(playernames[0], player->username) == 0 && players[0] == NULL) { // returning to p0
         std::cout << "Reassigning " << player->username << " to " << this << " as 0/" << playernames[0] << "\n";
         players[0] = player;
         player->playernum = 0;
         player->set_game(this);
         return true;
     }
-    if (strcmp(playernames[1], player->username) == 0) { // returning to p1
+    if (strcmp(playernames[1], player->username) == 0 && players[1] == NULL) { // returning to p1
         std::cout << "Reassigning " << player->username << " to " << this << " as 1/" << playernames[1] << "\n";
         players[1] = player;
         player->playernum = 1;
@@ -213,6 +213,22 @@ bool game_t::addplayer(player_t * player) {
     return false; // failed: players already exist
 }
 
+player_t * game_t::get_player(uint8_t playernum) {
+    if (playernum > 1) {
+        std::cout << "Trying to get to a DNE player\n";
+        return NULL;
+    }
+    return players[playernum];
+}
+
+void game_t::del_player(uint8_t playernum) {
+    if (playernum > 1) {
+        std::cout << "Trying to get to a DNE player\n";
+        return;
+    }
+    players[playernum] = NULL;
+}
+
 player_t::player_t(int new_sockfd) {
     std::cout << "New player, fd: " << new_sockfd << " player: " << this << "\n";
     sockfd = new_sockfd;
@@ -222,7 +238,8 @@ player_t::player_t(int new_sockfd) {
 void player_t::send_message(char * message) {
     chat_t * chat;
     chat = new chat_t;
-    strcpy(message, chat->msg);
+    strcpy(chat->msg, message);
+    send(sockfd, (const void *) chat, sizeof (chat_t), SENDFLAGS);
 }
 
 int player_t::get_sockid() {
@@ -233,7 +250,7 @@ int player_t::get_sockid() {
 player_t * player_t::otherplayer() {
     if (game == NULL) return NULL;
     // don't need to check for null other player: null other player will return null herp derp
-    return game->players[(!playernum)];
+    return game->get_player(!playernum);
 }
 
 bool player_t::set_game(game_t * new_game) {
@@ -272,6 +289,7 @@ void wait_data(player_t * player) {
         if (recvd < 1) { // same as ==0
             std::cout << "recv len = 0, listener dying" << std::endl;
             // maybe better way to detect closed socket before deleting player / returning?
+            player->get_game()->del_player(player->playernum);
             delete player;
             return; // TODO: Just reset for loop IF socket not dead
         }
@@ -279,7 +297,7 @@ void wait_data(player_t * player) {
             case 0: // Handshake
                 std::cout << "handshake: ";
 
-                handshake_t * handshake; // recieved
+                handshake_t * handshake; // received
                 handshake = new handshake_t(data, recvd);
 
                 handshake_t * svrhand; // response
@@ -304,11 +322,11 @@ void wait_data(player_t * player) {
                                 gamearray[i]->gameid[j] = printables[rand() % 62];
                             }
                             std::cout << gamearray[i]->gameid << std::endl;
-                            gamearray[i]->addplayer(player);
+                            if (!gamearray[i]->add_player(player)) {
+                                char msg[] = "That game is full!";
+                                player->send_message(msg);
+                            }
                             break;
-
-                        } else { //that spot already contains a game
-                            i = i; // TODO: wtf is this?
                         } // if gamearray[i]==null
 
 
@@ -321,7 +339,7 @@ void wait_data(player_t * player) {
                             std::cout << "not null at gamearray " << i << std::endl;
                             if (strcmp(handshake->gameid, gamearray[i]->gameid) == 0) {
                                 std::cout << "handshake: found game, trying to assign " << handshake->username << "\n";
-                                gamearray[i]->addplayer(player); //add player to game
+                                gamearray[i]->add_player(player); //add player to game
                                 player->set_game(gamearray[i]);
                                 break;
                             }
@@ -344,14 +362,13 @@ void wait_data(player_t * player) {
 
                 std::cout << "move: " << player << "/" << (int) player->playernum << " at " << (int) move->loc.x << "," << (int) move->loc.y << " performs " << (move->action == ACT_MOVE ? "move: " : "place: ");
 
-                //error checking->already in BOARDSIZE/BOARDSIZE because of move_t(data, len)
-
                 //update board
                 switch (move->action) {
                     case ACT_MOVE: //this is a fire
                         if (!(player->playernum == player->get_game()->turn)) {
                             char msg[] = "It's not your turn!";
                             player->send_message(msg);
+                            std::cout << '\n';
                             break;
                         }
                         player->get_game()->turn = !player->playernum;
@@ -441,7 +458,7 @@ void wait_data(player_t * player) {
                     send(socketid, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //send the error message to the client
 
                 } else { //the client is in a game
-                    if (player->get_game()->players[0] == player) { //this is player[0]
+                    if (player->get_game()->get_player(0) == player) { //this is player[0]
                         //                   TODO: fix and test all this chat stuff
                         std::cout << "player[0] sent a chat\n";
                         strcpy(svrreply->msg, "Me: ");
@@ -450,7 +467,7 @@ void wait_data(player_t * player) {
 
                         strcpy(svrreply->msg, "Them: ");
                         strcpy(svrreply->msg + 6, chatmsg->msg);
-                        send(player->get_game()->players[1]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
+                        send(player->get_game()->get_player(1)->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
 
                     } else { //this is player[1]
                         std::cout << "player[1] sent a chat\n";
@@ -460,7 +477,7 @@ void wait_data(player_t * player) {
 
                         strcpy(svrreply->msg, "Them: ");
                         strcpy(svrreply->msg + 6, chatmsg->msg);
-                        send(player->get_game()->players[0]->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
+                        send(player->get_game()->get_player(0)->sockfd, (void *) svrreply, sizeof (chat_t), SENDFLAGS); //reply to the other player
                     }
                 }
                 break;
